@@ -11,18 +11,23 @@ from flask import Flask
 from bbs.extensions import db
 from bbs.setting import DevelopmentConfig
 from bbs.models import *
-
+from bbs.blueprint.index import index_bp
 
 def create_app(config_name=None):
     app = Flask('bbs')
     app.config.from_object(DevelopmentConfig)
     register_extensions(app)
     register_cmd(app)
+    register_bp(app)
     return app
 
 
 def register_extensions(app:Flask):
     db.init_app(app)
+
+
+def register_bp(app:Flask):
+    app.register_blueprint(index_bp)
 
 
 def register_cmd(app: Flask):
