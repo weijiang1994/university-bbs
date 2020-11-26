@@ -21,7 +21,9 @@ class User(db.Model):
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
     role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'))
 
-    colleges = db.relationship('College', back_populates='User')
+    college = db.relationship('College', back_populates='user')
+    role = db.relationship('Role', back_populates='user')
+
 
 class College(db.Model):
     __tablename__ = 't_college'
@@ -30,9 +32,22 @@ class College(db.Model):
     name = db.Column(db.String(100), nullable=False)
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
 
+    user = db.relationship('User', back_populates='college', cascade='all')
 
 class Role(db.Model):
     __tablename__ = 't_role'
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True, index=True)
-    
+    name = db.Column(db.String(40), nullable=False)
+    permission_id = db.Column(db.INTEGER, db.ForeignKey('t_permission.id'), nullable=False)
+
+    user = db.relationship('User', back_populates='role', cascade='all')
+    permission = db.relationship('Permission', back_populates='role')
+
+class Permission(db.Model):
+    __tablename__ = 't_permission'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True, index=True)
+    name = db.Column(db.String(40), nullable=False)
+
+    role = db.relationship('Role', back_populates='permission', cascade='all')

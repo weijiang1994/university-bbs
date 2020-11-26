@@ -6,18 +6,32 @@ file: __init__.py
 @time: 2020/11/26 21:42
 @desc:
 """
+import click
 from flask import Flask
 from bbs.extensions import db
 from bbs.setting import DevelopmentConfig
+from bbs.models import *
 
 
 def create_app(config_name=None):
     app = Flask('bbs')
     app.config.from_object(DevelopmentConfig)
     register_extensions(app)
-
+    register_cmd(app)
     return app
 
 
 def register_extensions(app:Flask):
     db.init_app(app)
+
+
+def register_cmd(app: Flask):
+    @app.cli.command()
+    @click.option('--drop', is_flag=True, help='Drop database and create a new database')
+    def initdb(drop):
+        if drop:
+            click.confirm('This operation will delete the database, do you want to continue?', abort=True)
+            db.drop_all()
+            click.echo('Drop tables.')
+        db.create_all()
+        click.echo('Initialized database.')
