@@ -9,7 +9,7 @@ __pycache__/
 .idea/
 venv/
 .env
-
+migrations/
 # Distribution / packaging
 .Python
 build/

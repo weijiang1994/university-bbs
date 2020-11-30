@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% from "macro.html" import nav_item with context %}
+<html lang="zh-hans">
+{% block head %}
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}bbs{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    </head>
+{% endblock %}
 
-</body>
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container align-self-end">
+            <a class="navbar-brand" href="#"><i class="fa fa-bbs"></i>BBS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navHome" aria-controls="navHome" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navHome">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active mr-5">
+                        <a class="nav-link" href="#"><i class="fa fa-home mr-1"></i>主页<span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item dropdown mr-5">
+                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fire mr-1"></i>大食堂</a>
+                        <div class="dropdown-menu" aria-labelledby="talk">
+                            <a class="dropdown-item" href="#">杂谈</a>
+                            <a class="dropdown-item" href="#">趣事</a>
+                            <a class="dropdown-item" href="#">表白</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown mr-5">
+                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-shopping-cart mr-1"></i>便利店</a>
+                        <div class="dropdown-menu" aria-labelledby="talk">
+                            <a class="dropdown-item" href="#">寻物</a>
+                            <a class="dropdown-item" href="#">咸鱼</a>
+                            <a class="dropdown-item" href="#">活动</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown mr-5">
+                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-delicious mr-1"></i>组织</a>
+                        <div class="dropdown-menu" aria-labelledby="talk">
+                            <a class="dropdown-item" href="#">学院</a>
+                            <a class="dropdown-item" href="#">社团</a>
+                            <a class="dropdown-item" href="#">圈子</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-md-0">
+                    <input class="form-control" type="text" placeholder="请输入关键字" aria-label="Search" required>
+                </form>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+{% endblock %}
+{% block footer %}
+    <footer class="container-fluid mt-4 py-0 bg-light">
+        <div class="card-body text-center px-0 f-14">
+            <p class="card-text mb-1">Copyright&nbsp;©&nbsp;<span id="year-info">2020</span>
+                <a href="http://2dogz.cn/"  target="_blank" title="官网">University BBS</a>&nbsp;Design&nbsp;by&nbsp;Flask1.01.
+            </p>
+        </div>
+    </footer>
+{% endblock %}
 </html>

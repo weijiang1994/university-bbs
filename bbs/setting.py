@@ -8,15 +8,20 @@ file: setting.py
 """
 import os
 
+
 class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    DATABASE_USER = os.getenv('DB_USER', 'root')
-    DATABASE_PWD = os.getenv('DB_PWD')
+    DATABASE_USER = os.getenv('DATABASE_USER')
+    DATABASE_PWD = os.getenv('DATABASE_PWD')
+    DATABASE_HOST = os.getenv('DATABASE_HOST')
+    DATABASE_PORT = os.getenv('DATABASE_PORT')
+
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI ='mysql+pymysql://{}:{}@127.0.0.1/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
-                                                                                            BaseConfig.DATABASE_PWD)
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
+                                                                                    BaseConfig.DATABASE_PWD,
+                                                                                    BaseConfig.DATABASE_HOST)
     REDIS_URL = "redis://localhost"
