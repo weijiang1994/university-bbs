@@ -1,0 +1,51 @@
+{% extends "frontend/base.html" %}
+{% block title %}
+    用户注册
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container">
+
+            <div class="jumbotron mt-5">
+                <div class="row">
+                    <div class="col-md-8">
+                        <img src="{{ url_for('static', filename='img/index.jpg') }}" class="rounded img-fluid">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3 w-100 bg-light">
+                            <div class="card-header"><h4 class="text-muted"><strong>用户注册</strong></h4></div>
+                            <div class="card-body">
+                                <form class="bs-component">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputValid">用户名</label>
+                                        <input type="text" placeholder="请输入用户名" name="username" class="form-control" id="username">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputInvalid">邮箱</label>
+                                        <input type="text" placeholder="请输入邮箱" class="form-control" name="email" id="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputInvalid">密码</label>
+                                        <input type="text" placeholder="请输入密码" class="form-control" name="password" id="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputInvalid">确认</label>
+                                        <input type="text" placeholder="请输入密码" class="form-control" name="password" id="confirmPassword">
+                                    </div>
+                                    <button class="source-button btn btn-primary btn-xs" role="button" tabindex="0">注册</button></form>
+
+                                <hr>
+                                <small>已有账号? <a style="text-decoration: none;" href="{{ url_for('.login') }}">登录.</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    </body>
+{% endblock %}

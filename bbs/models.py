@@ -14,8 +14,9 @@ class User(db.Model):
     __tablename__ = 't_user'
 
     id = db.Column(db.INTEGER, primary_key=True, nullable=False, index=True, autoincrement=True)
-    username = db.Column(db.String(40), nullable=False, index=True, comment='user name')
+    username = db.Column(db.String(40), nullable=False, index=True, unique=True, comment='user name')
     password = db.Column(db.String(256), comment='user password')
+    email = db.Column(db.String(128), unique=True, nullable=False, comment='user register email')
     slogan = db.Column(db.String(40), default='')
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
