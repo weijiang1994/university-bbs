@@ -7,10 +7,14 @@
         <title>{% block title %}bbs{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
         <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-{#        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">#}
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/dark/bootstrap.min.css') }}">
+{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/dark/bootstrap.min.css') }}">#}
+{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/flatly/bootstrap.min.css') }}">#}
+{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/journal/bootstrap.min.css') }}">#}
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/sketchy/bootstrap.min.css') }}">
         <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
     </head>
 {% endblock %}
@@ -18,7 +22,7 @@
 {% block nav %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container align-self-end">
-            <a class="navbar-brand" href="#"><i class="fa fa-bbs"></i>二狗大学</a>
+            <a class="navbar-brand" href="/"><i class="fa fa-bbs"></i>狗子学院</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navHome" aria-controls="navHome" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

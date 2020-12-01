@@ -1,8 +1,133 @@
 {% extends "frontend/base.html" %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .f-12{
+            font-size: 12px;
+        }
+    </style>
+{% endblock %}
 {% block title %}
     主页
 {% endblock %}
 {% block content %}
     <main>
+        <div class="container mt-2">
+            <ul class="nav nav-pills" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="pill" href="#hotPost"><i class="fa fa-firefox mr-2"></i>今日热帖</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="pill" href="#latestPost"><i class="fa fa-calendar mr-2"></i>最新帖子</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="pill" href="#randPost"><i class="fa fa-random mr-2"></i>随机推荐</a>
+                </li>
+            </ul>
+            <hr class="bg-secondary">
+            <div class="row">
+                <div class="col-md-8 mt-1">
+                    <div class="tab-content">
+                        <div id="hotPost" class="tab-pane active">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="#">白日依山尽，黄河入海流。欲穷千里目，更上一层楼。</a>
+                                    <div class="row mt-2">
+                                        <div class="col">
+                                            <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>Admin <span>56分钟前</span></p>
+                                        </div>
+                                        <div class="col text-right d-flex flex-row-reverse">
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>88</p>
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>45　</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Dapibus ac facilisis in
+                                    <span class="badge badge-primary badge-pill">2</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Morbi leo risus
+                                    <span class="badge badge-primary badge-pill">1</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="latestPost" class="tab-pane fade">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="#">各位童鞋有没有高数比较厉害的呀?</a>
+                                    <div class="row mt-2">
+                                        <div class="col">
+                                            <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>Admin <span>56分钟前</span></p>
+                                        </div>
+                                        <div class="col text-right d-flex flex-row-reverse">
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>88</p>
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>45　</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Dapibus ac facilisis in
+                                    <span class="badge badge-primary badge-pill">2</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Morbi leo risus
+                                    <span class="badge badge-primary badge-pill">1</span>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <div id="randPost" class="tab-pane fade">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="#">真的不明白为什么他要这样子对我?</a>
+                                    <div class="row mt-2">
+                                        <div class="col">
+                                            <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>Admin <span>56分钟前</span></p>
+                                        </div>
+                                        <div class="col text-right d-flex flex-row-reverse">
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>88</p>
+                                            <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>45　</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Dapibus ac facilisis in
+                                    <span class="badge badge-primary badge-pill">2</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Morbi leo risus
+                                    <span class="badge badge-primary badge-pill">1</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 侧边栏 -->
+                <div class="col-md-4">
+                    <div class="card border-secondary mb-2 mt-1" style="max-width: 20rem;">
+                        <div class="card-header"><i class="fa fa-user mr-2"></i>用户</div>
+                        <div class="card-body">
+                            {% if not current_user.is_authenticated %}
+                                <div><small class="text-danger"><b>您尚未登录！</b></small>请先
+                                    <a href="/auth/login/"><span class="badge badge-info">登录</span></a> 或
+                                    <a href="/auth/register/"><span class="badge badge-success">注册</span></a>！
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                        <div class="card-header"><i class="fa fa-fire mr-2"></i>今日热点</div>
+                        <div class="card-body">
+                            <h4 class="card-title">Secondary card title</h4>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </main>
 {% endblock %}
