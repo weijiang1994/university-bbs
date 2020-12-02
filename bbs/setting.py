@@ -8,9 +8,14 @@ file: setting.py
 """
 import os
 
+basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
 
 class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY')
+
+    BBS_THEMES = {'Darkly': 'darkly', 'Sketchy': 'sketchy', 'Journal': 'journal', 'Flatly': 'flatly',
+                  'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty'}
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -18,6 +23,9 @@ class BaseConfig(object):
     DATABASE_PWD = os.getenv('DATABASE_PWD')
     DATABASE_HOST = os.getenv('DATABASE_HOST')
     DATABASE_PORT = os.getenv('DATABASE_PORT')
+
+    BBS_UPLOAD_PATH = os.path.join(basedir, 'resources')
+    AVATARS_SAVE_PATH = BBS_UPLOAD_PATH + '/avatars/'
 
 
 class DevelopmentConfig(BaseConfig):

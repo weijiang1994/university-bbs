@@ -6,25 +6,45 @@ file: models.py
 @time: 2020/11/26 21:45
 @desc:
 """
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_avatars import Identicon
 from bbs.extensions import db
 import datetime
+from flask_login import UserMixin
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 't_user'
 
     id = db.Column(db.INTEGER, primary_key=True, nullable=False, index=True, autoincrement=True)
     username = db.Column(db.String(40), nullable=False, index=True, unique=True, comment='user name')
+    nickname = db.Column(db.String(40), nullable=False, unique=True, comment='user nick name')
     password = db.Column(db.String(256), comment='user password')
     email = db.Column(db.String(128), unique=True, nullable=False, comment='user register email')
     slogan = db.Column(db.String(40), default='')
+    avatar = db.Column(db.String(100), nullable=False, comment='user avatar')
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
-    role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'))
+    role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'), default=3, comment='user role id default is 3 '
+                                                                                   'that is student role')
 
     college = db.relationship('College', back_populates='user')
     role = db.relationship('Role', back_populates='user')
     post = db.relationship('Post', back_populates='user', cascade='all')
+    status = db.relationship('Status', back_populates='user')
+
+    def set_password(self, pwd):
+        self.password = generate_password_hash(pwd)
+
+    def check_password(self, pwd):
+        return check_password_hash(self.password, pwd)
+
+    def generate_avatar(self):
+        icon = Identicon()
+        files = icon.generate(self.username)
+        self.avatar = '/normal/image/avatars/' + files[2]
 
 
 class College(db.Model):
@@ -62,6 +82,7 @@ class PostCategory(db.Model):
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     name = db.Column(db.String(40), nullable=False)
+    create_time = db.Column(db.Date, default=datetime.date.today)
 
     post = db.relationship('Post', back_populates='cats', cascade='all')
 
@@ -74,11 +95,12 @@ class Post(db.Model):
     content = db.Column(db.TEXT, nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.datetime.now)
-    cate_id = db.Column(db.INTEGER, db.ForeignKey('t_postcate.id'))
-    author_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
     is_anonymous = db.Column(db.INTEGER, default=0, comment='post is anonymous? 1: yes 0: no')
     read_times = db.Column(db.INTEGER, default=0)
-    status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))
+
+    cate_id = db.Column(db.INTEGER, db.ForeignKey('t_postcate.id'))
+    author_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'), default=1)
 
     cats = db.relationship('PostCategory', back_populates='post')
     user = db.relationship('User', back_populates='post')
@@ -92,10 +114,10 @@ class Status(db.Model):
     name = db.Column(db.String(40), nullable=False)
 
     post = db.relationship('Post', back_populates='status', cascade='all')
+    user = db.relationship('User', back_populates='status', cascade='all')
 
 
 class Comments(db.Model):
-
     __tablename__ = 't_comments'
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)

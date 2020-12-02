@@ -5,6 +5,10 @@
         .f-12{
             font-size: 12px;
         }
+        .avatar{
+            width: 50px;
+            height: 50px;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -13,6 +17,7 @@
 {% block content %}
     <main>
         <div class="container mt-2">
+            {% include "_flash.html" %}
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-toggle="pill" href="#hotPost"><i class="fa fa-firefox mr-2"></i>今日热帖</a>
@@ -114,7 +119,53 @@
                                     <a href="/auth/login/"><span class="badge badge-info">登录</span></a> 或
                                     <a href="/auth/register/"><span class="badge badge-success">注册</span></a>！
                                 </div>
+                            {% else %}
+                                <div class="d-flex">
+                                    <img src="{{ current_user.avatar }}" class="rounded avatar">
+                                    <div>
+                                        <p class="mb-1 ml-1 text-success"><b>{{ current_user.nickname }}</b></p>
+                                        <p class="mb-1 ml-1 text-muted"><small>@{{ current_user.username }}</small></p>
+                                    </div>
+                                    <div class="d-flex flex-row-reverse">
+                                        <a href="/post/new/" class="btn btn-secondary h-75 ml-2"><i class="fa fa-plus mr-1"></i> 发布</a>
+                                    </div>
+
+                                </div>
+
+                                <hr class="bg-secondary">
+                                <div class="d-flex p-1">
+                                    <div class="pr-2 dropdown">
+                                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            主题
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            {% for theme_name, display_name in config.BBS_THEMES.items() %}
+                                                <a class="dropdown-item"
+                                                   href="{{ url_for('normal.change_theme', theme_name=theme_name, next=request.full_path) }}">
+                                                    {{ theme_name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            操作
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="">个人中心</a>
+                                            <a class="dropdown-item" href="/auth/logout/">登出</a>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-2">
+                        <div class="card-header"><i class="fa fa-desktop mr-2"></i>今日鸡汤</div>
+                        <div class="card-body">
+                            今日鸡汤
                         </div>
                     </div>
 

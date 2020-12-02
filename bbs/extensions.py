@@ -6,13 +6,17 @@ file: extensions.py
 @time: 2020/11/26 21:45
 @desc:
 """
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
+from flask_avatars import Avatars
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
+bs = Bootstrap()
+avatars = Avatars()
 
 
 @login_manager.user_loader

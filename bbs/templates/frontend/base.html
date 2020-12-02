@@ -9,10 +9,9 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
         <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
         <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/dark/bootstrap.min.css') }}">
-{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/flatly/bootstrap.min.css') }}">#}
-{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/journal/bootstrap.min.css') }}">#}
-{#        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.5.3-dist/sketchy/bootstrap.min.css') }}">#}
+        <link rel="stylesheet" href="{{ url_for('static', filename='themes/%s.bootstrap.min.css' % request.cookies.get('bbs_themes', 'darkly')) }}">
+        <script src="{{ url_for('static', filename='validator/form-validation.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='validator/form-validation.css') }}">
         <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
@@ -30,7 +29,7 @@
             <div class="collapse navbar-collapse" id="navHome">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active mr-5">
-                        <a class="nav-link" href="#"><i class="fa fa-home mr-1"></i>主页<span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/"><i class="fa fa-home mr-1"></i>主页<span class="sr-only">(current)</span></a>
                     </li>
 
                     <li class="nav-item dropdown mr-5">
