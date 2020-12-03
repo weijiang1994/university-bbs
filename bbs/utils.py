@@ -43,7 +43,7 @@ def redirect_back(default='index_bp.index', **kwargs):
 def generate_user():
     fa = Faker()
     for i in range(50):
-        user = User(username=fa.name().strip(), email=fa.email(), nickname=fa.name(), status_id=1)
+        user = User(username=fa.name().strip(), college_id=random.randint(1, 7), email=fa.email(), nickname=fa.name(), status_id=1)
         user.set_password('12345678')
         user.generate_avatar()
         db.session.add(user)

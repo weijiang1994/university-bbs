@@ -35,7 +35,10 @@ def new_post():
 @post_bp.route('/read/<post_id>/', methods=['GET'])
 def read(post_id):
     post = Post.query.get_or_404(post_id)
-    c_tag = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
+    if current_user.is_authenticated:
+        c_tag = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
+    else:
+        c_tag = None
     return render_template('frontend/read-post.html', post=post, c_tag=c_tag)
 
 
