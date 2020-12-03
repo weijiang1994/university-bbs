@@ -29,3 +29,8 @@ def change_theme(theme_name):
     response = make_response(redirect_back())
     response.set_cookie('bbs_themes', current_app.config['BBS_THEMES'].get(theme_name), max_age=30 * 24 * 60 * 60)
     return response
+
+
+@normal_bp.route('/image/upload/')
+def image_upload():
+    pass

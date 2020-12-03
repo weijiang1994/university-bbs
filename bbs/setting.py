@@ -27,6 +27,12 @@ class BaseConfig(object):
     BBS_UPLOAD_PATH = os.path.join(basedir, 'resources')
     AVATARS_SAVE_PATH = BBS_UPLOAD_PATH + '/avatars/'
 
+    # CKEditor configure
+    CKEDITOR_SERVE_LOCAL = True
+    CKEDITOR_ENABLE_CODESNIPPET = True
+    CKEDITOR_HEIGHT = 400
+    CKEDITOR_FILE_UPLOADER = 'normal.image_upload'
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,

@@ -7,11 +7,11 @@
 @Software: PyCharm
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, BooleanField
+from wtforms import StringField, SubmitField, SelectField, BooleanField, TextAreaField, FileField
 from wtforms.validators import DataRequired, Length, Regexp, EqualTo, ValidationError
-
+from flask_ckeditor import CKEditorField
 from bbs import User
-from bbs.models import College
+from bbs.models import College, PostCategory, Post
 
 
 # noinspection PyMethodMayBeStatic
@@ -69,3 +69,31 @@ class LoginForm(FlaskForm):
                            render_kw={'type': 'password', 'placeholder': '请输入用户密码'})
     remember_me = BooleanField(u'记住我')
     submit = SubmitField(u'登录', render_kw={'class': 'source-button btn btn-primary btn-xs'})
+
+
+class BasePostForm(FlaskForm):
+    title = StringField(u'标题', validators=[DataRequired(message='帖子标题不能为空'),
+                                           Length(min=1, max=50, message='用户名长度必须在1到50位之间')],
+                        render_kw={'class': '', 'rows': 50, 'placeholder': '输入您的帖子标题'})
+    category = SelectField(label=u'分区',
+                           default=0,
+                           coerce=int)
+    anonymous = SelectField(label=u'是否匿名', default=1, choices=[(1, '实名'), (2, '匿名')], coerce=int)
+    body = CKEditorField('帖子内容', validators=[DataRequired(message='请输入帖子内容')])
+    submit = SubmitField(u'发布', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2 text-right'})
+
+    def __init__(self, *args, **kwargs):
+        super(BasePostForm, self).__init__(*args, **kwargs)
+        categories = PostCategory.query.all()
+        self.category.choices = [(cate.id, cate.name) for cate in categories]
+
+
+class CreatePostForm(BasePostForm):
+
+    def validate_title(self, filed):
+        if Post.query.filter_by(title=filed.data).first():
+            raise ValidationError('该标题已存在请换一个!')
+
+
+class EditPostForm(BasePostForm):
+    submit = SubmitField(u'保存编辑', render_kw={'class': 'source-button btn btn-danger btn-xs mt-2 text-right'})

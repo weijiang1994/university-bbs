@@ -34,6 +34,8 @@ class User(db.Model, UserMixin):
     role = db.relationship('Role', back_populates='user')
     post = db.relationship('Post', back_populates='user', cascade='all')
     status = db.relationship('Status', back_populates='user')
+    collect = db.relationship('Collect', back_populates='user', cascade='all')
+    post_report = db.relationship('PostReport', back_populates='user', cascade='all')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -97,6 +99,9 @@ class Post(db.Model):
     update_time = db.Column(db.DateTime, default=datetime.datetime.now)
     is_anonymous = db.Column(db.INTEGER, default=0, comment='post is anonymous? 1: yes 0: no')
     read_times = db.Column(db.INTEGER, default=0)
+    likes = db.Column(db.INTEGER, default=0, comment='like post persons')
+    unlikes = db.Column(db.INTEGER, default=0, comment='unlike post persons')
+    collects = db.Column(db.INTEGER, default=0, comment='collect post persons')
 
     cate_id = db.Column(db.INTEGER, db.ForeignKey('t_postcate.id'))
     author_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
@@ -105,6 +110,8 @@ class Post(db.Model):
     cats = db.relationship('PostCategory', back_populates='post')
     user = db.relationship('User', back_populates='post')
     status = db.relationship('Status', back_populates='post')
+    collect = db.relationship('Collect', back_populates='post', cascade='all')
+    post_report = db.relationship('PostReport', back_populates='post', cascade='all')
 
 
 class Status(db.Model):
@@ -121,3 +128,29 @@ class Comments(db.Model):
     __tablename__ = 't_comments'
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+
+
+class Collect(db.Model):
+    __tablename__ = 't_collect'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    user = db.relationship('User', back_populates='collect')
+    post = db.relationship('Post', back_populates='collect')
+
+
+class PostReport(db.Model):
+    __tablename__ = 't_post_report'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    rep_content = db.Column(db.String(200), nullable=False, default='')
+    flag = db.Column(db.INTEGER, default=0, comment='is it new info flag')
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    post = db.relationship('Post', back_populates='post_report')
+    user = db.relationship('User', back_populates='post_report')

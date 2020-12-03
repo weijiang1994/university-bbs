@@ -8,7 +8,7 @@ file: __init__.py
 """
 import click
 from flask import Flask
-from bbs.extensions import db, migrate, login_manager, bs, avatars
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck
 from bbs.setting import DevelopmentConfig
 from bbs.models import *
 from bbs.blueprint.index import index_bp
@@ -32,6 +32,7 @@ def register_extensions(app: Flask):
     login_manager.init_app(app)
     bs.init_app(app)
     avatars.init_app(app)
+    ck.init_app(app)
 
 
 def register_bp(app: Flask):

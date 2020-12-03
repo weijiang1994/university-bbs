@@ -1,0 +1,145 @@
+{% extends "frontend/base.html" %}
+{% block head %}
+    {{ super() }}
+    {{ ckeditor.load_code_theme() }}
+    <style>
+        .title{
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .post-div{
+            color: white;
+            background: #303030;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .post-content{
+            color: white;
+            background: #444444;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .avatar{
+            width: 50px;
+            height: 50px;
+        }
+
+        article>h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0 10px 0;
+            padding: 0 10px;
+            border-left: 5px solid #20c997;
+            line-height: 2em;
+        }
+
+        article>h2 {
+            font-size: 18px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding: 5px 5px 5px 5px;
+            border-bottom: 1px solid #28a745;
+        }
+
+        article>h3 {
+            font-size: 18px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 5px 5px 5px 5px;
+            border-bottom: 1px solid #28a745;
+        }
+
+        blockquote>p {
+            font: 14px/22px normal helvetica, sans-serif;
+            margin: 5px 0px 5px 0px;
+            font-style:italic;
+        }
+        .report-textarea{
+            height: 100px!important;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-4">
+            {% include "_flash.html" %}
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">主页</a></li>
+                <li class="breadcrumb-item"><a href="#">杂谈</a></li>
+                <li class="breadcrumb-item active">帖子标题</li>
+            </ol>
+            <div class="post-div">
+                <h1 class="title">{{ post.title }}</h1>
+                <hr class="bg-secondary">
+                <div class="d-flex">
+                    <img src="{{ post.user.avatar }}" class="rounded avatar">
+                    <div class="d-flex">
+                        <a class="ml-2 text-decoration-none">{{ post.user.nickname }}<span class="badge badge-pill badge-secondary ml-2">楼主</span></a>
+                        <p class="text-muted ml-2">{{ post.create_time }}</p>
+                    </div>
+                </div>
+                <div class="post-content mt-2">
+                    <article>
+                        {{ post.content|safe }}
+                    </article>
+                </div>
+                {% if current_user.is_authenticated and current_user.id == post.user.id %}
+                    <div class="d-flex flex-row-reverse mt-1">
+                        <a class="text-decoration-none text-muted" href="/post/edit/{{ post.id }}/"><small>编辑</small></a>
+                        <a class="mr-2 text-decoration-none text-muted" href="/post/delete/{{ post.id }}/"><small>删除</small></a>
+                    </div>
+                {% elif current_user.is_authenticated %}
+                    <div class="d-flex flex-row-reverse mt-1">
+                        <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
+                        <a class="text-decoration-none text-muted ml-2" href="/post/collect/{{ post.id }}/">
+                            <small>
+                                {% if c_tag %}
+                                    取消收藏({{ post.collects }})
+                                {% else %}
+                                    收藏({{ post.collects }})
+                                {% endif %}
+                            </small>
+                        </a>
+                        <a class="text-decoration-none text-muted ml-2" href="/post/unlike/{{ post.id }}/"><small>点灭({{ -post.unlikes }})</small></a>
+                        <a class="text-decoration-none text-muted ml-2" href="/post/like/{{ post.id }}/"><small>点亮({{ post.likes }})</small></a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">举报帖子</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/post/report/" method="post">
+                            <input value="{{ post.id }}" name="postId" hidden="hidden">
+                            <div class="form-group">
+                                <label for="reportReason">举报理由</label>
+                                <textarea required class="form-control report-textarea" id="reportReason" name="reportReason" placeholder="请输入举报理由"></textarea>
+                            </div>
+                            <div class="text-right">
+                                <input type="submit" class="btn btn-outline-danger">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </body>
+{% endblock %}

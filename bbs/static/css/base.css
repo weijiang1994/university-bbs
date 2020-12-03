@@ -15,3 +15,9 @@ main{
 header{
     flex: 0 0 auto;
 }
+
+.help-block{
+    color: #e74c3c;
+    font-size: 12px;
+}
+
