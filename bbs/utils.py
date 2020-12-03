@@ -7,6 +7,11 @@
 @Software: PyCharm
 """
 import re
+from bbs.models import User, Post
+from faker import Faker
+from bbs.extensions import db
+import random
+
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
@@ -33,3 +38,24 @@ def redirect_back(default='index_bp.index', **kwargs):
         if is_safe_url(target):
             return redirect(target)
     return redirect(url_for(default, **kwargs))
+
+
+def generate_user():
+    fa = Faker()
+    for i in range(50):
+        user = User(username=fa.name().strip(), email=fa.email(), nickname=fa.name(), status_id=1)
+        user.set_password('12345678')
+        user.generate_avatar()
+        db.session.add(user)
+    db.session.commit()
+
+
+def generate_post():
+    fa = Faker()
+    for i in range(56):
+        content = ''
+        for text in fa.texts():
+            content += text
+        p = Post(title=fa.sentence(), cate_id=1, is_anonymous=1, content=content, author_id=random.randint(1, 50))
+        db.session.add(p)
+    db.session.commit()

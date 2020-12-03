@@ -60,7 +60,8 @@ def register():
         password = form.confirm_pwd.data
         email = form.user_email.data
         college = form.colleges.data
-        user = User(username=username, college_id=college, nickname=nickname, email=email, password=password)
+        user = User(username=username, college_id=college, nickname=nickname, email=email, password=password,
+                    status_id=1)
         user.generate_avatar()
         user.set_password(password)
         db.session.add(user)
