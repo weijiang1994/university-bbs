@@ -42,11 +42,8 @@ def redirect_back(default='index_bp.index', **kwargs):
 class MyMDStyleTreeProcessor(Treeprocessor):
     def run(self, root):
         for child in root.getiterator():
-            # 如果是 table
             if child.tag == 'table':
                 child.set("class", "table table-bordered table-hover")
-            elif child.tag == 'h2':
-                child.set("class", "text-secondary mb-")
             elif child.tag == 'img':
                 child.set("class", "img-fluid")
             elif child.tag == 'blockquote':

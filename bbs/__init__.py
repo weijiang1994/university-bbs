@@ -119,6 +119,19 @@ def init_role():
     db.session.commit()
 
 
+def init_report_cate():
+    reports_categories = ['违反法律、时政敏感',
+                          '色情淫秽、血腥暴恐',
+                          '未经许可的广告行为',
+                          '低俗谩骂、攻击引战',
+                          '造谣谩骂',
+                          '其他违法版规的内容']
+    for cate in reports_categories:
+        rc = ReportCate(name=cate)
+        db.session.add(rc)
+    db.session.commit()
+
+
 def generate_fake_data():
     generate_user()
     generate_post()

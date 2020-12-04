@@ -7,11 +7,10 @@
 @Software: PyCharm
 """
 from flask import Blueprint, render_template, flash, redirect, url_for, request
-from bbs.models import Post, Collect, PostReport
+from bbs.models import Post, Collect, PostReport, ReportCate
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.setting import basedir
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -90,13 +89,14 @@ def delete(post_id):
 def report():
     post_id = request.form.get('postId', type=int)
     report_reason = request.form.get('reportReason')
-    print(request.form.get('reportCate'))
+    rep_cate = request.form.get('reportCate')
+    cate = ReportCate.query.filter_by(name=rep_cate).first()
     epr = PostReport.query.filter(PostReport.post_id == post_id, PostReport.user_id == current_user.id,
                                   PostReport.flag == 0).first()
     if epr:
         flash('你已经举报过他了,不要再举报啦,人家也是要面子的啦!', 'info')
         return redirect(url_for('.read', post_id=post_id))
-    p = PostReport(post_id=post_id, user_id=current_user.id, rep_content=report_reason)
+    p = PostReport(post_id=post_id, user_id=current_user.id, rep_content=report_reason, report_cate_id=cate.id)
     db.session.add(p)
     db.session.commit()
     flash('举报成功!', 'success')
