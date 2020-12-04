@@ -1,0 +1,62 @@
+<h1>安装supervisor</h1>
+
+<p>supervisor是一个采用Python开发的进程管理工具，我们可以使用pip的方式来安装它，同时它也是一个软件，我们可以通过如下命令来安装它。</p>
+
+<pre>
+<code>sudo apt-get install supervisor</code></pre>
+
+<p><em><strong>supervisor只在Linux系统下生效！</strong></em></p>
+
+<h1>配置supervisor</h1>
+
+<p>安装完成之后，会自动将其配置文件添加到/etc/supervisor/supervisor.conf文件中，为了便于管理，我们可以在/etc/supervisor/conf.d/目录下新建一个我们自己的配置文件，在这个目录下的配置文件会自动被添加到/etc/supervisor/supervisor.conf文件中去。</p>
+
+<pre>
+<code>sudo vim /etc/supervisor/conf.d/blog.conf</code></pre>
+
+<p>在当中输入如下内容。</p>
+
+<pre>
+<code>[program:flask-blog-owner]
+command=/home/ubuntu/blog/flask-blog-owner/bash.sh
+directory=/home/ubuntu/blog/flask-blog-owner
+user=root
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true</code></pre>
+
+<ol>
+	<li><em>program为你的程序名</em></li>
+	<li><em>command是你要运行的命令，一般是程序启动命令</em></li>
+	<li><em>你的应用程序的主目录</em></li>
+	<li><em>user、autostart等是一些常规设置，根据需要可以灵活配置修改</em></li>
+</ol>
+
+<h1>bash脚本</h1>
+
+<p>如果你使用的是pipenv创建虚拟环境的话，这一步可以省略直接在上一节command命令改为下面内容。</p>
+
+<pre>
+<code class="language-bash">command=pipenv run gunicorn -w 4 wsgi:app</code></pre>
+
+<p>因为我的应用程序中采用了virtualven来创建虚拟环境，所以在项目根目录中创建一个bash脚本</p>
+
+<pre>
+<code class="language-bash">#! /bin/bash
+cd /home/ubuntu/blog/flask-blog-owner
+source venv/bin/activate
+exec gunicorn -w 4 wsgi:app
+</code></pre>
+
+<p>上述内容根据自己的实际情况进行修改。</p>
+
+<h1>使用supervisor运行管理程序</h1>
+
+<pre>
+<code class="language-bash">sudo service supervisor restart
+sudo supervisorctl</code></pre>
+
+<p>输出如下内容，则表示应用运行成功，你可以在浏览器中访问进行测试。</p>
+
+<p><img alt="" class="d-block img-fluid mx-auto" src="http://2dogz.cn/backend/files/9246sendpix8.jpg" /></p>

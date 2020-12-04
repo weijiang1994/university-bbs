@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="card mb-3 w-100 bg-light align-self-center">
-                            <div class="card-header"><h4 class="text-muted"><strong>用户注册</strong></h4></div>
+                            <div class="card-header"><h4 class="text-muted"><strong>用户登录</strong></h4></div>
                             <div class="card-body ">
                                 <form class="bs-component" action="/auth/login/" method="post">
                                     {{ form.csrf_token }}
@@ -24,7 +24,7 @@
                                     {{ wtf.form_field(form.remember_me) }}
                                     {{ form.submit }}
                                     <hr>
-                                    <small>已有账号? <a style="text-decoration: none;" href="{{ url_for('.login') }}">登录.</a>
+                                    <small>没有账号? <a style="text-decoration: none;" href="{{ url_for('.register') }}">注册.</a>
                                     </small>
                                 </form>
                             </div>

@@ -6,11 +6,12 @@
 @File    : normal.py
 @Software: PyCharm
 """
-from flask import Blueprint, send_from_directory
+from flask import Blueprint, send_from_directory, request, jsonify
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
-
-from bbs.utils import redirect_back
+from bbs.utils import redirect_back, MyMDStyleExtension
+from flask_login import login_required
+import markdown
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
@@ -34,3 +35,13 @@ def change_theme(theme_name):
 @normal_bp.route('/image/upload/')
 def image_upload():
     pass
+
+
+@normal_bp.route('/comment/render-md/', methods=['POST'])
+@login_required
+def render_md():
+    md = request.form.get('md')
+    html = markdown.markdown(md, extensions=['markdown.extensions.fenced_code', 'markdown.extensions.tables',
+                                             MyMDStyleExtension()])
+    print(html)
+    return jsonify({'html': html})

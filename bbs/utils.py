@@ -7,10 +7,9 @@
 @Software: PyCharm
 """
 import re
-from bbs.models import User, Post
-from faker import Faker
-from bbs.extensions import db
-import random
+import markdown
+from markdown import extensions
+from markdown.treeprocessors import Treeprocessor
 
 try:
     from urlparse import urlparse, urljoin
@@ -40,22 +39,25 @@ def redirect_back(default='index_bp.index', **kwargs):
     return redirect(url_for(default, **kwargs))
 
 
-def generate_user():
-    fa = Faker()
-    for i in range(50):
-        user = User(username=fa.name().strip(), college_id=random.randint(1, 7), email=fa.email(), nickname=fa.name(), status_id=1)
-        user.set_password('12345678')
-        user.generate_avatar()
-        db.session.add(user)
-    db.session.commit()
+class MyMDStyleTreeProcessor(Treeprocessor):
+    def run(self, root):
+        for child in root.getiterator():
+            # 如果是 table
+            if child.tag == 'table':
+                child.set("class", "table table-bordered table-hover")
+            elif child.tag == 'h2':
+                child.set("class", "text-secondary mb-")
+            elif child.tag == 'img':
+                child.set("class", "img-fluid")
+            elif child.tag == 'blockquote':
+                child.set('class', 'blockquote-comment')
+        return root
 
 
-def generate_post():
-    fa = Faker()
-    for i in range(56):
-        content = ''
-        for text in fa.texts():
-            content += text
-        p = Post(title=fa.sentence(), cate_id=1, is_anonymous=1, content=content, author_id=random.randint(1, 50))
-        db.session.add(p)
-    db.session.commit()
+class MyMDStyleExtension(extensions.Extension):
+    def extendMarkdown(self, md):
+        md.registerExtension(self)
+        self.processor = MyMDStyleTreeProcessor()
+        self.processor.md = md
+        self.processor.config = self.getConfigs()
+        md.treeprocessors.add('mystyle', self.processor, '_end')

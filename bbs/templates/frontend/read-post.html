@@ -60,6 +60,27 @@
         .report-textarea{
             height: 100px!important;
         }
+
+        .post-comment{
+            color: white;
+            background: #555555;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .preview{
+            background: white;
+            border-radius: 5px;
+            color: black!important;
+        }
+
+        .blockquote-comment{
+            border-left: 6px solid #6c6c6c;
+            background: #6c757d;
+            color: white;
+            padding: 8px;
+        }
+
     </style>
 {% endblock %}
 {% block title %}
@@ -78,12 +99,20 @@
             </ol>
             <div class="post-div">
                 <h1 class="title">{{ post.title }}</h1>
+                <div class="d-flex mb-0">
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ -post.unlikes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }}) </p>
+                    <p class="text-muted mb-0"><i class="fa fa-calendar-minus-o mr-1"></i>{{ post.create_time }}</p>
+                </div>
                 <hr class="bg-secondary">
+
                 <div class="d-flex">
                     <img src="{{ post.user.avatar }}" class="rounded avatar">
                     <div class="d-flex">
-                        <a class="ml-2 text-decoration-none">{{ post.user.nickname }}<span class="badge badge-pill badge-secondary ml-2">楼主</span></a>
-                        <p class="text-muted ml-2">{{ post.create_time }}</p>
+                        <a class="ml-2 text-decoration-none">{{ post.user.nickname }}</a>
+                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
                     </div>
                 </div>
                 <div class="post-content mt-2">
@@ -102,19 +131,52 @@
                         <a class="text-decoration-none text-muted ml-2" href="/post/collect/{{ post.id }}/">
                             <small>
                                 {% if c_tag %}
-                                    取消收藏({{ post.collects }})
+                                    取消收藏
                                 {% else %}
-                                    收藏({{ post.collects }})
+                                    收藏
                                 {% endif %}
                             </small>
                         </a>
-                        <a class="text-decoration-none text-muted ml-2" href="/post/unlike/{{ post.id }}/"><small>点灭({{ -post.unlikes }})</small></a>
-                        <a class="text-decoration-none text-muted ml-2" href="/post/like/{{ post.id }}/"><small>点亮({{ post.likes }})</small></a>
+                        <a class="text-decoration-none text-muted ml-2" href="/post/unlike/{{ post.id }}/"><small>点灭</small></a>
+                        <a class="text-decoration-none text-muted ml-2" href="/post/like/{{ post.id }}/"><small>点亮</small></a>
                     </div>
                 {% endif %}
+                <hr class="bg-secondary">
+                <div class="post-comment">
+                    <ul class="nav nav-pills " role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill" href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="addComment" class="tab-pane active">
+                            <textarea class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
+                            <div class="d-flex mt-1">
+                                <a href="#" class="text-decoration-none mr-2"><i class="fa fa-smile-o mr-1"></i>表情</a>
+                                <a href="#" class="text-decoration-none"><i class="fa fa-photo mr-1"></i>图片</a>
+                            </div>
+                            <div class="d-flex flex-row-reverse">
+                                <button class="btn btn-info mt-2">评论</button>
+                                <button hidden="hidden" class="btn btn-success mt-2 mr-2">回复</button>
+                                <button hidden="hidden" class="btn btn-danger mt-2 mr-2">取消</button>
+                            </div>
+                        </div>
+                        <!-- 评论预览界面 -->
+                        <div id="previewComment" class="tab-pane fade">
+                            <div id="previewHtml" class="mt-2" style="min-height: 50px">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
+        <!-- 举报内容填写模态框 -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -128,6 +190,15 @@
                         <form action="/post/report/" method="post">
                             <input value="{{ post.id }}" name="postId" hidden="hidden">
                             <div class="form-group">
+                                <label>举报类型</label>
+                                <select name="reportCate" class="form-control">
+                                    <option>违反法律、时政敏感</option>
+                                    <option>色情淫秽、血腥暴恐</option>
+                                    <option>未经许可的广告行为</option>
+                                    <option>低俗谩骂、攻击引战</option>
+                                    <option>造谣谩骂</option>
+                                    <option>其他违法版规的内容</option>
+                                </select>
                                 <label for="reportReason">举报理由</label>
                                 <textarea required class="form-control report-textarea" id="reportReason" name="reportReason" placeholder="请输入举报理由"></textarea>
                             </div>
@@ -139,7 +210,32 @@
                 </div>
             </div>
         </div>
-    </main>
+        <script>
+            function getMarkDownData() {
+                let comment = $("#commentContent").val();
 
+                if (comment == ''){
+                    $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论,你预览NM呢?</b></p>')
+                    return false;
+                }
+                let last = sessionStorage.getItem('md');
+                // 评论没有修改时,不发送预览请求
+                if (last){
+                    if (last == comment){
+                        return false;
+                    }
+                }
+                sessionStorage.setItem('md', comment);
+                $.ajax({
+                    type:"post",
+                    url: '/normal/comment/render-md/',
+                    data: {'md': comment},
+                    success: function (res) {
+                        $("#previewHtml").html(res.html);
+                    }
+                })
+            }
+        </script>
+    </main>
     </body>
 {% endblock %}

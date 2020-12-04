@@ -15,7 +15,7 @@ from bbs.blueprint.index import index_bp
 from bbs.blueprint.auth import auth_bp
 from bbs.blueprint.normal import normal_bp
 from bbs.blueprint.post import post_bp
-from bbs.utils import generate_user, generate_post
+from bbs.fake import generate_user, generate_post, generate_real_post
 
 
 def create_app(config_name=None):
@@ -83,6 +83,7 @@ def init_status():
     db.session.add(s2)
     db.session.commit()
 
+
 def init_cate():
     categories = ['杂谈', '趣事', '表白', '寻物', '咸鱼', '活动']
     for category in categories:
@@ -106,6 +107,7 @@ def init_permission():
         db.session.add(p)
     db.session.commit()
 
+
 def init_role():
     roles = ['超级管理员', '老师', '学生']
     r1 = Role(name=roles[0], permission_id=1)
@@ -120,3 +122,4 @@ def init_role():
 def generate_fake_data():
     generate_user()
     generate_post()
+    generate_real_post()

@@ -11,6 +11,7 @@ from bbs.models import Post, Collect, PostReport
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
+from bbs.setting import basedir
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -52,7 +53,7 @@ def edit(post_id):
         ep = Post.query.filter_by(title=title).first()
 
         # 修改标题不能是其他已经存在帖子的标题
-        if ep.id != post.id:
+        if ep and ep.id != post.id:
             flash('该帖子标题已经存在', 'danger')
             return redirect(url_for('.edit', post_id=post_id))
 
@@ -89,6 +90,7 @@ def delete(post_id):
 def report():
     post_id = request.form.get('postId', type=int)
     report_reason = request.form.get('reportReason')
+    print(request.form.get('reportCate'))
     epr = PostReport.query.filter(PostReport.post_id == post_id, PostReport.user_id == current_user.id,
                                   PostReport.flag == 0).first()
     if epr:
@@ -134,3 +136,4 @@ def collect(post_id):
         db.session.add(c)
         db.session.commit()
     return redirect(url_for('.read', post_id=post_id))
+

@@ -148,9 +148,22 @@ class PostReport(db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
     user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    report_cate_id = db.Column(db.INTEGER, db.ForeignKey('t_report_cate.id'))
     rep_content = db.Column(db.String(200), nullable=False, default='')
     flag = db.Column(db.INTEGER, default=0, comment='is it new info flag')
     timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
 
     post = db.relationship('Post', back_populates='post_report')
     user = db.relationship('User', back_populates='post_report')
+    report_cate = db.relationship('ReportCate', back_populates='post_report')
+
+
+class ReportCate(db.Model):
+    __tablename__ = 't_report_cate'
+
+    id = db.Column(db.INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    name = db.Column(db.String(40), nullable=False)
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    post_report = db.relationship('PostReport', back_populates='report_cate', cascade='all')
+

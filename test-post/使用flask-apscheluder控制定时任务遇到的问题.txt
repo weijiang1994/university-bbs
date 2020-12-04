@@ -1,0 +1,101 @@
+h1>定时任务不启动的问题</h1>
+
+<p>在我使用flask-apscheluder进行测试的时候，我发现定时任务不会启动，我的应用采用的启动方式是命令行模式，同时使用的是工厂方法去创建实例。但是在我使用<code>flask run</code>来启动了应用，定时任务并没有定时执行。</p>
+
+<p>我运行flask-aspscheduler文档中的示例代码的时候，定时任务会按照我设定的值进行启动，为什么我使用<code>flask run</code>去启动的时候，不按照我预设的值去执行定时任务呢？</p>
+
+<p>经过一番摸索之后，我发现需要将当前启动环境设置为<code>production</code>模式，即生产模式。如果你使用的.flaskenv文件去配置的话，可以将<code>FLASK_ENV</code>参数设置为<code>production</code>&nbsp;。</p>
+
+<pre>
+<code>FLASK_ENV=production</code></pre>
+
+<p>如果你使用的<code>export</code>的方式</p>
+
+<pre>
+<code>export FLASK_ENV=production</code></pre>
+
+<p>再次运行，定时任务成功启动了。这个不知道是bug还是什么问题，没有细看flask-aspscheluder的文档。</p>
+
+<h1>在定时任务中进行数据库操作</h1>
+
+<p>我原本的目的就是想在定时任务中执行数据库操作，在每天的零点零五分在数据库中插入一条数据。一开始没有仔细看官方给的示例，死活使用不了，后来看了官方的示例文档，发现如果要操作数据库，需要通过如下方式执行</p>
+
+<pre>
+<code class="language-python">@aps.task('cron', id='do_job_3', day='*', hour='00', minute='00', second='50')
+def auto_insert_data():
+    """
+    定时任务,每天00:00:50时刻自动向数据库中插入一条数据,如果数据库中存在了则不作任何动作
+    """
+    with db.app.app_context():
+        date = datetime.date.today()
+        contribute = Contribute.query.filter_by(date=date).first()
+        visit = VisitStatistics.query.filter_by(date=date).first()
+        lk = LikeStatistics.query.filter_by(date=date).first()
+        com = CommentStatistics.query.filter_by(date=date).first()
+
+        if not contribute:
+            con = Contribute(contribute_counts=0, date=date)
+            db.session.add(con)
+        if not visit:
+            vis = VisitStatistics(date=date, times=0)
+            db.session.add(vis)
+        if not lk:
+            like = LikeStatistics(date=date, times=0)
+            db.session.add(like)
+        if not com:
+            comm = CommentStatistics(date=date, times=0)
+            db.session.add(comm)
+        db.session.commit()</code></pre>
+
+<h1>使用gunicorn多进程部署问题</h1>
+
+<p>当我在开发环境中测试通过时，我把更新过后的代码推送到服务器上去了。第二天发现了问题，同时在数据库中插入了六条数据。一时半会想不明白是什么原因，然后google了一会儿，很多人也遇到过同样的问题，<strong>大致意思就是gunicorn开启的进程个数有多个少个，就会启动多少个定时任务。</strong>我的gunicorn开了六个进程，所以启动了六个定时任务，向数据库中插入了六条数据。</p>
+
+<p><strong>解决办法</strong></p>
+
+<pre>
+<code class="language-python"># __init__.py 文件
+
+def scheduler_init(app):
+    """
+    保证系统只启动一次定时任务
+    :param app: 当前flask实例
+    :return: None
+    """
+    if platform.system() != 'Windows':
+        fcntl = __import__("fcntl")
+        f = open(basedir+'/scheduler.lock', 'wb')
+        try:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            aps.init_app(app)
+            aps.start()
+            app.logger.debug('Scheduler Started,---------------')
+        except:
+            pass
+
+        def unlock():
+            fcntl.flock(f, fcntl.LOCK_UN)
+            f.close()
+
+        atexit.register(unlock)
+    else:
+        msvcrt = __import__('msvcrt')
+        f = open(basedir+'scheduler.lock', 'wb')
+        try:
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+            aps.init_app(app)
+            aps.start()
+            app.logger.debug('Scheduler Started,----------------')
+        except:
+            pass
+
+        def _unlock_file():
+            try:
+                f.seek(0)
+                msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+            except:
+                pass
+
+        atexit.register(_unlock_file)</code></pre>
+
+<p>在你的工厂函数中调用该方法，就可以避免同时启动多个定时任务啦!</p>
