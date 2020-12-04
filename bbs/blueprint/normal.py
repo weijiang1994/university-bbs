@@ -6,12 +6,14 @@
 @File    : normal.py
 @Software: PyCharm
 """
+from bleach import clean, linkify
 from flask import Blueprint, send_from_directory, request, jsonify
+from markdown import markdown
+
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
 from bbs.utils import redirect_back, MyMDStyleExtension
 from flask_login import login_required
-import markdown
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
@@ -41,7 +43,18 @@ def image_upload():
 @login_required
 def render_md():
     md = request.form.get('md')
-    html = markdown.markdown(md, extensions=['markdown.extensions.fenced_code', 'markdown.extensions.tables',
-                                             MyMDStyleExtension()])
-    print(html)
+    html = to_html(md)
     return jsonify({'html': html})
+
+
+def to_html(raw):
+    allowed_tags = ['a', 'abbr', 'b', 'br', 'blockquote', 'code',
+                    'del', 'div', 'em', 'img', 'p', 'pre', 'strong',
+                    'span', 'ul', 'li', 'ol']
+    allowed_attributes = ['src', 'title', 'alt', 'href', 'class']
+    html = markdown(raw, output_format='html',
+                    extensions=['markdown.extensions.fenced_code',
+                                'markdown.extensions.codehilite',
+                                'markdown.extensions.tables', MyMDStyleExtension()])
+    clean_html = clean(html, tags=allowed_tags, attributes=allowed_attributes)
+    return linkify(clean_html)
