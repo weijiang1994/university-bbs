@@ -44,11 +44,12 @@ def image_upload():
 def render_md():
     md = request.form.get('md')
     html = to_html(md)
+    print(html)
     return jsonify({'html': html})
 
 
 def to_html(raw):
-    allowed_tags = ['a', 'abbr', 'b', 'br', 'blockquote', 'code',
+    allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5','h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code',
                     'del', 'div', 'em', 'img', 'p', 'pre', 'strong',
                     'span', 'ul', 'li', 'ol']
     allowed_attributes = ['src', 'title', 'alt', 'href', 'class']
