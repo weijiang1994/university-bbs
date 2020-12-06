@@ -48,8 +48,9 @@ def render_md():
     return jsonify({'html': html})
 
 
+# noinspection PyTypeChecker
 def to_html(raw):
-    allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5','h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code',
+    allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code',
                     'del', 'div', 'em', 'img', 'p', 'pre', 'strong',
                     'span', 'ul', 'li', 'ol']
     allowed_attributes = ['src', 'title', 'alt', 'href', 'class']

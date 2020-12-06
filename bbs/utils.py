@@ -49,9 +49,14 @@ class MyMDStyleTreeProcessor(Treeprocessor):
                 child.set("class", "img-fluid")
             elif child.tag == 'blockquote':
                 child.set('class', 'blockquote-comment')
+            elif child.tag == 'p':
+                child.set('class', 'mt-0 mb-0')
+            elif child.tag == 'pre':
+                child.set('class', 'mb-0')
         return root
 
 
+# noinspection PyAttributeOutsideInit
 class MyMDStyleExtension(extensions.Extension):
     def extendMarkdown(self, md):
         md.registerExtension(self)

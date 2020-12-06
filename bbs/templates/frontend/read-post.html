@@ -2,6 +2,7 @@
 {% block head %}
     {{ super() }}
     {{ ckeditor.load_code_theme() }}
+    <!--suppress ALL -->
     <style>
         .title{
             font-size: 22px;
@@ -154,7 +155,7 @@
                     </ul>
                     <div class="tab-content">
                         <div id="addComment" class="tab-pane active">
-                            <textarea class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
+                            <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
                             <div class="d-flex mt-1">
                                 <a href="#" class="text-decoration-none mr-2"><i class="fa fa-smile-o mr-1"></i>表情</a>
                                 <a href="#" class="text-decoration-none"><i class="fa fa-photo mr-1"></i>图片</a>
@@ -235,6 +236,24 @@
                         $("#previewHtml").html(res.html);
                     }
                 })
+            }
+
+            function tab(obj){
+                if (event.keyCode == 9)
+                {
+                    //obj.value = obj.value + "    "; // 跳几格由你自已决定
+                    //event.returnValue = false;
+                    event.preventDefault();
+                    var indent = '    ';
+                    var start = obj.selectionStart;
+                    var end = obj.selectionEnd;
+                    var selected = window.getSelection().toString();
+                    selected = indent + selected.replace(/\n/g, '\n' + indent);
+                    obj.value = obj.value.substring(0, start) + selected
+                        + obj.value.substring(end);
+                    obj.setSelectionRange(start + indent.length, start
+                        + selected.length);
+                }
             }
 
         </script>
