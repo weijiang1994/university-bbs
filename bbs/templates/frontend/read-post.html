@@ -1,4 +1,5 @@
 {% extends "frontend/base.html" %}
+{% from "macro.html" import reportModal with context %}
 {% block head %}
     {{ super() }}
     {{ ckeditor.load_code_theme() }}
@@ -83,6 +84,11 @@
             padding: 8px;
         }
 
+        .p-error-hint{
+            color: #f94b43;
+            display: none;
+            font-weight: bold;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -144,78 +150,57 @@
                     </div>
                 {% endif %}
                 <hr class="bg-secondary">
-                <div class="post-comment">
-                    <ul class="nav nav-pills " role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill" href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="addComment" class="tab-pane active">
-                            <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
-                            <div class="d-flex mt-1">
-                                <a href="#" class="text-decoration-none mr-2"><i class="fa fa-smile-o mr-1"></i>表情</a>
-                                <a href="#" class="text-decoration-none"><i class="fa fa-photo mr-1"></i>图片</a>
+                {% if current_user.is_authenticated %}
+                    <div class="post-comment">
+                        <ul class="nav nav-pills " role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" onclick="postComment()" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill" href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="addComment" class="tab-pane active">
+                                <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
+                                <div class="d-flex mt-1">
+                                    <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-smile-o mr-1"></i>表情</a>
+                                    <a href="#" class="mb-1 text-decoration-none"><i class="fa fa-photo mr-1"></i>图片</a>
+                                    <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
+                                </div>
+                                <div class="d-flex flex-row-reverse">
+                                    <button class="btn btn-info mt-2" onclick="postComment()">评论</button>
+                                    <button hidden="hidden" class="btn btn-success mt-2 mr-2">回复</button>
+                                    <button hidden="hidden" class="btn btn-danger mt-2 mr-2">取消</button>
+                                </div>
                             </div>
-                            <div class="d-flex flex-row-reverse">
-                                <button class="btn btn-info mt-2">评论</button>
-                                <button hidden="hidden" class="btn btn-success mt-2 mr-2">回复</button>
-                                <button hidden="hidden" class="btn btn-danger mt-2 mr-2">取消</button>
-                            </div>
-                        </div>
-                        <!-- 评论预览界面 -->
-                        <div id="previewComment" class="tab-pane fade">
-                            <div id="previewHtml" class="mt-2" style="min-height: 50px">
+                            <!-- 评论预览界面 -->
+                            <div id="previewComment" class="tab-pane fade">
+                                <div id="previewHtml" class="mt-2" style="min-height: 50px">
 
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                {% else %}
+                    <div class="text-center post-content">
+                        <div class="card-body text-center m-2 m-md-3 f-16" id="no-editor">
+                            <div>您尚未登录，
+                                <a href="/auth/login/"><span class="badge badge-info">登录</span></a> 或
+                                <a href="/auth/register/"><span class="badge badge-success">注册</span></a> 后评论
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
         <!-- 举报内容填写模态框 -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">举报帖子</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/post/report/" method="post">
-                            <input value="{{ post.id }}" name="postId" hidden="hidden">
-                            <div class="form-group">
-                                <label>举报类型</label>
-                                <select name="reportCate" class="form-control">
-                                    <option>违反法律、时政敏感</option>
-                                    <option>色情淫秽、血腥暴恐</option>
-                                    <option>未经许可的广告行为</option>
-                                    <option>低俗谩骂、攻击引战</option>
-                                    <option>造谣谩骂</option>
-                                    <option>其他违法版规的内容</option>
-                                </select>
-                                <label for="reportReason">举报理由</label>
-                                <textarea required class="form-control report-textarea" id="reportReason" name="reportReason" placeholder="请输入举报理由"></textarea>
-                            </div>
-                            <div class="text-right">
-                                <input type="submit" class="btn btn-outline-danger">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{ reportModal() }}
         <script>
+            // 预览评论
             function getMarkDownData() {
                 let comment = $("#commentContent").val();
-
                 if (comment == ''){
                     $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论,你预览NM呢?</b></p>')
                     return false;
@@ -253,6 +238,15 @@
                         + obj.value.substring(end);
                     obj.setSelectionRange(start + indent.length, start
                         + selected.length);
+                }
+            }
+
+            // 提交评论
+            function postComment() {
+                let comment = $("#commentContent").val();
+                if (!comment){
+                    $(".p-error-hint").slideDown(500);
+                    $(".p-error-hint").show().delay(2000).hide(500);
                 }
             }
 

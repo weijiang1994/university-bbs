@@ -88,6 +88,7 @@ class BasePostForm(FlaskForm):
         self.category.choices = [(cate.id, cate.name) for cate in categories]
 
 
+# noinspection PyMethodMayBeStatic
 class CreatePostForm(BasePostForm):
 
     def validate_title(self, filed):

@@ -1,4 +1,5 @@
 {% macro nav_item(endpoint, text, fa) %}
+    <!--suppress ALL -->
     <li class="nav-item" style="margin-right: 50px;">
         <a class="nav-link {% if request.endpoint and request.endpoint==endpoint %}active{% endif %}" href="{{ endpoint }}">
             <i class="{{ fa }}"></i>
@@ -93,4 +94,42 @@
             </nav>
         {% endwith %}
     {% endwith %}
+{% endmacro %}
+
+
+{% macro reportModal() %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">举报帖子</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/post/report/" method="post">
+                        <input value="{{ post.id }}" name="postId" hidden="hidden">
+                        <div class="form-group">
+                            <label>举报类型</label>
+                            <select name="reportCate" class="form-control">
+                                <option>违反法律、时政敏感</option>
+                                <option>色情淫秽、血腥暴恐</option>
+                                <option>未经许可的广告行为</option>
+                                <option>低俗谩骂、攻击引战</option>
+                                <option>造谣谩骂</option>
+                                <option>其他违法版规的内容</option>
+                            </select>
+                            <label for="reportReason">举报理由</label>
+                            <textarea required class="form-control report-textarea" id="reportReason" name="reportReason" placeholder="请输入举报理由"></textarea>
+                        </div>
+                        <div class="text-right">
+                            <input type="submit" class="btn btn-outline-danger">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endmacro %}
