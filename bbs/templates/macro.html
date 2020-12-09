@@ -203,22 +203,51 @@
 
 {% macro confirmDelete() %}
     <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">确认?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <p>确定删除该条评论吗?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
-                <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="submitDelete($(this).val())">删除</button>
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">确认?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>确定删除该条评论吗?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="submitDelete($(this).val())">删除</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% endmacro %}
+
+{% macro profile_header() %}
+    <div class="row">
+        <div class="col-md-3 col-lg-3 text-center">
+            <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
+        </div>
+        <div class="col-md-9 col-lg-9 div-center-md">
+            <h3>{{ user.nickname }}</h3>
+            <p class="text-muted">@{{ user.username }}</p>
+            <p><span class="mr-2">1篇帖子</span><span class="mr-2">1位粉丝</span><span class="mr-2">3个关注</span></p>
+            {% if current_user.id == user.id %}
+                <a class="btn btn-outline-success">编辑主页</a>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro profile_moment(tabName) %}
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">帖子</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if tabName == '评论' %}active{% endif %}" href="/profile/comment/{{ user.id }}/">评论</a>
+            </li>
+        </ul>
+    </div>
 {% endmacro %}

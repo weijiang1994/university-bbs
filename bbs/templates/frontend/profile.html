@@ -1,4 +1,5 @@
 {% extends "frontend/base.html" %}
+{% from "macro.html" import profile_header, profile_moment with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -28,30 +29,19 @@
     <body>
     <main>
         <div class="container mt-2">
-            <div class="row">
-                <div class="col-md-2 col-lg-3 text-center">
-                    <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
-                </div>
-                <div class="col-md-10 col-lg-9 div-center-md">
-                    <h2>{{ user.nickname }}</h2>
-                    <p class="text-muted">@{{ user.username }}</p>
-                    <p><span class="mr-2">1篇帖子</span><span class="mr-2">1位粉丝</span><span class="mr-2">3个关注</span></p>
-                    {% if current_user.id == user.id %}
-                        <a class="btn btn-outline-success">编辑主页</a>
-                    {% endif %}
-                </div>
-            </div>
+            {{ profile_header() }}
             <hr class="bg-secondary">
+            {{ profile_moment('帖子') }}
             <div>
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/profile/posts/{{ user.id }}/">帖子</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile/comment/{{ user.id }}/">评论</a>
-                    </li>
-                </ul>
-
+                <div>
+                    <h3>使用flask-apscheduler控制定时任务遇到的问题</h3>
+                    <p>简介 很多时候，由于我对每一个框架不是十分的熟悉，我们在使用的过程中都会或多或少遇到这样或者那样的问题，在使用flask-apscheduler的过程中，我同样也遇到了一些坑，在这里说明一下并总结一下解决方案。 定时任务不启动的问题 在我使用flask-apscheluder进行测试的时候，我发现定时任务不会启动，我的应用采…</p>
+                    <div class="d-flex">
+                        <a>评论30</a>
+                        <a>收藏20</a>
+                        <a>查看245</a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

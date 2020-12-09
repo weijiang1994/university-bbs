@@ -1,4 +1,5 @@
 {% extends "frontend/base.html" %}
+{% from "macro.html" import profile_header, profile_moment with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -28,33 +29,9 @@
     <body>
     <main>
         <div class="container mt-2">
-            <div class="row">
-                <div class="col-md-2 col-lg-3 text-center">
-                    <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
-                </div>
-                <div class="col-md-10 col-lg-9 div-center-md">
-                    <h2>{{ user.nickname }}</h2>
-                    <p class="text-muted">@{{ user.username }}</p>
-                    <p><span class="mr-2">1篇帖子</span><span class="mr-2">1位粉丝</span><span class="mr-2">3个关注</span></p>
-                    {% if current_user.id == user.id %}
-                        <a class="btn btn-outline-success">编辑主页</a>
-                    {% endif %}
-                </div>
-            </div>
+            {{ profile_header() }}
             <hr class="bg-secondary">
-            <div>
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile/posts/{{ user.id }}/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/profile/comment/{{ user.id }}/">Profile</a>
-                    </li>
-                </ul>
-                <div id="myTabContent" class="tab-content">
-
-                </div>
-            </div>
+            {{ profile_moment('评论') }}
         </div>
     </main>
     </body>
