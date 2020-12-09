@@ -21,3 +21,26 @@ header{
     font-size: 12px;
 }
 
+.comment-h1{
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.comment-h2{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.comment-h3{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.comment-h4{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.p-break{
+    word-break: break-all;
+}

@@ -1,0 +1,42 @@
+{% extends "frontend/base.html" %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .img-profile-bg{
+            border-radius: 50%;
+            height: 150px;
+            width: 150px;
+            background-size: cover;
+            background: no-repeat center;
+        }
+        @media screen and (max-width: 567px){
+            .img-profile-bg{
+                height: 75px;
+                width: 75px;
+            }
+            .div-center-md{
+                text-align: center;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-md-2 col-lg-3 text-center">
+                    <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
+                </div>
+                <div class="col-md-10 col-lg-9 div-center-md">
+                    <h2>{{ user.nickname }}</h2>
+                    <p class="text-muted">@{{ user.username }}</p>
+                    <p><span class="mr-2">1篇帖子</span><span class="mr-2">1篇帖子</span><span class="mr-2">1篇帖子</span></p>
+                    <button class="btn btn-outline-secondary">编辑主页</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}

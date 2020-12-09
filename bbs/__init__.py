@@ -8,13 +8,14 @@ file: __init__.py
 """
 import click
 from flask import Flask
-from bbs.extensions import db, migrate, login_manager, bs, avatars, ck
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment
 from bbs.setting import DevelopmentConfig
 from bbs.models import *
 from bbs.blueprint.index import index_bp
 from bbs.blueprint.auth import auth_bp
 from bbs.blueprint.normal import normal_bp
 from bbs.blueprint.post import post_bp
+from bbs.blueprint.profile import profile_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
 
 
@@ -34,6 +35,7 @@ def register_extensions(app: Flask):
     bs.init_app(app)
     avatars.init_app(app)
     ck.init_app(app)
+    moment.init_app(app)
 
 
 def register_bp(app: Flask):
@@ -41,6 +43,7 @@ def register_bp(app: Flask):
     app.register_blueprint(auth_bp)
     app.register_blueprint(normal_bp)
     app.register_blueprint(post_bp)
+    app.register_blueprint(profile_bp)
 
 
 def register_cmd(app: Flask):

@@ -46,13 +46,21 @@ class MyMDStyleTreeProcessor(Treeprocessor):
             if child.tag == 'table':
                 child.set("class", "table table-bordered table-hover")
             elif child.tag == 'img':
-                child.set("class", "img-fluid")
+                child.set("class", "d-block img-fluid mx-auto")
             elif child.tag == 'blockquote':
                 child.set('class', 'blockquote-comment')
             elif child.tag == 'p':
-                child.set('class', 'mt-0 mb-0')
+                child.set('class', 'mt-0 mb-0 p-break')
             elif child.tag == 'pre':
                 child.set('class', 'mb-0')
+            elif child.tag == 'h1':
+                child.set('class', 'comment-h1')
+            elif child.tag == 'h2':
+                child.set('class', 'comment-h2')
+            elif child.tag == 'h3':
+                child.set('class', 'comment-h3')
+            elif child.tag in ['h4', 'h5', 'h6']:
+                child.set('class', 'comment-h4')
         return root
 
 

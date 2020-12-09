@@ -36,6 +36,7 @@ class User(db.Model, UserMixin):
     status = db.relationship('Status', back_populates='user')
     collect = db.relationship('Collect', back_populates='user', cascade='all')
     post_report = db.relationship('PostReport', back_populates='user', cascade='all')
+    comments = db.relationship('Comments', back_populates='author', cascade='all')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -112,6 +113,7 @@ class Post(db.Model):
     status = db.relationship('Status', back_populates='post')
     collect = db.relationship('Collect', back_populates='post', cascade='all')
     post_report = db.relationship('PostReport', back_populates='post', cascade='all')
+    comments = db.relationship('Comments', back_populates='post', cascade='all')
 
 
 class Status(db.Model):
@@ -128,6 +130,18 @@ class Comments(db.Model):
     __tablename__ = 't_comments'
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    body = db.Column(db.Text)
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    replied_id = db.Column(db.INTEGER, db.ForeignKey('t_comments.id'))
+    author_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    delete_flag = db.Column(db.INTEGER, default=0, comment='is it delete? 0: no 1: yes')
+
+    post = db.relationship('Post', back_populates='comments')
+    author = db.relationship('User', back_populates='comments')
+    replies = db.relationship('Comments', back_populates='replied', cascade='all')
+    replied = db.relationship('Comments', back_populates='replies', remote_side=[id])
 
 
 class Collect(db.Model):

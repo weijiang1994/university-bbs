@@ -6,11 +6,13 @@
 @File    : post.py
 @Software: PyCharm
 """
-from flask import Blueprint, render_template, flash, redirect, url_for, request
-from bbs.models import Post, Collect, PostReport, ReportCate
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+
+from bbs.blueprint.normal import to_html
+from bbs.models import Post, Collect, PostReport, ReportCate, Comments
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
-from bbs.extensions import db
+from bbs.extensions import db, rd
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -34,12 +36,16 @@ def new_post():
 
 @post_bp.route('/read/<post_id>/', methods=['GET'])
 def read(post_id):
+    page = request.args.get('page', default=1, type=int)
     post = Post.query.get_or_404(post_id)
     if current_user.is_authenticated:
         c_tag = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
     else:
         c_tag = None
-    return render_template('frontend/read-post.html', post=post, c_tag=c_tag)
+    pagination = Comments.query.filter(Comments.post_id == post_id, Comments.delete_flag == 0).order_by(
+        Comments.timestamps.desc()).paginate(page, per_page=10)
+    comments = pagination.items
+    return render_template('frontend/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination)
 
 
 @post_bp.route('/edit/<post_id>/', methods=['GET', 'POST'])
@@ -137,3 +143,26 @@ def collect(post_id):
         db.session.commit()
     return redirect(url_for('.read', post_id=post_id))
 
+
+@post_bp.route('/post-comment/', methods=['POST'])
+@login_required
+def post_comment():
+    comment_content = request.form.get('commentContent')
+    post_id = request.form.get('postId')
+    comment_content = to_html(comment_content)
+    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
+    db.session.add(com)
+    db.session.commit()
+    return 'aaa'
+
+
+@post_bp.route('/comment/delete/', methods=['GET', 'POST'])
+@login_required
+def delete_comment():
+    if request.method == 'POST':
+        comment_id = request.form.get('comm_id')
+        com = Comments.query.get_or_404(comment_id)
+        com.delete_flag = 1
+        db.session.commit()
+        flash('评论删除成功!', 'success')
+        return jsonify({'tag': 1})

@@ -13,7 +13,8 @@ from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
 from bbs.utils import redirect_back, MyMDStyleExtension
-from flask_login import login_required
+from flask_login import login_required, current_user
+from bbs.extensions import rd
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
@@ -49,9 +50,8 @@ def render_md():
 
 # noinspection PyTypeChecker
 def to_html(raw):
-    allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code',
-                    'del', 'div', 'em', 'img', 'p', 'pre', 'strong',
-                    'span', 'ul', 'li', 'ol']
+    allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code', 'del', 'div',
+                    'em', 'img', 'p', 'pre', 'strong', 'span', 'ul', 'li', 'ol']
     allowed_attributes = ['src', 'title', 'alt', 'href', 'class']
     html = markdown(raw, output_format='html',
                     extensions=['markdown.extensions.fenced_code',

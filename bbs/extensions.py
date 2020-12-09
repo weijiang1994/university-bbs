@@ -12,6 +12,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_avatars import Avatars
 from flask_ckeditor import CKEditor
+import redis
+from flask_moment import Moment
+
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -19,6 +22,10 @@ migrate = Migrate()
 bs = Bootstrap()
 avatars = Avatars()
 ck = CKEditor()
+pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
+rd = redis.Redis(connection_pool=pool)
+moment = Moment()
+
 
 @login_manager.user_loader
 def load_user(user_id):

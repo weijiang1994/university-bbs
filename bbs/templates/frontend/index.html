@@ -2,6 +2,7 @@
 {% from "macro.html" import post_item, render_pagination with context%}
 {% block head %}
     {{ super() }}
+    <!--suppress ALL -->
     <style>
         .f-12{
             font-size: 12px;
@@ -36,7 +37,7 @@
                     <div class="tab-content">
                         <div id="latestPost" class="tab-pane active">
                             {{ post_item(latest) }}
-                            <div class="float-right mt-3">
+                            <div class="text-center mt-3">
                                 {{ render_pagination(pagination) }}
                             </div>
                         </div>
@@ -67,7 +68,7 @@
                                         <p class="mb-1 ml-1 text-muted"><small>@{{ current_user.username }}</small></p>
                                     </div>
                                     <div class="d-flex flex-row-reverse">
-                                        <a href="/post/new/" class="btn btn-secondary h-75 ml-2"><i class="fa fa-plus mr-1"></i> 发布</a>
+                                        <a href="/post/new/" class="btn btn-secondary h-75 ml-2"><i class="fa fa-plus"></i></a>
                                     </div>
 
                                 </div>
@@ -93,7 +94,7 @@
                                             操作
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="">个人中心</a>
+                                            <a class="dropdown-item" href="{{url_for('profile.index', user_id=current_user.id)}}">个人中心</a>
                                             <a class="dropdown-item" href="/auth/logout/">登出</a>
                                         </div>
                                     </div>

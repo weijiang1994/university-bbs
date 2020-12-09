@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import reportModal with context %}
+{% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination with context %}
 {% block head %}
     {{ super() }}
     {{ ckeditor.load_code_theme() }}
@@ -89,6 +89,11 @@
             display: none;
             font-weight: bold;
         }
+        .div-comment-body{
+            padding-top: 15px;
+            border-bottom: 1px solid #828286;
+            padding-bottom: 25px;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -96,6 +101,7 @@
 {% endblock %}
 
 {% block content %}
+    {{ moment.locale(auto_detect=True) }}
     <body>
     <main>
         <div class="container mt-4">
@@ -106,7 +112,7 @@
                 <li class="breadcrumb-item active">帖子标题</li>
             </ol>
             <div class="post-div">
-                <h1 class="title">{{ post.title }}</h1>
+                <h1 class="title" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
                 <div class="d-flex mb-0">
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }}) </p>
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ -post.unlikes }}) </p>
@@ -118,9 +124,13 @@
                 <div class="d-flex">
                     <img src="{{ post.user.avatar }}" class="rounded avatar">
                     <div class="d-flex">
-                        <a class="ml-2 text-decoration-none">{{ post.user.nickname }}</a>
-                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
-                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                        <div>
+                            <a class="ml-2 text-decoration-none">{{ post.user.nickname }}</a>
+                            <div class="d-flex">
+                                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="post-content mt-2">
@@ -154,7 +164,7 @@
                     <div class="post-comment">
                         <ul class="nav nav-pills " role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" onclick="postComment()" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
+                                <a class="nav-link active" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill" href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
@@ -164,12 +174,53 @@
                             <div id="addComment" class="tab-pane active">
                                 <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
                                 <div class="d-flex mt-1">
-                                    <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-smile-o mr-1"></i>表情</a>
-                                    <a href="#" class="mb-1 text-decoration-none"><i class="fa fa-photo mr-1"></i>图片</a>
+                                    <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-smile-o mr-1"></i>表情
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="commentEmoji">
+                                        <div style="padding:3px">
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                        </div>
+                                        <div style="padding:3px">
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                        </div>
+                                        <div style="padding:3px">
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                        </div>
+                                        <div style="padding:3px">
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                            <button class="btn p-1">a</button>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-photo mr-1"></i>图片</a>
+                                    <a href="#" class="mb-1 text-decoration-none mr-2" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
-                                    <button class="btn btn-info mt-2" onclick="postComment()">评论</button>
+                                    <button class="btn btn-info" onclick="postComment()">评论</button>
                                     <button hidden="hidden" class="btn btn-success mt-2 mr-2">回复</button>
                                     <button hidden="hidden" class="btn btn-danger mt-2 mr-2">取消</button>
                                 </div>
@@ -183,7 +234,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="text-center post-content">
+                    <div class="text-center post-comment">
                         <div class="card-body text-center m-2 m-md-3 f-16" id="no-editor">
                             <div>您尚未登录，
                                 <a href="/auth/login/"><span class="badge badge-info">登录</span></a> 或
@@ -192,12 +243,65 @@
                         </div>
                     </div>
                 {% endif %}
+                <div class="post-comment mt-2">
+                    {% for comment in comments %}
+                        <div class="div-comment-body mt-2">
+                            <!-- 评论用户个人信息 -->
+                            <div class="d-flex">
+                                <img src="{{ comment.author.avatar }}" class="rounded avatar">
+                                <div>
+                                    <a class="ml-2 text-decoration-none">{{ comment.author.nickname }}</a>
+                                    <div class="d-flex">
+                                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ comment.author.college.name }}</span></a>
+                                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ comment.author.role.name }}</span></a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- 用户评论内容 -->
+                            <div class="mt-1">
+                                {{ comment.body|safe }}
+                            </div>
+                            <!-- 对于该评论的操作 -->
+                            <div class="d-flex flex-row-reverse mt-1">
+                                {% if current_user.id == comment.author.id %}
+                                    <a class="text-decoration-none text-muted ml-2" href="#" data-commid="{{ comment.id }}" data-toggle="modal" data-target="#confirm-delete" >
+                                        <small>删除</small>
+                                    </a>
+                                {% else %}
+                                    <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
+                                    <a class="text-decoration-none text-muted ml-2" href="/post/reply/{{ comment.id }}/"><small>回复</small></a>
+                                {% endif %}
+                                <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
+                                    <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}" class="badge badge-secondary">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                                </a>
+                                <a class="text-decoration-none " href="#"><small><span class="badge badge-secondary">#{{ loop.index }}</span></small></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if pagination.pages > 1 %}
+                        <div class="text-center mt-2">
+                            {{ render_pagination(pagination=pagination, size='sm') }}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
         <!-- 举报内容填写模态框 -->
         {{ reportModal() }}
+        {{ markdownHelp() }}
+        {{ confirmDelete() }}
         <script>
+            // 刷新页面清除保存在sessionStorage中的原始数据
+            $(function () {
+                sessionStorage.setItem('md', '');
+            })
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+
             // 预览评论
             function getMarkDownData() {
                 let comment = $("#commentContent").val();
@@ -226,8 +330,6 @@
             function tab(obj){
                 if (event.keyCode == 9)
                 {
-                    //obj.value = obj.value + "    "; // 跳几格由你自已决定
-                    //event.returnValue = false;
                     event.preventDefault();
                     var indent = '    ';
                     var start = obj.selectionStart;
@@ -244,15 +346,43 @@
             // 提交评论
             function postComment() {
                 let comment = $("#commentContent").val();
+                let postId = $("#postTitle").data("id");
                 if (!comment){
                     $(".p-error-hint").slideDown(500);
                     $(".p-error-hint").show().delay(2000).hide(500);
+                    return false;
                 }
                 $.ajax({
                     type:"post",
-                    
+                    data: {"commentContent": comment, 'postId': postId},
+                    url: "/post/post-comment/",
+                    success: function (res) {
+                        window.location.reload();
+                    }
                 })
             }
+
+            function submitDelete(commId) {
+                $.ajax({
+                    url:'/post/comment/delete/',
+                    type: 'POST',
+                    data: {'comm_id': commId},
+                    success: function (res){
+                        if (res.tag){
+                            window.location.reload();
+                        }else {
+                            alert("删除评论失败!");
+                            return false;
+                        }
+                    },
+                    error: function (){}
+                })
+            }
+
+            $("#confirm-delete").on("show.bs.modal", function (e){
+                let commID = $(e.relatedTarget).data('commid');
+                $("#deleteBtn").val(commID);
+            })
 
         </script>
     </main>

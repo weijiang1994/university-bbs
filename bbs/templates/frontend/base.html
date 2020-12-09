@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% from "macro.html" import nav_item with context %}
+<!--suppress ALL -->
 <html lang="zh-hans">
 {% block head %}
     <head>
@@ -14,6 +15,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='validator/form-validation.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/code.css') }}">
         <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
 
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
     </head>

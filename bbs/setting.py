@@ -38,4 +38,5 @@ class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
                                                                                     BaseConfig.DATABASE_PWD,
                                                                                     BaseConfig.DATABASE_HOST)
-    REDIS_URL = "redis://localhost"
+    # REDIS_URL = "redis://localhost"
+    REDIS_URL = "redis://localhost:6379"
