@@ -48,6 +48,8 @@ def read(post_id):
     pagination = Comments.query.filter(Comments.post_id == post_id, Comments.delete_flag == 0).order_by(
         Comments.timestamps.desc()).paginate(page, per_page=10)
     comments = pagination.items
+    post.read_times += 1
+    db.session.commit()
     return render_template('frontend/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination)
 
 
