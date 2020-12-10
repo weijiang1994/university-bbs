@@ -17,6 +17,7 @@ from bbs.blueprint.normal import normal_bp
 from bbs.blueprint.post import post_bp
 from bbs.blueprint.profile import profile_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
+from bbs.utils import get_text_plain
 
 
 def create_app(config_name=None):

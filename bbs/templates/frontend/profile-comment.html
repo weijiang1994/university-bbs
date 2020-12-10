@@ -19,6 +19,20 @@
                 text-align: center;
             }
         }
+        .div-blockquote-comment{
+            border-radius: 5px;
+            color: white;
+            background: #353539;
+            padding: 8px;
+        }
+
+        .div-blockquote-comment>p{
+            margin-bottom: 3px;
+        }
+
+        .span-blockquote{
+            color: #80bdff;
+        }
     </style>
 {% endblock %}
 
@@ -28,10 +42,48 @@
 {% block content %}
     <body>
     <main>
+        {{ moment.locale(auto_detect=True) }}
         <div class="container mt-2">
             {{ profile_header() }}
-            <hr class="bg-secondary">
             {{ profile_moment('评论') }}
+            {% if comments %}
+                <div class="mt-2">
+                    <ul class="list-group list-group-flush">
+                        {% for comment in comments %}
+                            <li class="list-group-item">
+                                <a class="text-decoration-none text-muted flex-grow-1 text-left f-12-b" >
+                                    <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                                </a>
+                                <div>
+                                    {% if comment.replied_id %}
+                                        <div class="div-blockquote-comment">
+                                            <p>引用<span class="span-blockquote">@{{ comment.replied.author.nickname }}</span>回复</p>
+                                            {{ comment.replied.body|safe }}
+                                        </div>
+                                        {{ comment.body|safe }}
+                                        <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                                    {% else %}
+                                        {{ comment.body|safe }}
+                                        <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            {% else %}
+                {% if current_user.id == user.id %}
+                    <div class="text-center mt-5">
+                        <p class="text-muted">你还没有发送过评论!</p>
+                    </div>
+                {% else %}
+                    <div class="text-center mt-5">
+                        <p class="text-muted">他还没有发送过评论!</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
         </div>
     </main>
     </body>

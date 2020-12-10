@@ -40,6 +40,12 @@ def redirect_back(default='index_bp.index', **kwargs):
     return redirect(url_for(default, **kwargs))
 
 
+def get_text_plain(html_text):
+    from bs4 import BeautifulSoup
+    bs = BeautifulSoup(html_text, 'html.parser')
+    return bs.get_text()
+
+
 class MyMDStyleTreeProcessor(Treeprocessor):
     def run(self, root):
         for child in root.getiterator():

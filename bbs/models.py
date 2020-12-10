@@ -13,6 +13,19 @@ import datetime
 from flask_login import UserMixin
 
 
+class Follow(db.Model):
+    __tablename__ = 't_follow'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    follower_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    followed_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    # 正在关注用户的人
+    follower = db.relationship('User', foreign_keys=[follower_id], back_populates='following', lazy='joined')
+    # 用户自己正在关注的人
+    followed = db.relationship('User', foreign_keys=[followed_id], back_populates='followers', lazy='joined')
+
+
 class User(db.Model, UserMixin):
     __tablename__ = 't_user'
 
@@ -37,6 +50,10 @@ class User(db.Model, UserMixin):
     collect = db.relationship('Collect', back_populates='user', cascade='all')
     post_report = db.relationship('PostReport', back_populates='user', cascade='all')
     comments = db.relationship('Comments', back_populates='author', cascade='all')
+    following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
+                                lazy='dynamic', cascade='all')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
+                                lazy='dynamic', cascade='all')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -48,6 +65,26 @@ class User(db.Model, UserMixin):
         icon = Identicon()
         files = icon.generate(self.username)
         self.avatar = '/normal/image/avatars/' + files[2]
+
+    def get_permission(self):
+        return self.role.permission.name
+
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        return self.following.filter_by(followed_id=user.id).first() is not None
+
+    def unfollow(self, user):
+        follow = self.following.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+            db.session.commit()
+
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self, followed=user)
+            db.session.add(follow)
+            db.session.commit()
 
 
 class College(db.Model):
@@ -96,9 +133,10 @@ class Post(db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True, index=True)
     title = db.Column(db.String(100), index=True, nullable=False)
     content = db.Column(db.TEXT, nullable=False)
+    textplain = db.Column(db.TEXT, nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.datetime.now)
-    is_anonymous = db.Column(db.INTEGER, default=0, comment='post is anonymous? 1: yes 0: no')
+    is_anonymous = db.Column(db.INTEGER, default=1, comment='post is anonymous? 2: yes 1: no')
     read_times = db.Column(db.INTEGER, default=0)
     likes = db.Column(db.INTEGER, default=0, comment='like post persons')
     unlikes = db.Column(db.INTEGER, default=0, comment='unlike post persons')
@@ -152,8 +190,8 @@ class Collect(db.Model):
     post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
     timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
 
-    user = db.relationship('User', back_populates='collect')
-    post = db.relationship('Post', back_populates='collect')
+    user = db.relationship('User', back_populates='collect', lazy='joined')
+    post = db.relationship('Post', back_populates='collect', lazy='joined')
 
 
 class PostReport(db.Model):
@@ -180,4 +218,3 @@ class ReportCate(db.Model):
     timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
 
     post_report = db.relationship('PostReport', back_populates='report_cate', cascade='all')
-

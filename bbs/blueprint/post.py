@@ -12,7 +12,8 @@ from bbs.blueprint.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
-from bbs.extensions import db, rd
+from bbs.extensions import db
+from bbs.utils import get_text_plain
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -26,7 +27,9 @@ def new_post():
         cate = form.category.data
         anonymous = form.anonymous.data
         content = form.body.data
-        post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id)
+        textplain = get_text_plain(content)
+        post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
+                    textplain=textplain)
         db.session.add(post)
         db.session.commit()
         flash('帖子发布成功!', 'success')
@@ -130,18 +133,24 @@ def unlike(post_id):
 @post_bp.route('/collect/<post_id>/')
 @login_required
 def collect(post_id):
+    post_collect(post_id)
+    return redirect(url_for('.read', post_id=post_id))
+
+
+def post_collect(post_id):
     post = Post.query.get_or_404(post_id)
     c = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
     if c:
         post.collects -= 1
         db.session.delete(c)
         db.session.commit()
+        flash('取消收藏帖子成功!', 'success')
     else:
         post.collects += 1
         c = Collect(user_id=current_user.id, post_id=post_id)
         db.session.add(c)
         db.session.commit()
-    return redirect(url_for('.read', post_id=post_id))
+        flash('收藏帖子成功!', 'success')
 
 
 @post_bp.route('/post-comment/', methods=['POST'])
@@ -153,10 +162,10 @@ def post_comment():
     com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
     db.session.add(com)
     db.session.commit()
-    return 'aaa'
+    return jsonify({'tag': 1})
 
 
-@post_bp.route('/comment/delete/', methods=['GET', 'POST'])
+@post_bp.route('/delete-comment/', methods=['GET', 'POST'])
 @login_required
 def delete_comment():
     if request.method == 'POST':
@@ -166,3 +175,21 @@ def delete_comment():
         db.session.commit()
         flash('评论删除成功!', 'success')
         return jsonify({'tag': 1})
+
+
+@post_bp.route('/set-anonymous/<post_id>/')
+@login_required
+def set_anonymous(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author_id != current_user.id and current_user.get_permission() == 'LITTLE':
+        flash('你没有该帖子的操作权限!', 'danger')
+        return redirect(url_for('profile.index', user_id=current_user.id))
+    # 2表示匿名 1表示实名
+    if post.is_anonymous == 2:
+        post.is_anonymous = 1
+        flash('帖子取消匿名成功!', 'success')
+    else:
+        post.is_anonymous = 2
+        flash('帖子设置匿名成功!', 'success')
+    db.session.commit()
+    return redirect(url_for('profile.index', user_id=current_user.id))

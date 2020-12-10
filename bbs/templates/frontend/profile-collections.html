@@ -4,16 +4,9 @@
     {{ super() }}
     <style>
         .img-profile-bg{
-            border-radius: 5px;
+            border-radius: 50%;
             height: 150px;
             width: 150px;
-            background-size: cover;
-            background: no-repeat center;
-        }
-        .img-profile-bg-50{
-            border-radius: 5px;
-            height: 50px;
-            width: 50px;
             background-size: cover;
             background: no-repeat center;
         }
@@ -41,9 +34,6 @@
             font-weight: bold;
             font-size: 12px;
         }
-        .span-hand{
-            cursor: pointer;
-        }
     </style>
 {% endblock %}
 
@@ -57,36 +47,32 @@
         <div class="container mt-2">
             {% include "_flash.html" %}
             {{ profile_header() }}
-            {{ profile_moment('帖子') }}
-            {% if posts %}
+            {{ profile_moment('收藏') }}
+            {% if collects %}
                 <div class="mt-2">
                     <ul class="list-group list-group-flush ul-posts">
-                        {% for post in posts %}
+                        {% for collect in collects %}
                             <li class="list-group-item">
                                 <div class="d-flex flex-row-reverse">
                                     <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
-                                    {% if current_user.id == post.author_id %}
+                                    {% if current_user.id == user.id %}
                                         <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </a>
                                         <div class="dropdown-menu" x-placement="left" aria-labelledby="commentEmoji">
-                                            <a class="dropdown-item">删除</a>
-                                            <a class="dropdown-item" href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
+                                            <a class="dropdown-item" href="{{ url_for('profile.uncollect', post_id=collect.post.id) }}">取消收藏</a>
                                         </div>
                                     {% endif %}
-
-                                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
-                                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
-
+                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ collect.post.title|striptags|truncate(25, True) }}</a>
+                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ collect.post.title|striptags|truncate(15, True) }}</a>
                                 </div>
-                                <p>{{ post.textplain|striptags|truncate(100) }}</p>
+                                <p>{{ collect.post.textplain|striptags|truncate(100) }}</p>
                                 <div class="d-flex">
-                                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ post.unlikes }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ post.comments|length }})&nbsp;&nbsp;</a>
+                                    <a class="text-muted text-decoration-none f-12-b" href="{{ url_for('profile.index', user_id=collect.post.author_id) }}"><i class="fa fa-user mr-1"></i>作者:{{ collect.post.user.nickname }}&nbsp;&nbsp;</a>
+                                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ collect.post.collects }})&nbsp;&nbsp;</a>
+                                    <a class="text-muted text-decoration-none d-none d-sm-block  f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ collect.post.comments|length }})&nbsp;&nbsp;</a>
                                     <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
+                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ collect.timestamps }}" data-delay="500" data-original-title="" title="{{ collect.timestamps }}">{{ moment(collect.timestamps, local=True).fromNow(refresh=True) }}</span>
                                     </a>
                                 </div>
                             </li>
@@ -96,16 +82,14 @@
             {% else %}
                 {% if current_user.id == user.id %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">你还没有发送过评论!</p>
+                        <p class="text-muted">你还没有收藏过帖子!</p>
                     </div>
                 {% else %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">他还没有发送过评论!</p>
+                        <p class="text-muted">他还没有收藏过帖子!</p>
                     </div>
                 {% endif %}
             {% endif %}
-            {% include "follow-modal.html" %}
-
         </div>
     </main>
     </body>

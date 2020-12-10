@@ -18,11 +18,13 @@
                     <div class="col">
                         <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>
                             {% if post.is_anonymous == 1 %}
-                                {{post.user.nickname}}
+                                <a class="text-decoration-none" href="{{ url_for('profile.index', user_id=post.author_id) }}">{{post.user.nickname}}</a>
                             {% else %}
-                                Anonymous
+                                匿名
                             {% endif %}
-                            <span>56分钟前</span></p>
+                            <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
+                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
+                                    </a></span></p>
                     </div>
                     <div class="col text-right d-flex flex-row-reverse">
                         <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>45</p>
@@ -231,16 +233,23 @@
         <div class="col-md-9 col-lg-9 div-center-md">
             <h3>{{ user.nickname }}</h3>
             <p class="text-muted">@{{ user.username }}</p>
-            <p><span class="mr-2">1篇帖子</span><span class="mr-2">1位粉丝</span><span class="mr-2">3个关注</span></p>
+            <p><span class="mr-2">{{ user.post|length }}篇帖子</span><span class="mr-2 span-hand" data-toggle="modal" data-target="#follower-followed">{{ user.followers.count() }}位粉丝</span><span class="mr-2 span-hand" onclick="" data-toggle="modal" data-target="#follower-followed">{{ user.following.count() }}个关注</span></p>
             {% if current_user.id == user.id %}
                 <a class="btn btn-outline-success">编辑主页</a>
+            {% else %}
+                {% if current_user.is_following(user) %}
+                    <a class="btn btn-outline-danger" href="/profile/unfollow/{{ user.id }}/">取消关注</a>
+                {% else %}
+                    <a class="btn btn-outline-danger" href="/profile/follow/{{ user.id }}/">关注TA</a>
+                {% endif %}
             {% endif %}
+
         </div>
     </div>
 {% endmacro %}
 
 {% macro profile_moment(tabName) %}
-    <div>
+    <div class="mt-4">
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">帖子</a>
@@ -248,6 +257,34 @@
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '评论' %}active{% endif %}" href="/profile/comment/{{ user.id }}/">评论</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {% if tabName == '收藏' %}active{% endif %}" href="/profile/collect/{{ user.id }}/">收藏</a>
+            </li>
         </ul>
+    </div>
+{% endmacro %}
+
+<!-- 显示帖子评论区域宏定义 -->
+{% macro commentDiv(comment, post, anonymous=False) %}
+    {% if not anonymous %}
+        <img src="{{ comment.author.avatar }}" class="rounded avatar">
+    {% else %}
+        <img src="{{ url_for('static', filename='img/anonymous.jpeg') }}" class="rounded avatar">
+    {% endif %}
+    <div class="d-flex">
+        <div>
+            {% if not anonymous %}
+                <a class="ml-2 text-decoration-none" href="{{ url_for('profile.index', user_id=comment.author.id) }}">{{ comment.author.nickname }}</a>
+            {% else %}
+                <a class="ml-2 text-muted text-decoration-none">匿名</a>
+            {% endif %}
+            <div class="d-flex">
+                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ comment.author.college.name }}</span></a>
+                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ comment.author.role.name }}</span></a>
+                {% if post.author_id == comment.author_id %}
+                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-danger">楼主</span></a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endmacro %}

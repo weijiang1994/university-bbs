@@ -1,11 +1,11 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination with context %}
+{% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination, commentDiv with context %}
 {% block head %}
     {{ super() }}
     {{ ckeditor.load_code_theme() }}
     <!--suppress ALL -->
     <style>
-        .title{
+        .post-title-h1{
             font-size: 22px;
             font-weight: bold;
         }
@@ -90,9 +90,8 @@
             font-weight: bold;
         }
         .div-comment-body{
-            padding-top: 15px;
             border-bottom: 1px solid #828286;
-            padding-bottom: 25px;
+            padding-bottom: 6px;
         }
     </style>
 {% endblock %}
@@ -112,7 +111,7 @@
                 <li class="breadcrumb-item active">帖子标题</li>
             </ol>
             <div class="post-div">
-                <h1 class="title" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
+                <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
                 <div class="d-flex mb-0">
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }}) </p>
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ -post.unlikes }}) </p>
@@ -122,16 +121,29 @@
                 <hr class="bg-secondary">
 
                 <div class="d-flex">
-                    <img src="{{ post.user.avatar }}" class="rounded avatar">
-                    <div class="d-flex">
-                        <div>
-                            <a class="ml-2 text-decoration-none">{{ post.user.nickname }}</a>
-                            <div class="d-flex">
-                                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
-                                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                    {% if post.is_anonymous == 1 %}
+                        <img src="{{ post.user.avatar }}" class="rounded avatar">
+                        <div class="d-flex">
+                            <div>
+                                <a class="ml-2 text-decoration-none" href="{{ url_for('profile.index', user_id=post.user.id) }}">{{ post.user.nickname }}</a>
+                                <div class="d-flex">
+                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/anonymous.jpeg') }}" class="rounded avatar">
+                        <div class="d-flex">
+                            <div>
+                                <a class="ml-2 text-muted text-decoration-none">匿名</a>
+                                <div class="d-flex">
+                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="post-content mt-2">
                     <article>
@@ -187,33 +199,6 @@
                                             <button class="btn p-1">a</button>
                                             <button class="btn p-1">a</button>
                                         </div>
-                                        <div style="padding:3px">
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                        </div>
-                                        <div style="padding:3px">
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                        </div>
-                                        <div style="padding:3px">
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                        </div>
                                     </div>
                                     <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-photo mr-1"></i>图片</a>
                                     <a href="#" class="mb-1 text-decoration-none mr-2" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
@@ -248,13 +233,16 @@
                         <div class="div-comment-body mt-2">
                             <!-- 评论用户个人信息 -->
                             <div class="d-flex">
-                                <img src="{{ comment.author.avatar }}" class="rounded avatar">
-                                <div>
-                                    <a class="ml-2 text-decoration-none">{{ comment.author.nickname }}</a>
-                                    <div class="d-flex">
-                                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ comment.author.college.name }}</span></a>
-                                        <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ comment.author.role.name }}</span></a>
-                                    </div>
+                                <div class="d-flex">
+                                    {% if post.is_anonymous == 1 %}
+                                        {{ commentDiv(comment, post) }}
+                                    {% else %}
+                                        {% if post.author_id == comment.author_id %}
+                                            {{ commentDiv(comment, post, anonymous=True) }}
+                                        {% else %}
+                                            {{ commentDiv(comment, post) }}
+                                        {% endif %}
+                                    {% endif %}
                                 </div>
 
                             </div>
@@ -364,7 +352,7 @@
 
             function submitDelete(commId) {
                 $.ajax({
-                    url:'/post/comment/delete/',
+                    url:'/post/delete-comment/',
                     type: 'POST',
                     data: {'comm_id': commId},
                     success: function (res){
