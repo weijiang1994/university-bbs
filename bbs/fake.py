@@ -52,9 +52,10 @@ def generate_real_post():
             with open(root + file, 'r') as f:
                 content = f.read()
             p = Post(title=file,
-                 cate_id=1,
-                 is_anonymous=1,
-                 content=content,
-                 author_id=random.randint(1, 50))
+                     cate_id=1,
+                     is_anonymous=1,
+                     content=content,
+                     textplain=get_text_plain(content),
+                     author_id=random.randint(1, 50))
             db.session.add(p)
     db.session.commit()
