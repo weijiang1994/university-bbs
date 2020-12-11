@@ -49,3 +49,10 @@ header{
     width: 25px;
     height: 25px;
 }
+
+@media screen and (max-width: 578px) {
+    .img-emoji{
+        width: 15px;
+        height: 15px;
+    }
+}
