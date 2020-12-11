@@ -8,8 +8,9 @@ file: setting.py
 """
 import os
 from dotenv import load_dotenv
+
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-load_dotenv(basedir + '.env')
+load_dotenv('.env')
 
 
 class BaseConfig(object):
