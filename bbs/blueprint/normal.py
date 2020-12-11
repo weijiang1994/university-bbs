@@ -12,9 +12,9 @@ from markdown import markdown
 
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
-from bbs.utils import redirect_back, MyMDStyleExtension
-from flask_login import login_required, current_user
-from bbs.extensions import rd
+from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS
+from flask_login import login_required
+import re
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
@@ -58,4 +58,9 @@ def to_html(raw):
                                 'markdown.extensions.codehilite',
                                 'markdown.extensions.tables', MyMDStyleExtension()])
     clean_html = clean(html, tags=allowed_tags, attributes=allowed_attributes)
+    img_url = '<img class="img-emoji" src="/static/emojis/{}" title="{}" alt="{}">'
+    for i in EMOJI_INFOS:
+        for ii in i:
+            emoji_url = img_url.format(ii[0], ii[1], ii[1])
+            clean_html = re.sub(':{}:'.format(ii[1]), emoji_url, clean_html)
     return linkify(clean_html)

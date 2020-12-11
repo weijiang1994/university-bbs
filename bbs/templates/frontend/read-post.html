@@ -93,6 +93,10 @@
             border-bottom: 1px solid #828286;
             padding-bottom: 6px;
         }
+        .img-emoji{
+            width: 25px;
+            height: 25px;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -189,16 +193,20 @@
                                     <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-smile-o mr-1"></i>表情
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="commentEmoji">
-                                        <div style="padding:3px">
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                            <button class="btn p-1">a</button>
-                                        </div>
+                                    <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
+                                        {% for emoji_url in emoji_urls %}
+                                            <div style="padding:3px">
+                                                {% for emoji in emoji_url %}
+                                                    <button class="btn p-1">
+                                                        <img class="img-emoji"
+                                                             src="{{ url_for('static', filename='emojis/'+emoji[0]) }}"
+                                                             data-toggle="tooltip" data-placement="right"
+                                                             title="{{ emoji.1 }}" alt="{{ emoji.1 }}"
+                                                             data-emoji=":{{ emoji.1 }}:">
+                                                    </button>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
                                     </div>
                                     <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-photo mr-1"></i>图片</a>
                                     <a href="#" class="mb-1 text-decoration-none mr-2" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
@@ -285,6 +293,12 @@
             $(function () {
                 sessionStorage.setItem('md', '');
             })
+
+            var emoji_tag = $("#emoji-list img");
+            emoji_tag.click(function() {
+                var e = $(this).data('emoji');
+                $("#commentContent").val($("#commentContent").val() + e);
+            });
 
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()

@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+# 手动加载env文件,防止部署到服务器时不主动加载env获取不到服务器启动的关键参数
 load_dotenv('.env')
 
 

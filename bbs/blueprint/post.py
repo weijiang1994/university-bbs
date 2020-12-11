@@ -13,7 +13,7 @@ from bbs.models import Post, Collect, PostReport, ReportCate, Comments
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, get_emoji_url
+from bbs.utils import get_text_plain, get_emoji_url, EMOJI_INFOS
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -51,7 +51,7 @@ def read(post_id):
     post.read_times += 1
     db.session.commit()
     return render_template('frontend/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination,
-                           emoji_urls=get_emoji_url())
+                           emoji_urls=EMOJI_INFOS)
 
 
 @post_bp.route('/edit/<post_id>/', methods=['GET', 'POST'])

@@ -44,3 +44,8 @@ header{
 .p-break{
     word-break: break-all;
 }
+
+.img-emoji{
+    width: 25px;
+    height: 25px;
+}

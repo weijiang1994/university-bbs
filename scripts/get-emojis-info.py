@@ -18,9 +18,13 @@ destination_dir = basedir + '/test/emojis/'
 emoji_infos = []
 
 for root, dirs, files in os.walk(destination_dir):
+    tmp = []
     for file in files:
         e0 = file
         e1 = file.split('_')[0]
-        emoji_infos.append((e0, e1))
-
+        tmp.append((e0, e1))
+        if len(tmp) == 8:
+            emoji_infos.append(tmp)
+            tmp = []
+emoji_infos.append(tmp)
 print(emoji_infos)
