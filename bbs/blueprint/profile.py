@@ -43,9 +43,6 @@ def profile_comment(user_id):
     return render_template('frontend/profile-comment.html', user=user, comments=comments)
 
 
-current_user: User
-
-
 @profile_bp.route('/follow/<user_id>/')
 @login_required
 def follow_user(user_id):
