@@ -16,6 +16,7 @@ profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
 
 
 @profile_bp.route('/user/<user_id>/')
+@login_required
 def index(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
@@ -32,6 +33,7 @@ def index(user_id):
 
 
 @profile_bp.route('/comment/<user_id>/')
+@login_required
 def profile_comment(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
@@ -78,6 +80,7 @@ def collect(user_id):
 
 
 @profile_bp.route('/uncollect/<post_id>')
+@login_required
 def uncollect(post_id):
     post_collect(post_id)
     return redirect(url_for('.collect', user_id=current_user.id))
