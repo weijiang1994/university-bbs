@@ -13,8 +13,9 @@ from faker import Faker
 from bbs.models import User, Post
 from bbs.extensions import db
 from bbs.setting import basedir
+from bbs.utils import get_text_plain
 
-
+# noinspection PyArgumentList
 def generate_user():
     fa = Faker()
     for i in range(50):
@@ -39,6 +40,7 @@ def generate_post():
                  cate_id=1,
                  is_anonymous=1,
                  content=content,
+                 textplain=get_text_plain(content),
                  author_id=random.randint(1, 50))
         db.session.add(p)
     db.session.commit()
