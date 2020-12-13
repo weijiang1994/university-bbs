@@ -72,8 +72,9 @@ def collect(user_id):
     page = request.args.get('page', default=1, type=int)
     pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page, per_page=20)
     collects = pagination.items
-    print(collects)
-    return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects)
+    test = '<div><p class="mt-0 mb-0 p-break"><img class="img-emoji" src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" title="face-with-open-mouth-vomiting" alt="face-with-open-mouth-vomiting"><img class="img-emoji" src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" title="disappointed-face" alt="disappointed-face"></p></div>'
+    return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects,
+                           test=test)
 
 
 @profile_bp.route('/uncollect/<post_id>')

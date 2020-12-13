@@ -14,7 +14,7 @@ from bbs.setting import basedir
 1.需要生成emoji信息的路径
 2.从emojidaquan上爬下来的表情命名方式都是name_desc.png方式命名的
 """
-destination_dir = basedir + '/test/emojis/'
+destination_dir = basedir + '/bbs/static/emojis/'
 emoji_infos = []
 
 for root, dirs, files in os.walk(destination_dir):

@@ -4,7 +4,7 @@
     {{ super() }}
     <style>
         .img-profile-bg{
-            border-radius: 50%;
+            border-radius: 5px;
             height: 150px;
             width: 150px;
             background-size: cover;
@@ -53,6 +53,7 @@
                     <ul class="list-group list-group-flush ul-posts">
                         {% for collect in collects %}
                             <li class="list-group-item">
+                                {{ test|safe }}
                                 <div class="d-flex flex-row-reverse">
                                     <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
                                     {% if current_user.id == user.id %}

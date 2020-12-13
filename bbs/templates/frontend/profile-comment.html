@@ -4,7 +4,7 @@
     {{ super() }}
     <style>
         .img-profile-bg{
-            border-radius: 50%;
+            border-radius: 5px;
             height: 150px;
             width: 150px;
             background-size: cover;
@@ -63,13 +63,13 @@
                                         {{ comment.body|safe }}
                                         <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
                                     {% else %}
-                                        {{ comment.body|safe }}
+                                        {{ comment.body|safe|string }}
                                         <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
                                     {% endif %}
                                 </div>
                             </li>
                         {% endfor %}
-
+                        {##}
                     </ul>
                 </div>
             {% else %}
