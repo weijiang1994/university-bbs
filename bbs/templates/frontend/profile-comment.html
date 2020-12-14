@@ -59,11 +59,10 @@
                                             <p>引用<span class="span-blockquote">@{{ comment.replied.author.nickname }}</span>回复</p>
                                             {{ comment.replied.body|safe }}
                                         </div>
-{#                                        {{ comment.body|safe }}#}
+                                        {{ comment.body|safe }}
                                         <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
                                     {% else %}
-{#                                        {{ comment.body|safe|string }}#}
-                                        {{ test|safe }}
+                                        {{ comment.body|safe|string }}
                                         <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
                                     {% endif %}
                             </li>

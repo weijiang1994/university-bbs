@@ -40,8 +40,14 @@ def profile_comment(user_id):
     pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
         Comments.timestamps.desc()).paginate(page=page, per_page=20)
     comments = pagination.items
-    test = '<div><p class="mt-0 mb-0 p-break"><img class="img-emoji" src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" title="face-with-open-mouth-vomiting" alt="face-with-open-mouth-vomiting"><img class="img-emoji" src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" title="disappointed-face" alt="disappointed-face"></p></div>'
-
+    # 测试safe过滤器是否影响到bootstrap4的导航栏
+    test = '<div>' \
+           '<p class="mt-0 mb-0 p-break">' \
+           '<img class="img-emoji" src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" ' \
+           'title="face-with-open-mouth-vomiting" alt="face-with-open-mouth-vomiting"><img class="img-emoji" ' \
+           'src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" ' \
+           'alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" ' \
+           'title="disappointed-face" alt="disappointed-face"></p></div> '
     return render_template('frontend/profile-comment.html', user=user, comments=comments, test=test)
 
 
@@ -74,7 +80,12 @@ def collect(user_id):
     page = request.args.get('page', default=1, type=int)
     pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page, per_page=20)
     collects = pagination.items
-    test = '<div><p class="mt-0 mb-0 p-break"><img class="img-emoji" src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" title="face-with-open-mouth-vomiting" alt="face-with-open-mouth-vomiting"><img class="img-emoji" src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" title="disappointed-face" alt="disappointed-face"></p></div>'
+    test = '<div><p class="mt-0 mb-0 p-break"><img class="img-emoji" ' \
+           'src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" title="face-with-open-mouth-vomiting" ' \
+           'alt="face-with-open-mouth-vomiting"><img class="img-emoji" ' \
+           'src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" ' \
+           'alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" ' \
+           'title="disappointed-face" alt="disappointed-face"></p></div> '
     return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects,
                            test=test)
 

@@ -6,7 +6,9 @@
 @File    : post.py
 @Software: PyCharm
 """
-from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+import datetime
+
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 
 from bbs.blueprint.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments
@@ -41,17 +43,19 @@ def new_post():
 def read(post_id):
     page = request.args.get('page', default=1, type=int)
     post = Post.query.get_or_404(post_id)
+    per_page = current_app.config['BBS_PER_PAGE']
     if current_user.is_authenticated:
         c_tag = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
     else:
         c_tag = None
     pagination = Comments.query.filter(Comments.post_id == post_id, Comments.delete_flag == 0).order_by(
-        Comments.timestamps.desc()).paginate(page, per_page=10)
+        Comments.timestamps.asc()).paginate(page, per_page=per_page)
+
     comments = pagination.items
     post.read_times += 1
     db.session.commit()
     return render_template('frontend/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination,
-                           emoji_urls=EMOJI_INFOS)
+                           emoji_urls=EMOJI_INFOS, per_page=per_page, page=page)
 
 
 @post_bp.route('/edit/<post_id>/', methods=['GET', 'POST'])
@@ -163,6 +167,8 @@ def post_comment():
     post_id = request.form.get('postId')
     comment_content = to_html(comment_content)
     com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
+    post = Post.query.get_or_404(post_id)
+    post.update_time = datetime.datetime.now()
     db.session.add(com)
     db.session.commit()
     return jsonify({'tag': 1})

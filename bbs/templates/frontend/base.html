@@ -72,7 +72,7 @@
                                 <img class="nav-avatar" src="{{ current_user.avatar }}" alt={{ current_user.nickname }}>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right mt-0 rounded-0 border-0" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item pl-3" href="/accounts/profile/{{ current_user.id }}/"><i class="fa fa-fw fa-user mr-2"></i>个人资料</a>
+                                <a class="dropdown-item pl-3" href="/profile/user/{{ current_user.id }}/"><i class="fa fa-fw fa-user mr-2"></i>个人资料</a>
                                 {% if ntf_counts %}
                                     <a href="/accounts/profile" class="dropdown-item pl-3"><i class="fa fa-fw fa-bell mr-2"></i>消息 <span class="badge badge-info">{{ ntf_counts }}</span>
                                 {% endif %}

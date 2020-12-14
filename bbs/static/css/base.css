@@ -62,3 +62,16 @@ header{
     height: 35px;
     border-radius: 50%;
 }
+
+.a-white{
+    color: white;
+    text-decoration: none;
+}
+
+.a-white:hover{
+    color: #cccccc;
+}
+
+.span-hand{
+    cursor: pointer;
+}

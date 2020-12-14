@@ -20,6 +20,7 @@ class BaseConfig(object):
     BBS_THEMES = {'Darkly': 'darkly', 'Sketchy': 'sketchy', 'Journal': 'journal', 'Flatly': 'flatly',
                   'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty'}
 
+    BBS_PER_PAGE = 10
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     DATABASE_USER = os.getenv('DATABASE_USER')

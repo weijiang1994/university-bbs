@@ -187,7 +187,10 @@
                             <td>代码</td>
                             <td>`code`</td>
                         </tr>
-
+                        <tr class="table-secondary">
+                            <td>换行</td>
+                            <td>&lt;br&gt;</td>
+                        </tr>
                         <tr class="table-secondary">
                             <td>代码片段</td>
                             <td>```python <br>
@@ -279,10 +282,10 @@
                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
             {% endif %}
             <div class="d-flex">
-                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ comment.author.college.name }}</span></a>
-                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ comment.author.role.name }}</span></a>
+                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
+                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-secondary">{{ comment.author.role.name }}</span></a>
                 {% if post.author_id == comment.author_id %}
-                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-danger">楼主</span></a>
+                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">楼主</span></a>
                 {% endif %}
             </div>
         </div>

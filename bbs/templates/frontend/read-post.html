@@ -13,7 +13,7 @@
         .post-div{
             color: white;
             background: #303030;
-            padding: 15px;
+            padding: 5px 15px 8px 15px;
             border-radius: 5px;
         }
 
@@ -59,15 +59,9 @@
             margin: 5px 0px 5px 0px;
             font-style:italic;
         }
+
         .report-textarea{
             height: 100px!important;
-        }
-
-        .post-comment{
-            color: white;
-            background: #555555;
-            padding: 8px;
-            border-radius: 5px;
         }
 
         .preview{
@@ -89,9 +83,29 @@
             display: none;
             font-weight: bold;
         }
+
+        .p-reply{
+            color: #80bdff;
+            margin-bottom: 0px;
+        }
+
         .div-comment-body{
             border-bottom: 1px solid #828286;
             padding-bottom: 6px;
+        }
+
+        .div-gutter20{
+            height: 20px;
+        }
+
+        @media screen and (max-width: 567px){
+            .div-gutter20{
+                height: 5px;
+            }
+        }
+
+        .hr-margin-5{
+            margin: 5px 0 5px 0!important;
         }
     </style>
 {% endblock %}
@@ -106,19 +120,19 @@
         <div class="container mt-4">
             {% include "_flash.html" %}
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">主页</a></li>
-                <li class="breadcrumb-item"><a href="#">杂谈</a></li>
+                <li class="breadcrumb-item"><a class="a-white" href="/">主页</a></li>
+                <li class="breadcrumb-item"><a class="a-white" href="#">杂谈</a></li>
                 <li class="breadcrumb-item active">帖子标题</li>
             </ol>
+            <!-- 帖子主要信息 -->
             <div class="post-div">
                 <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
                 <div class="d-flex mb-0">
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }}) </p>
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ -post.unlikes }}) </p>
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i><span class="d-none d-lg-inline-block">点亮</span>({{ post.likes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i><span class="d-none d-lg-inline-block">点灭</span>({{ -post.unlikes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i><span class="d-none d-lg-inline-block">收藏</span>({{ post.collects }}) </p>
                     <p class="text-muted mb-0"><i class="fa fa-calendar-minus-o mr-1"></i>{{ post.create_time }}</p>
                 </div>
-                <hr class="bg-secondary">
 
                 <div class="d-flex">
                     {% if post.is_anonymous == 1 %}
@@ -145,7 +159,7 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="post-content mt-2">
+                <div class="mt-2">
                     <article>
                         {{ post.content|safe }}
                     </article>
@@ -171,9 +185,70 @@
                         <a class="text-decoration-none text-muted ml-2" href="/post/like/{{ post.id }}/"><small>点亮</small></a>
                     </div>
                 {% endif %}
-                <hr class="bg-secondary">
+            </div>
+            <div class="div-gutter20"></div>
+
+            <!-- 评论主要信息 -->
+            {% if comments %}
+                <div class="post-div">
+                    <div class=" mt-2">
+                        <div class="d-flex div-comment-body">
+                            {{ pagination.total }}条回复 &nbsp;&nbsp; · &nbsp;&nbsp;{{ post.update_time }}
+                        </div>
+                        {% for comment in comments %}
+                            <div class="div-comment-body mt-2">
+                                <!-- 评论用户个人信息 -->
+                                <div class="d-flex">
+                                    <div class="d-flex">
+                                        {% if post.is_anonymous == 1 %}
+                                            {{ commentDiv(comment, post) }}
+                                        {% else %}
+                                            {% if post.author_id == comment.author_id %}
+                                                {{ commentDiv(comment, post, anonymous=True) }}
+                                            {% else %}
+                                                {{ commentDiv(comment, post) }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- 用户评论内容 -->
+                                <div class="mt-1">
+                                    {{ comment.body|safe }}
+                                </div>
+                                <!-- 对于该评论的操作 -->
+                                <div class="d-flex flex-row-reverse mt-1">
+                                    {% if current_user.is_authenticated%}
+                                        {% if current_user.id == comment.author.id %}
+                                            <a class="text-decoration-none text-muted ml-2" href="#" data-commid="{{ comment.id }}" data-toggle="modal" data-target="#confirm-delete" >
+                                                <small>删除</small>
+                                            </a>
+                                        {% else %}
+                                            <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
+                                            <a class="text-decoration-none text-muted ml-2 span-hand" id="comment{{ comment.id }}" onclick="reply($(this).id, $(this).data('user'), $(this).data('userid'))" data-userid="{{ comment.author.id }}" data-user="{{ comment.author.username }}"><small>回复</small></a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
+                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}" class="badge badge-secondary">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                                    </a>
+                                    <a class="text-decoration-none " href="#"><small><span class="badge badge-secondary">#{{ loop.index + (page-1)*per_page }}</span></small></a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if pagination.pages > 1 %}
+                            <div class="d-flex flex-row-reverse mt-2">
+                                {{ render_pagination(pagination=pagination, size='sm') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="div-gutter20"></div>
+            {% endif %}
+
+            <!-- 评论框 -->
+            <div class="post-div post-comment">
+                <p id="commentPosition"></p>
                 {% if current_user.is_authenticated %}
-                    <div class="post-comment">
+                    <div>
                         <ul class="nav nav-pills " role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
@@ -184,9 +259,9 @@
                         </ul>
                         <div class="tab-content">
                             <div id="addComment" class="tab-pane active">
-                                <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" id="commentContent" placeholder="请输入评论内容"></textarea>
+                                <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" style="height: 150px!important;" id="commentContent" placeholder="请输入评论内容"></textarea>
                                 <div class="d-flex mt-1">
-                                    <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="mb-1 text-decoration-none mr-2 a-white" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-smile-o mr-1"></i>表情
                                     </a>
                                     <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
@@ -204,14 +279,15 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a href="#" class="mb-1 text-decoration-none mr-2"><i class="fa fa-photo mr-1"></i>图片</a>
-                                    <a href="#" class="mb-1 text-decoration-none mr-2" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
+                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-white"><i class="fa fa-photo mr-1"></i>图片</a>
+                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-white" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
-                                    <button class="btn btn-info" onclick="postComment()">评论</button>
-                                    <button hidden="hidden" class="btn btn-success mt-2 mr-2">回复</button>
-                                    <button hidden="hidden" class="btn btn-danger mt-2 mr-2">取消</button>
+                                    <button class="btn btn-info" id="commentBtn" onclick="postComment()">评论</button>
+                                    <button hidden="hidden" id="replyBtn" class="btn btn-success mt-2">回复</button>
+                                    <button hidden="hidden" id="cancleReplyBtn" onclick="cancleReply()" class="btn btn-danger mt-2 mr-2">取消</button>
+                                    <a id="replyUserP" hidden="hidden" class="p-reply flex-grow-1 text-decoration-none"></a>
                                 </div>
                             </div>
                             <!-- 评论预览界面 -->
@@ -223,7 +299,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="text-center post-comment">
+                    <div class="text-center">
                         <div class="card-body text-center m-2 m-md-3 f-16" id="no-editor">
                             <div>您尚未登录，
                                 <a href="/auth/login/"><span class="badge badge-info">登录</span></a> 或
@@ -232,51 +308,6 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="post-comment mt-2">
-                    {% for comment in comments %}
-                        <div class="div-comment-body mt-2">
-                            <!-- 评论用户个人信息 -->
-                            <div class="d-flex">
-                                <div class="d-flex">
-                                    {% if post.is_anonymous == 1 %}
-                                        {{ commentDiv(comment, post) }}
-                                    {% else %}
-                                        {% if post.author_id == comment.author_id %}
-                                            {{ commentDiv(comment, post, anonymous=True) }}
-                                        {% else %}
-                                            {{ commentDiv(comment, post) }}
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-
-                            </div>
-                            <!-- 用户评论内容 -->
-                            <div class="mt-1">
-                                {{ comment.body|safe }}
-                            </div>
-                            <!-- 对于该评论的操作 -->
-                            <div class="d-flex flex-row-reverse mt-1">
-                                {% if current_user.id == comment.author.id %}
-                                    <a class="text-decoration-none text-muted ml-2" href="#" data-commid="{{ comment.id }}" data-toggle="modal" data-target="#confirm-delete" >
-                                        <small>删除</small>
-                                    </a>
-                                {% else %}
-                                    <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
-                                    <a class="text-decoration-none text-muted ml-2" href="/post/reply/{{ comment.id }}/"><small>回复</small></a>
-                                {% endif %}
-                                <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
-                                    <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}" class="badge badge-secondary">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
-                                </a>
-                                <a class="text-decoration-none " href="#"><small><span class="badge badge-secondary">#{{ loop.index }}</span></small></a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% if pagination.pages > 1 %}
-                        <div class="text-center mt-2">
-                            {{ render_pagination(pagination=pagination, size='sm') }}
-                        </div>
-                    {% endif %}
-                </div>
             </div>
         </div>
 
@@ -289,6 +320,25 @@
             $(function () {
                 sessionStorage.setItem('md', '');
             })
+
+            function cancleReply() {
+                $("#commentBtn").removeAttr('hidden');
+                $("#replyBtn").attr('hidden', 'hidden');
+                $("#cancleReplyBtn").attr('hidden', 'hidden');
+                $("#replyUserP").html('');
+                $("#replyUserP").attr('hidden', 'hidden');
+            }
+
+            function reply(commentId, commentUser, commentUserId) {
+                $("#commentBtn").attr('hidden', 'hidden');
+                $("#replyBtn").removeAttr('hidden');
+                $("#cancleReplyBtn").removeAttr('hidden');
+                $("#replyUserP").removeAttr('hidden');
+                $("#replyUserP").html('@'+commentUser);
+                $("#replyUserP").attr('href', '/profile/user/'+commentUserId+'/');
+
+                $('html,body').animate({ scrollTop: $("#commentPosition").offset().top - 100 }, 200)
+            }
 
             var emoji_tag = $("#emoji-list img");
             emoji_tag.click(function() {
