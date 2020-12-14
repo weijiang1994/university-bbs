@@ -174,6 +174,19 @@ def post_comment():
     return jsonify({'tag': 1})
 
 
+@post_bp.route('/reply-comment/', methods=['POST'])
+@login_required
+def reply_comment():
+    comment_id = request.form.get('comment_id')
+    comment_user_id = request.form.get('comment_user_id')
+    comment = request.form.get('comment')
+    post_id = request.form.get('post_id')
+    reply = Comments(body=comment, replied_id=comment_id, author_id=comment_user_id, post_id=post_id)
+    db.session.add(reply)
+    db.session.commit()
+    return jsonify({'tag': 1})
+
+
 @post_bp.route('/delete-comment/', methods=['GET', 'POST'])
 @login_required
 def delete_comment():

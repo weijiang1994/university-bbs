@@ -120,8 +120,8 @@
         <div class="container mt-4">
             {% include "_flash.html" %}
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="a-white" href="/">主页</a></li>
-                <li class="breadcrumb-item"><a class="a-white" href="#">杂谈</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">杂谈</a></li>
                 <li class="breadcrumb-item active">帖子标题</li>
             </ol>
             <!-- 帖子主要信息 -->
@@ -224,7 +224,7 @@
                                             </a>
                                         {% else %}
                                             <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
-                                            <a class="text-decoration-none text-muted ml-2 span-hand" id="comment{{ comment.id }}" onclick="reply($(this).id, $(this).data('user'), $(this).data('userid'))" data-userid="{{ comment.author.id }}" data-user="{{ comment.author.username }}"><small>回复</small></a>
+                                            <a class="text-decoration-none text-muted ml-2 span-hand" data-commid="{{ comment.id }}" onclick="reply($(this).data('commid'), $(this).data('user'), $(this).data('userid'))" data-userid="{{ comment.author.id }}" data-user="{{ comment.author.username }}"><small>回复</small></a>
                                         {% endif %}
                                     {% endif %}
                                     <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
@@ -285,7 +285,7 @@
                                 </div>
                                 <div class="d-flex flex-row-reverse">
                                     <button class="btn btn-info" id="commentBtn" onclick="postComment()">评论</button>
-                                    <button hidden="hidden" id="replyBtn" class="btn btn-success mt-2">回复</button>
+                                    <button hidden="hidden" id="replyBtn" onclick="replyComment()" class="btn btn-success mt-2">回复</button>
                                     <button hidden="hidden" id="cancleReplyBtn" onclick="cancleReply()" class="btn btn-danger mt-2 mr-2">取消</button>
                                     <a id="replyUserP" hidden="hidden" class="p-reply flex-grow-1 text-decoration-none"></a>
                                 </div>
@@ -329,6 +329,21 @@
                 $("#replyUserP").attr('hidden', 'hidden');
             }
 
+            function replyComment() {
+                comment = isEmpty();
+                commentId = sessionStorage.getItem('commentId');
+                commentUserId = sessionStorage.getItem('commentUserId');
+                postId = $("#postTitle").data('id');
+                $.ajax({
+                    type: "post",
+                    url: "/post/reply-comment/",
+                    data: {"post_id":postId, "comment_id": commentId, "comment_user_id": commentUserId, "comment": comment},
+                    success: function (res) {
+                        window.location.reload();
+                    }
+                })
+            }
+
             function reply(commentId, commentUser, commentUserId) {
                 $("#commentBtn").attr('hidden', 'hidden');
                 $("#replyBtn").removeAttr('hidden');
@@ -336,7 +351,8 @@
                 $("#replyUserP").removeAttr('hidden');
                 $("#replyUserP").html('@'+commentUser);
                 $("#replyUserP").attr('href', '/profile/user/'+commentUserId+'/');
-
+                sessionStorage.setItem('commentId', commentId);
+                sessionStorage.setItem('commentUserId', commentUserId);
                 $('html,body').animate({ scrollTop: $("#commentPosition").offset().top - 100 }, 200)
             }
 
@@ -375,9 +391,9 @@
                 })
             }
 
+            // 评论框按键监听事件
             function tab(obj){
-                if (event.keyCode == 9)
-                {
+                if (event.keyCode == 9){
                     event.preventDefault();
                     var indent = '    ';
                     var start = obj.selectionStart;
@@ -389,17 +405,32 @@
                     obj.setSelectionRange(start + indent.length, start
                         + selected.length);
                 }
+                if (event.keyCode==13){
+                    let history = $("#commentContent").val();
+                    $("#commentContent").val(history +'<br>');
+                }
             }
 
-            // 提交评论
-            function postComment() {
+            function isEmpty() {
                 let comment = $("#commentContent").val();
-                let postId = $("#postTitle").data("id");
+                // 防止一直按回车键输入空白的评论内容
+                if (comment.replace(/<br>/g, '').replace(/\s*/g, '') == ''){
+                    $(".p-error-hint").slideDown(500);
+                    $(".p-error-hint").show().delay(2000).hide(500);
+                    return false;
+                }
                 if (!comment){
                     $(".p-error-hint").slideDown(500);
                     $(".p-error-hint").show().delay(2000).hide(500);
                     return false;
                 }
+                return comment;
+            }
+
+            // 提交评论
+            function postComment() {
+                comment = isEmpty();
+                let postId = $("#postTitle").data("id");
                 $.ajax({
                     type:"post",
                     data: {"commentContent": comment, 'postId': postId},
