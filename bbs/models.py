@@ -10,7 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_avatars import Identicon
 from bbs.extensions import db
 import datetime
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask import abort
 
 
 class Follow(db.Model):
@@ -153,6 +154,9 @@ class Post(db.Model):
     post_report = db.relationship('PostReport', back_populates='post', cascade='all')
     comments = db.relationship('Comments', back_populates='post', cascade='all')
 
+    def can_delete(self):
+        return current_user.id == self.author_id
+
 
 class Status(db.Model):
     __tablename__ = 't_status'
@@ -180,6 +184,9 @@ class Comments(db.Model):
     author = db.relationship('User', back_populates='comments')
     replies = db.relationship('Comments', back_populates='replied', cascade='all')
     replied = db.relationship('Comments', back_populates='replies', remote_side=[id])
+
+    def can_delete(self):
+        return self.author_id == current_user.id
 
 
 class Collect(db.Model):

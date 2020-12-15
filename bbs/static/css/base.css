@@ -75,3 +75,47 @@ header{
 .span-hand{
     cursor: pointer;
 }
+
+.ul-posts{
+    border-radius: 5px;
+}
+
+.img-profile-bg{
+    border-radius: 5px;
+    height: 150px;
+    width: 150px;
+    background-size: cover;
+    background: no-repeat center;
+}
+
+.img-profile-bg-50{
+    border-radius: 5px;
+    height: 50px;
+    width: 50px;
+    background-size: cover;
+    background: no-repeat center;
+}
+
+@media screen and (max-width: 567px){
+    .img-profile-bg{
+        height: 75px;
+        width: 75px;
+    }
+    .div-center-md{
+        text-align: center;
+    }
+}
+
+.user-card {
+    float: left;
+    width: 20%;
+    max-height: 180px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+}
+
+.avatar-m {
+    width: 100px;
+    height: 100px;
+}

@@ -238,7 +238,7 @@
             <p class="text-muted">@{{ user.username }}</p>
             <p><span class="mr-2">{{ user.post|length }}篇帖子</span><span class="mr-2 span-hand" data-toggle="modal" data-target="#follower-followed">{{ user.followers.count() }}位粉丝</span><span class="mr-2 span-hand" onclick="" data-toggle="modal" data-target="#follower-followed">{{ user.following.count() }}个关注</span></p>
             {% if current_user.id == user.id %}
-                <a class="btn btn-outline-success">编辑主页</a>
+                <a class="btn btn-outline-success">个人主页</a>
             {% else %}
                 {% if current_user.is_following(user) %}
                     <a class="btn btn-outline-danger" href="/profile/unfollow/{{ user.id }}/">取消关注</a>
@@ -253,7 +253,7 @@
 
 {% macro profile_moment(tabName) %}
     <div class="mt-4">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs nav-justified">
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">帖子</a>
             </li>
@@ -262,6 +262,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '收藏' %}active{% endif %}" href="/profile/collect/{{ user.id }}/">收藏</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if tabName == '社交' %}active{% endif %}" href="/profile/social/{{ user.id }}/">社交</a>
             </li>
         </ul>
     </div>
@@ -290,4 +293,39 @@
             </div>
         </div>
     </div>
+{% endmacro %}
+
+<!-- 在尺寸大的屏幕上显示的 -->
+{% macro user_card_lg(user) %}
+    <div class="user-card text-center">
+        <a href="{{ url_for('profile.index', user_id=user.id) }}">
+            <img class="rounded avatar-m" src="{{ user.avatar }}">
+        </a>
+        <h6>
+            <a class="text-decoration-none a-white" href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
+        </h6>
+        {% if current_user.is_following(user) %}
+            <a class="btn btn-outline-danger" onclick="unfollow($(this).data('userid'))" data-userid="{{ user.id }}">取关</a>
+        {% else %}
+            <a class="btn btn-outline-success" onclick="follow($(this).data('userid'))" data-userid="{{ user.id }}">关注</a>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+<!-- 在小尺寸的屏幕上显示列表 -->
+{% macro user_card_md(user) %}
+    <li class="list-group-item">
+        <div class="d-flex">
+            <img  alt="avatar" class="img-profile-bg-50" src="{{ user.avatar }}">
+            <div class="ml-2 flex-grow-1">
+                <p class="mb-0"><a>{{ user.nickname }}</a></p>
+                <p class="mb-0"><a href="{{ url_for('profile.index', user_id=user.id) }}" class="span-blockquote text-decoration-none">@{{user.username}}</a></p>
+            </div>
+            {% if current_user.is_following(user) %}
+                <a class="btn btn-outline-danger btn-sm h-50" onclick="unfollow($(this).data('userid'))" data-userid="{{ user.id }}">取关</a>
+            {% else %}
+                <a class="btn btn-outline-success btn-sm h-50" onclick="follow($(this).data('userid'))" data-userid="{{ user.id }}">关注</a>
+            {% endif %}
+        </div>
+    </li>
 {% endmacro %}

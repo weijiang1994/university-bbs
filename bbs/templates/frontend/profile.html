@@ -3,29 +3,7 @@
 {% block head %}
     {{ super() }}
     <style>
-        .img-profile-bg{
-            border-radius: 5px;
-            height: 150px;
-            width: 150px;
-            background-size: cover;
-            background: no-repeat center;
-        }
-        .img-profile-bg-50{
-            border-radius: 5px;
-            height: 50px;
-            width: 50px;
-            background-size: cover;
-            background: no-repeat center;
-        }
-        @media screen and (max-width: 567px){
-            .img-profile-bg{
-                height: 75px;
-                width: 75px;
-            }
-            .div-center-md{
-                text-align: center;
-            }
-        }
+
         .a-title{
             font-size: 22px;
             font-weight: bold;
@@ -34,9 +12,7 @@
             font-size: 16px;
             font-weight: bold;
         }
-        .ul-posts{
-            border-radius: 5px;
-        }
+
         .f-12-b{
             font-weight: bold;
             font-size: 12px;
@@ -74,10 +50,8 @@
                                             <a class="dropdown-item" href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
                                         </div>
                                     {% endif %}
-
                                     <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
                                     <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
-
                                 </div>
                                 <p>{{ post.textplain|striptags|truncate(100) }}</p>
                                 <div class="d-flex">

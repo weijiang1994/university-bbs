@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import profile_header, profile_moment with context %}
+{% from "macro.html" import profile_header, profile_moment, render_pagination with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -78,6 +78,11 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    {% if  render_pagination.total > 1 %}
+                        <div class="float-right mt-1">
+                            {{ render_pagination(pagination, size='sm') }}
+                        </div>
+                    {% endif %}
                 </div>
             {% else %}
                 {% if current_user.id == user.id %}

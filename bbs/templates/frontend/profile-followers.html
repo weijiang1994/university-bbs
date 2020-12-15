@@ -1,0 +1,65 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import profile_header, profile_moment, user_card_lg, user_card_md with context %}
+{% block title %}
+    {{ user.nickname }}的粉丝
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            {{ profile_header() }}
+            {{ profile_moment('社交') }}
+            <div class="mt-3">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profile/social/{{ user.id }}/">粉丝</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/profile/following/{{ user.id }}/">关注</a>
+                    </li>
+                </ul>
+            </div>
+            {% if followers|length > 0 %}
+                <div class="d-none d-lg-block col-md-12">
+                    {% for follower in followers %}
+                        {{ user_card_lg(follower.follower) }}
+                    {% endfor %}
+                </div>
+                <div class="d-lg-none col-md-12 mt-2 p-0">
+                    <ul class="list-group list-group-flush ul-posts">
+                        {% for follower in followers %}
+                            {{ user_card_md(follower.follower) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    </body>
+    <script>
+
+    function follow(userId) {
+        $.ajax({
+            type: "post",
+            url:"/profile/follow/"+userId+'/',
+            success:function (res) {
+                if (res.tag === 1){
+                    window.location.reload()
+                }
+            }
+        })
+    }
+
+    function unfollow(userId) {
+        $.ajax({
+            type: "post",
+            url:"/profile/unfollow/"+userId+'/',
+            success:function (res) {
+                if (res.tag === 1){
+                    window.location.reload()
+                }
+            }
+        })
+    }
+    </script>
+{% endblock %}

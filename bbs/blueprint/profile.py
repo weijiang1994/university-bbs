@@ -6,7 +6,7 @@
 @File    : profile.py
 @Software: PyCharm
 """
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, jsonify
 from flask_login import current_user, login_required
 
 from bbs.models import User, Comments, Post, Collect
@@ -38,23 +38,23 @@ def profile_comment(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
     pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
-        Comments.timestamps.desc()).paginate(page=page, per_page=20)
+        Comments.timestamps.desc()).paginate(page=page, per_page=current_app.config['BBS_PER_PAGE'])
     comments = pagination.items
-    # 测试safe过滤器是否影响到bootstrap4的导航栏
-    test = '<div>' \
-           '<p class="mt-0 mb-0 p-break">' \
-           '<img class="img-emoji" src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" ' \
-           'title="face-with-open-mouth-vomiting" alt="face-with-open-mouth-vomiting"><img class="img-emoji" ' \
-           'src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" ' \
-           'alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" ' \
-           'title="disappointed-face" alt="disappointed-face"></p></div> '
-    return render_template('frontend/profile-comment.html', user=user, comments=comments, test=test)
+    return render_template('frontend/profile-comment.html', user=user, pagination=pagination, comments=comments)
 
 
-@profile_bp.route('/follow/<user_id>/')
+@profile_bp.route('/follow/<user_id>/', methods=['GET', 'POST'])
 @login_required
 def follow_user(user_id):
     user = User.query.get_or_404(user_id)
+    # 通过ajax发送关注请求
+    if request.method == 'POST':
+        if current_user.is_following(user):
+            flash('你已经关注TA了!', 'info')
+            return jsonify({'tag': 1})
+        current_user.follow(user)
+        return jsonify({'tag': 1})
+
     if current_user.is_following(user):
         flash('你已经关注TA了!', 'info')
         return redirect(url_for('.index', user_id=user_id))
@@ -63,14 +63,17 @@ def follow_user(user_id):
     return redirect(url_for('.index', user_id=user_id))
 
 
-@profile_bp.route('/unfollow/<user_id>/')
+@profile_bp.route('/unfollow/<user_id>/', methods=['GET', 'POST'])
 @login_required
 def unfollow_user(user_id):
     user = User.query.get_or_404(user_id)
     if current_user.is_following(user):
         current_user.unfollow(user)
-        flash('取关成功!', 'success')
-        return redirect(url_for('.index', user_id=user_id))
+    if request.method == 'POST':
+        return jsonify({'tag': 1})
+
+    flash('取关成功!', 'success')
+    return redirect(url_for('.index', user_id=user_id))
 
 
 @profile_bp.route('/collect/<user_id>/')
@@ -78,16 +81,12 @@ def unfollow_user(user_id):
 def collect(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)
-    pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page, per_page=20)
+    pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page,
+                                                                                              per_page=
+                                                                                              current_app.
+                                                                                              config['BBS_PER_PAGE'])
     collects = pagination.items
-    test = '<div><p class="mt-0 mb-0 p-break"><img class="img-emoji" ' \
-           'src="/static/emojis/face-with-open-mouth-vomiting_1f92e.png" title="face-with-open-mouth-vomiting" ' \
-           'alt="face-with-open-mouth-vomiting"><img class="img-emoji" ' \
-           'src="/static/emojis/face-with-cold-sweat_1f613.png" title="face-with-cold-sweat" ' \
-           'alt="face-with-cold-sweat"><img class="img-emoji" src="/static/emojis/disappointed-face_1f61e.png" ' \
-           'title="disappointed-face" alt="disappointed-face"></p></div> '
-    return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects,
-                           test=test)
+    return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects)
 
 
 @profile_bp.route('/uncollect/<post_id>')
@@ -95,3 +94,25 @@ def collect(user_id):
 def uncollect(post_id):
     post_collect(post_id)
     return redirect(url_for('.collect', user_id=current_user.id))
+
+
+@profile_bp.route('/social/<user_id>/')
+@login_required
+def follower(user_id):
+    user = User.query.get_or_404(user_id)
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
+    pagination = user.followers.paginate(page, per_page)
+    followers = pagination.items
+    return render_template('frontend/profile-followers.html', user=user, pagination=pagination, followers=followers)
+
+
+@profile_bp.route('/following/<user_id>/')
+@login_required
+def following(user_id):
+    user = User.query.get_or_404(user_id)
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
+    pagination = user.following.paginate(page, per_page)
+    followings = pagination.items
+    return render_template('frontend/profile-following.html', user=user, pagination=pagination, followings=followings)

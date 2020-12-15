@@ -21,6 +21,7 @@ class BaseConfig(object):
                   'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty'}
 
     BBS_PER_PAGE = 10
+    BBS_PER_PAGE_SOCIAL = 40
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     DATABASE_USER = os.getenv('DATABASE_USER')

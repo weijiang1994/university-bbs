@@ -19,7 +19,7 @@
 
         .post-content{
             color: white;
-            background: #444444;
+            background: #343434;
             padding: 8px;
             border-radius: 5px;
         }
@@ -213,6 +213,17 @@
                                 </div>
                                 <!-- 用户评论内容 -->
                                 <div class="mt-1">
+                                    {% if comment.replied_id %}
+                                        <div class="post-content">
+                                            {% if not comment.replied.delete_flag %}
+                                                <p class="mb-1 ">引用<a href="/profile/user/{{ comment.replied.author.id }}/" class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复</p>
+                                                {{ comment.replied.body|safe }}
+                                            {% else %}
+                                                <p class="mb-1 ">引用<a href="/profile/user/{{ comment.replied.author.id }}/" class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复</p>
+                                                <p class="text-muted mt-0"><b>由于作者删除或该评论违规已被隐藏</b></p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                     {{ comment.body|safe }}
                                 </div>
                                 <!-- 对于该评论的操作 -->
@@ -331,6 +342,9 @@
 
             function replyComment() {
                 comment = isEmpty();
+                if (!comment){
+                    return false;
+                }
                 commentId = sessionStorage.getItem('commentId');
                 commentUserId = sessionStorage.getItem('commentUserId');
                 postId = $("#postTitle").data('id');
@@ -405,13 +419,9 @@
                     obj.setSelectionRange(start + indent.length, start
                         + selected.length);
                 }
-                if (event.keyCode==13){
-                    let history = $("#commentContent").val();
-                    $("#commentContent").val(history +'<br>');
-                }
             }
 
-            function isEmpty() {
+            function    isEmpty() {
                 let comment = $("#commentContent").val();
                 // 防止一直按回车键输入空白的评论内容
                 if (comment.replace(/<br>/g, '').replace(/\s*/g, '') == ''){
@@ -430,6 +440,9 @@
             // 提交评论
             function postComment() {
                 comment = isEmpty();
+                if (!comment){
+                    return false;
+                }
                 let postId = $("#postTitle").data("id");
                 $.ajax({
                     type:"post",

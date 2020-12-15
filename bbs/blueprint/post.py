@@ -15,7 +15,7 @@ from bbs.models import Post, Collect, PostReport, ReportCate, Comments
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, get_emoji_url, EMOJI_INFOS
+from bbs.utils import get_text_plain, EMOJI_INFOS
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -94,9 +94,12 @@ def edit(post_id):
 @login_required
 def delete(post_id):
     post = Post.query.get_or_404(post_id)
-    post.status_id = 2
-    db.session.commit()
-    flash('帖子删除成功!', 'success')
+    if post.can_delete():
+        post.status_id = 2
+        db.session.commit()
+        flash('帖子删除成功!', 'success')
+    else:
+        flash('不是你的东西,你没有权限删除!', 'danger')
     return redirect(url_for('index_bp.index'))
 
 
@@ -178,10 +181,14 @@ def post_comment():
 @login_required
 def reply_comment():
     comment_id = request.form.get('comment_id')
+    # 用于处理消息通知
     comment_user_id = request.form.get('comment_user_id')
     comment = request.form.get('comment')
+    comment = to_html(comment)
     post_id = request.form.get('post_id')
-    reply = Comments(body=comment, replied_id=comment_id, author_id=comment_user_id, post_id=post_id)
+    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id)
+    post = Post.query.get_or_404(post_id)
+    post.update_time = datetime.datetime.now()
     db.session.add(reply)
     db.session.commit()
     return jsonify({'tag': 1})
@@ -193,9 +200,12 @@ def delete_comment():
     if request.method == 'POST':
         comment_id = request.form.get('comm_id')
         com = Comments.query.get_or_404(comment_id)
-        com.delete_flag = 1
-        db.session.commit()
-        flash('评论删除成功!', 'success')
+        if com.can_delete():
+            com.delete_flag = 1
+            db.session.commit()
+            flash('评论删除成功!', 'success')
+        else:
+            flash('不是你的东西,你没有权限删除!', 'danger')
         return jsonify({'tag': 1})
 
 
