@@ -104,7 +104,8 @@ def follower(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.followers.paginate(page, per_page)
     followers = pagination.items
-    return render_template('frontend/profile-followers.html', user=user, pagination=pagination, followers=followers)
+    return render_template('frontend/profile-followers.html', tag=pagination.total > per_page, user=user,
+                           pagination=pagination, followers=followers)
 
 
 @profile_bp.route('/following/<user_id>/')
@@ -115,4 +116,5 @@ def following(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.following.paginate(page, per_page)
     followings = pagination.items
-    return render_template('frontend/profile-following.html', user=user, pagination=pagination, followings=followings)
+    return render_template('frontend/profile-following.html', tag=pagination.total > per_page,
+                           user=user, pagination=pagination, followings=followings)

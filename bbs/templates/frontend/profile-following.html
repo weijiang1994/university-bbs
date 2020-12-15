@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import profile_header, profile_moment with context %}
+{% from "macro.html" import profile_header,user_card_lg, user_card_md, profile_moment, render_pagination with context %}
 {% block title %}
     {{ user.nickname }}的正在
 {% endblock %}
@@ -19,6 +19,23 @@
                     </li>
                 </ul>
             </div>
+            {% if followings|length > 0 %}
+                <div class="d-none d-lg-block col-md-12">
+                    {% for follower in followings %}
+                        {{ user_card_lg(follower.followed) }}
+                    {% endfor %}
+                </div>
+                <div class="d-lg-none col-md-12 mt-2 p-0">
+                    <ul class="list-group list-group-flush ul-posts">
+                        {% for follower in followings %}
+                            {{ user_card_md(follower.followed) }}
+                        {% endfor %}
+                    </ul>
+                    {% if tag %}
+                        {{ render_pagination(pagination, size='sm') }}
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </main>
     </body>

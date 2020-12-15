@@ -31,35 +31,12 @@
                             {{ user_card_md(follower.follower) }}
                         {% endfor %}
                     </ul>
+                    {% if tag %}
+                        {{ render_pagination(pagination, size='sm') }}
+                    {% endif %}
                 </div>
             {% endif %}
         </div>
     </main>
     </body>
-    <script>
-
-    function follow(userId) {
-        $.ajax({
-            type: "post",
-            url:"/profile/follow/"+userId+'/',
-            success:function (res) {
-                if (res.tag === 1){
-                    window.location.reload()
-                }
-            }
-        })
-    }
-
-    function unfollow(userId) {
-        $.ajax({
-            type: "post",
-            url:"/profile/unfollow/"+userId+'/',
-            success:function (res) {
-                if (res.tag === 1){
-                    window.location.reload()
-                }
-            }
-        })
-    }
-    </script>
 {% endblock %}
