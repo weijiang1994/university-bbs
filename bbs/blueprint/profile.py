@@ -81,12 +81,12 @@ def unfollow_user(user_id):
 def collect(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
     pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page,
-                                                                                              per_page=
-                                                                                              current_app.
-                                                                                              config['BBS_PER_PAGE'])
+                                                                                              per_page=per_page)
     collects = pagination.items
-    return render_template('frontend/profile-collections.html', user=user, pagination=pagination, collects=collects)
+    return render_template('frontend/profile-collections.html', user=user, tag=pagination.total > per_page,
+                           pagination=pagination, collects=collects)
 
 
 @profile_bp.route('/uncollect/<post_id>')
