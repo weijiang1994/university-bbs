@@ -6,14 +6,17 @@
 @File    : normal.py
 @Software: PyCharm
 """
+import datetime
+import os
+
 from bleach import clean, linkify
 from flask import Blueprint, send_from_directory, request, jsonify
 from markdown import markdown
-
+from werkzeug.utils import secure_filename
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
-from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS
-from flask_login import login_required
+from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5
+from flask_login import login_required, current_user
 import re
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
@@ -38,6 +41,19 @@ def change_theme(theme_name):
 @normal_bp.route('/image/upload/')
 def image_upload():
     pass
+
+
+@normal_bp.route('/ajax-upload/', methods=['POST'])
+@login_required
+def ajax_upload():
+    f = request.files['file']
+    origin_filename = f.filename
+    filename = get_md5(str(datetime.datetime.now())) + '.' + origin_filename.split(r'.')[-1]
+    upload_path = os.path.join(basedir, 'resources/comments', filename)
+    print(upload_path)
+    f.save(upload_path)
+    md_str = '![{}](/normal/image/comments/{}/)'.format(origin_filename, filename)
+    return jsonify({'tag': 1, 'imgPath': md_str})
 
 
 @normal_bp.route('/comment/render-md/', methods=['POST'])

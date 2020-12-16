@@ -1,3 +1,5 @@
+/*基础样式*/
+
 html{
     height: 100%;
 }
@@ -118,4 +120,8 @@ header{
 .avatar-m {
     width: 100px;
     height: 100px;
+}
+
+.img-pd10{
+    padding: 10px;
 }

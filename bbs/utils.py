@@ -9,6 +9,7 @@
 import re
 from markdown import extensions
 from markdown.treeprocessors import Treeprocessor
+import hashlib
 
 try:
     from urlparse import urlparse, urljoin
@@ -128,6 +129,10 @@ def get_emoji_url():
     return emoji_urls
 
 
+def get_md5(text):
+    return hashlib.md5(text.encode()).hexdigest()
+
+
 def validate_username(username):
     r = re.match('^[a-zA-Z0-9_]*$', username)
     return True if r else False
@@ -160,7 +165,7 @@ class MyMDStyleTreeProcessor(Treeprocessor):
             if child.tag == 'table':
                 child.set("class", "table table-bordered table-hover")
             elif child.tag == 'img':
-                child.set("class", "d-block img-fluid mx-auto")
+                child.set("class", "d-block img-fluid mx-auto img-pd10")
             elif child.tag == 'blockquote':
                 child.set('class', 'blockquote-comment')
             elif child.tag == 'p':

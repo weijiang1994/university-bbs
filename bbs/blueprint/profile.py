@@ -20,16 +20,18 @@ profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
 def index(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
+    per_page = current_app.config['BBS_PER_PAGE']
     # 其他人查看用户信息时候屏蔽用户匿名发表的帖子
     if current_user.id == int(user_id):
         pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 1).order_by(
-            Post.create_time.desc()).paginate(page=page, per_page=20)
+            Post.create_time.desc()).paginate(page=page, per_page=per_page)
         posts = pagination.items
     else:
         pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 1, Post.is_anonymous == 1).order_by(
-            Post.create_time.desc()).paginate(page=page, per_page=20)
+            Post.create_time.desc()).paginate(page=page, per_page=per_page)
         posts = pagination.items
-    return render_template('frontend/profile.html', user=user, pagination=pagination, posts=posts)
+    return render_template('frontend/profile.html', user=user, tag=pagination.total > per_page, pagination=pagination,
+                           posts=posts)
 
 
 @profile_bp.route('/comment/<user_id>/')
@@ -37,10 +39,12 @@ def index(user_id):
 def profile_comment(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
+    per_page = current_app.config['BBS_PER_PAGE']
     pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
-        Comments.timestamps.desc()).paginate(page=page, per_page=current_app.config['BBS_PER_PAGE'])
+        Comments.timestamps.desc()).paginate(page=page, per_page=per_page)
     comments = pagination.items
-    return render_template('frontend/profile-comment.html', user=user, pagination=pagination, comments=comments)
+    return render_template('frontend/profile-comment.html', tag=pagination.total > per_page, user=user,
+                           pagination=pagination, comments=comments)
 
 
 @profile_bp.route('/follow/<user_id>/', methods=['GET', 'POST'])

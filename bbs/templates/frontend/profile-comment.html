@@ -68,7 +68,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    {% if pagination.total > 1 %}
+                    {% if tag %}
                         <div class="float-right mt-1">
                             {{ render_pagination(pagination, size='sm') }}
                         </div>

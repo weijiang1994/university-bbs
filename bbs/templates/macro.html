@@ -8,7 +8,7 @@
     </li>
 {% endmacro %}
 
-
+<!-- 首页帖子显示列表宏定义 -->
 {% macro post_item(posts) %}
     <ul class="list-group">
         {% for post in posts %}
@@ -46,6 +46,7 @@
     {%- endwith %}
 {%- endmacro %}
 
+<!-- 分页渲染 -->
 {% macro render_pagination(pagination,
                            endpoint=None,
                            prev=('&laquo;')|safe,
@@ -98,7 +99,7 @@
     {% endwith %}
 {% endmacro %}
 
-
+<!-- 举报弹窗 -->
 {% macro reportModal() %}
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -135,6 +136,7 @@
     </div>
 {% endmacro %}
 
+<!-- markdown语法弹窗 -->
 {% macro markdownHelp() %}
     <div class="modal fade" id="markdownHelp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -206,6 +208,7 @@
     </div>
 {% endmacro %}
 
+<!-- 删除确认弹窗 -->
 {% macro confirmDelete() %}
     <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
          aria-hidden="true">
@@ -228,6 +231,7 @@
     </div>
 {% endmacro %}
 
+<!-- 用户主页的header -->
 {% macro profile_header() %}
     <div class="row">
         <div class="col-md-3 col-lg-3 text-center">
@@ -236,7 +240,11 @@
         <div class="col-md-9 col-lg-9 div-center-md">
             <h3>{{ user.nickname }}</h3>
             <p class="text-muted">@{{ user.username }}</p>
-            <p><span class="mr-2">{{ user.post|length }}篇帖子</span><span class="mr-2 span-hand" data-toggle="modal" data-target="#follower-followed">{{ user.followers.count() }}位粉丝</span><span class="mr-2 span-hand" onclick="" data-toggle="modal" data-target="#follower-followed">{{ user.following.count() }}个关注</span></p>
+            <p>
+                <span class="mr-2">{{ user.post|length }}篇帖子</span>
+                <a href="{{ url_for('profile.follower', user_id=user.id) }}" class="mr-2 span-hand a-link text-decoration-none">{{ user.followers.count() }}位粉丝</a>
+                <a href="{{ url_for('profile.following', user_id=user.id) }}" class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
+            </p>
             {% if current_user.id == user.id %}
                 <a class="btn btn-outline-success">个人主页</a>
             {% else %}
@@ -302,7 +310,7 @@
             <img class="rounded avatar-m" src="{{ user.avatar }}">
         </a>
         <h6>
-            <a class="text-decoration-none a-white" href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
+            <a class="text-decoration-none a-link" href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
         </h6>
         {% if current_user.is_following(user) %}
             <a class="btn btn-outline-danger" onclick="unfollow($(this).data('userid'))" data-userid="{{ user.id }}">取关</a>

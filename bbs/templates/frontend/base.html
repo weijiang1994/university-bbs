@@ -19,8 +19,9 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/code.css') }}">
         <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
         {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
-
+        <!-- 自定义的css样式 -->
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/dark.css') }}" rel="stylesheet">
     </head>
 {% endblock %}
 

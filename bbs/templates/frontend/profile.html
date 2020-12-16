@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import profile_header, profile_moment with context %}
+{% from "macro.html" import profile_header, profile_moment, render_pagination with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -8,6 +8,7 @@
             font-size: 22px;
             font-weight: bold;
         }
+
         .a-title-sm{
             font-size: 16px;
             font-weight: bold;
@@ -17,9 +18,11 @@
             font-weight: bold;
             font-size: 12px;
         }
+
         .span-hand{
             cursor: pointer;
         }
+
     </style>
 {% endblock %}
 
@@ -66,6 +69,11 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    <div class="float-right mt-1">
+                        {% if tag %}
+                            {{ render_pagination(pagination, size='sm') }}
+                        {% endif %}
+                    </div>
                 </div>
             {% else %}
                 {% if current_user.id == user.id %}
@@ -79,7 +87,6 @@
                 {% endif %}
             {% endif %}
             {% include "follow-modal.html" %}
-
         </div>
     </main>
     </body>

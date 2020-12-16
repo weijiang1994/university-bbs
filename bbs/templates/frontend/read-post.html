@@ -272,7 +272,7 @@
                             <div id="addComment" class="tab-pane active">
                                 <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" style="height: 150px!important;" id="commentContent" placeholder="请输入评论内容"></textarea>
                                 <div class="d-flex mt-1">
-                                    <a class="mb-1 text-decoration-none mr-2 a-white" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="mb-1 text-decoration-none mr-2 a-link" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-smile-o mr-1"></i>表情
                                     </a>
                                     <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
@@ -290,8 +290,9 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-white"><i class="fa fa-photo mr-1"></i>图片</a>
-                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-white" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
+                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand"><i class="fa fa-photo mr-1"></i>图片</a>
+                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png" hidden="hidden">
+                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
@@ -421,7 +422,7 @@
                 }
             }
 
-            function    isEmpty() {
+            function isEmpty() {
                 let comment = $("#commentContent").val();
                 // 防止一直按回车键输入空白的评论内容
                 if (comment.replace(/<br>/g, '').replace(/\s*/g, '') == ''){
@@ -476,6 +477,44 @@
                 $("#deleteBtn").val(commID);
             })
 
+            function upload() {
+                $("#uploadInput").click();
+            }
+
+            function uploadImage() {
+                let img = $("#uploadInput")[0].files[0];
+                let formdata = new FormData();
+                formdata.append('file', img);
+                $.ajax({
+                    url:"/normal/ajax-upload/",
+                    type: "post",
+                    async: false,
+                    data: formdata,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        insertText(document.getElementById('commentContent'), res.imgPath)
+                    }
+                })
+            }
+
+            // 在textarea中插入上传的图片markdown的值
+            function insertText(obj, str) {
+                if (document.selection) {
+                    var sel = document.selection.createRange();
+                    sel.text = str;
+                } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+                    var startPos = obj.selectionStart,
+                        endPos = obj.selectionEnd,
+                        cursorPos = startPos,
+                        tmpStr = obj.value;
+                    obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+                    cursorPos += str.length;
+                    obj.selectionStart = obj.selectionEnd = cursorPos;
+                } else {
+                    obj.value += str;
+                }
+            }
         </script>
     </main>
     </body>

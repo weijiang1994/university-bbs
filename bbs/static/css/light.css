@@ -1,0 +1,9 @@
+/*dark theme style*/
+.a-link{
+    color: #0a0a0a;
+    text-decoration: none;
+}
+
+.a-link:hover{
+    color: #1b1e21;
+}
