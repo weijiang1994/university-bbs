@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import user_page_header with context %}
+{% from "macro.html" import user_page_header, user_page_header_ul with context %}
 {% block title %}
     {{ user.nickname }}的个人主页
 {% endblock %}
@@ -8,6 +8,7 @@
     <main>
         <div class="container mt-2">
             <div class="col-md-3">
+                {{ user_page_header_ul('个人资料') }}
                 {{ user_page_header('个人资料') }}
             </div>
             <div class="col-md-8">
