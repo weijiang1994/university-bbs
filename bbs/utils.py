@@ -165,7 +165,7 @@ class MyMDStyleTreeProcessor(Treeprocessor):
             if child.tag == 'table':
                 child.set("class", "table table-bordered table-hover")
             elif child.tag == 'img':
-                child.set("class", "d-block img-fluid mx-auto img-pd10")
+                child.set("class", "img-fluid d-block img-pd10")
             elif child.tag == 'blockquote':
                 child.set('class', 'blockquote-comment')
             elif child.tag == 'p':
