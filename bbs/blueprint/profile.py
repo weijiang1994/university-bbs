@@ -30,7 +30,7 @@ def index(user_id):
         pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 1, Post.is_anonymous == 1).order_by(
             Post.create_time.desc()).paginate(page=page, per_page=per_page)
         posts = pagination.items
-    return render_template('frontend/profile.html', user=user, tag=pagination.total > per_page, pagination=pagination,
+    return render_template('frontend/profile/profile.html', user=user, tag=pagination.total > per_page, pagination=pagination,
                            posts=posts)
 
 
@@ -43,7 +43,7 @@ def profile_comment(user_id):
     pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
         Comments.timestamps.desc()).paginate(page=page, per_page=per_page)
     comments = pagination.items
-    return render_template('frontend/profile-comment.html', tag=pagination.total > per_page, user=user,
+    return render_template('frontend/profile/profile-comment.html', tag=pagination.total > per_page, user=user,
                            pagination=pagination, comments=comments)
 
 
@@ -89,7 +89,7 @@ def collect(user_id):
     pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page,
                                                                                               per_page=per_page)
     collects = pagination.items
-    return render_template('frontend/profile-collections.html', user=user, tag=pagination.total > per_page,
+    return render_template('frontend/profile/profile-collections.html', user=user, tag=pagination.total > per_page,
                            pagination=pagination, collects=collects)
 
 
@@ -108,7 +108,7 @@ def follower(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.followers.paginate(page, per_page)
     followers = pagination.items
-    return render_template('frontend/profile-followers.html', tag=pagination.total > per_page, user=user,
+    return render_template('frontend/profile/profile-followers.html', tag=pagination.total > per_page, user=user,
                            pagination=pagination, followers=followers)
 
 
@@ -120,5 +120,5 @@ def following(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.following.paginate(page, per_page)
     followings = pagination.items
-    return render_template('frontend/profile-following.html', tag=pagination.total > per_page,
+    return render_template('frontend/profile/profile-following.html', tag=pagination.total > per_page,
                            user=user, pagination=pagination, followings=followings)

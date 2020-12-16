@@ -32,13 +32,8 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navHome" aria-controls="navHome" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navHome">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active mr-5">
-                        <a class="nav-link" href="/"><i class="fa fa-home mr-1"></i>主页<span class="sr-only">(current)</span></a>
-                    </li>
-
                     <li class="nav-item dropdown mr-5">
                         <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fire mr-1"></i>大食堂</a>
                         <div class="dropdown-menu" aria-labelledby="talk">
@@ -74,7 +69,7 @@
                                 <img class="nav-avatar" src="{{ current_user.avatar }}" alt={{ current_user.nickname }}>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right mt-0 rounded-0 border-0" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item pl-3" href="/profile/user/{{ current_user.id }}/"><i class="fa fa-fw fa-user mr-2"></i>个人资料</a>
+                                <a class="dropdown-item pl-3" href="{{ url_for('user.index', user_id=current_user.id) }}"><i class="fa fa-fw fa-user mr-2"></i>个人主页</a>
                                 {% if ntf_counts %}
                                     <a href="/accounts/profile" class="dropdown-item pl-3"><i class="fa fa-fw fa-bell mr-2"></i>消息 <span class="badge badge-info">{{ ntf_counts }}</span>
                                 {% endif %}

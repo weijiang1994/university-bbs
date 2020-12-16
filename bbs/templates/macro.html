@@ -337,3 +337,44 @@
         </div>
     </li>
 {% endmacro %}
+
+<!-- user page header -->
+{% macro user_page_header(title) %}
+    <div class="dropdown d-lg-none">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{title}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{{ url_for('user.index', user_id=user.id) }}">个人资料</a>
+            <a class="dropdown-item" href="{{ url_for('user.notifications', user_id=user.id) }}">通知</a>
+            <a class="dropdown-item" href="#">私信</a>
+            <a class="dropdown-item" href="#">资料编辑</a>
+            <a class="dropdown-item" href="#">隐私设置</a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro user_page_header_ul(title) %}
+    <ul class="list-group list-group-flush d-lg-block d-none">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="a-link" href="{{ url_for('user.index', user_id=user.id) }}">个人资料</a>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="a-link" href="{{ url_for('user.notifications', user_id=user.id) }}">通知</a>
+            <span class="badge badge-primary badge-pill">2</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="a-link" href="{{ url_for('user.contact', user_id=user.id) }}"></a>私信
+            <span class="badge badge-primary badge-pill">1</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            资料编辑
+            <span class="badge badge-primary badge-pill">1</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            隐私设置
+            <span class="badge badge-primary badge-pill">1</span>
+        </li>
+    </ul>
+
+{% endmacro %}

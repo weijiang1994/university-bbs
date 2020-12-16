@@ -36,7 +36,7 @@ def new_post():
         db.session.commit()
         flash('帖子发布成功!', 'success')
         return redirect(url_for('post.read', post_id=post.id))
-    return render_template('frontend/new-post.html', form=form)
+    return render_template('frontend/post/new-post.html', form=form)
 
 
 @post_bp.route('/read/<post_id>/', methods=['GET'])
@@ -54,7 +54,7 @@ def read(post_id):
     comments = pagination.items
     post.read_times += 1
     db.session.commit()
-    return render_template('frontend/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination,
+    return render_template('frontend/post/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination,
                            emoji_urls=EMOJI_INFOS, per_page=per_page, page=page)
 
 
@@ -87,7 +87,7 @@ def edit(post_id):
     form.body.data = post.content
     form.category.data = post.cate_id
     form.anonymous.data = post.is_anonymous
-    return render_template('frontend/edit-post.html', post=post, form=form)
+    return render_template('frontend/post/edit-post.html', post=post, form=form)
 
 
 @post_bp.route('/delete/<post_id>/', methods=['GET'])

@@ -16,6 +16,7 @@ from bbs.blueprint.auth import auth_bp
 from bbs.blueprint.normal import normal_bp
 from bbs.blueprint.post import post_bp
 from bbs.blueprint.profile import profile_bp
+from bbs.blueprint.user import user_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
 from bbs.utils import get_text_plain
 
@@ -45,6 +46,7 @@ def register_bp(app: Flask):
     app.register_blueprint(normal_bp)
     app.register_blueprint(post_bp)
     app.register_blueprint(profile_bp)
+    app.register_blueprint(user_bp)
 
 
 def register_cmd(app: Flask):
