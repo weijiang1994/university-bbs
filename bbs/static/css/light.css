@@ -7,3 +7,11 @@
 .a-link:hover{
     color: #1b1e21;
 }
+
+.li-fade{
+    color: #333333;
+}
+
+.li-fade:hover{
+    color: #222222;
+}

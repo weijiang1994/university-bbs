@@ -7,3 +7,26 @@
 .a-link:hover{
     color: rgba(126,126,126,0.85);
 }
+
+.li-fade{
+    color: #aaaaaa;
+}
+
+.li-fade:hover{
+    color: #cccccc;
+}
+
+.user-home-title{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.span-border-bottom{
+    border-bottom: solid 5px #0b4961;
+}
+
+.div-user-page{
+    border-radius: 5px;
+    padding: 10px;
+    background: #292b2c;
+}

@@ -11,7 +11,6 @@ from flask_avatars import Identicon
 from bbs.extensions import db
 import datetime
 from flask_login import UserMixin, current_user
-from flask import abort
 
 
 class Follow(db.Model):
@@ -36,7 +35,10 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(256), comment='user password')
     email = db.Column(db.String(128), unique=True, nullable=False, comment='user register email')
     slogan = db.Column(db.String(40), default='')
+    website = db.Column(db.String(128), default='', comment="user's website")
+    location = db.Column(db.String(128), default='', comment='user location')
     avatar = db.Column(db.String(100), nullable=False, comment='user avatar')
+    avatar_raw = db.Column(db.String(100), comment='use avatar raw file')
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
 
     status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))

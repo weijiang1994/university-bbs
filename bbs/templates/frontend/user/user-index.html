@@ -1,4 +1,5 @@
 {% extends "frontend/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 {% from "macro.html" import user_page_header, user_page_header_ul with context %}
 {% block title %}
     {{ user.nickname }}的个人主页
@@ -7,12 +8,29 @@
     <body>
     <main>
         <div class="container mt-2">
-            <div class="col-md-3">
-                {{ user_page_header_ul('个人资料') }}
-                {{ user_page_header('个人资料') }}
-            </div>
-            <div class="col-md-8">
-
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    {{ user_page_header_ul('个人资料') }}
+                    {{ user_page_header('个人资料') }}
+                </div>
+                <div class="col-lg-9 col-md-9">
+                    {% include "_flash.html" %}
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">个人资料</span></p>
+                    <div class="mt-2 div-user-page">
+                        <form class="bs-component" action="{{ url_for('user.index', user_id=user.id) }}" method="post">
+                            {{ form.csrf_token }}
+                            {{ wtf.form_field(form.user_name) }}
+                            {{ wtf.form_field(form.nickname) }}
+                            {{ wtf.form_field(form.user_email) }}
+                            {{ wtf.form_field(form.slogan) }}
+                            {{ wtf.form_field(form.website) }}
+                            {{ wtf.form_field(form.location) }}
+                            <div class="text-right">
+                                {{ form.submit }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

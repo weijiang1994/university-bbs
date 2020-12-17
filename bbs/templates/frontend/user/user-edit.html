@@ -1,0 +1,115 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul with context %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+    <style>
+        #preview-box {
+            display: block;
+            position: absolute;
+            top: 10px;
+            right: -280px;
+            padding: 6px;
+            border: 1px rgba(0, 0, 0, .4) solid;
+            background-color: white;
+
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            border-radius: 6px;
+
+            -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+        }
+        @media screen and (max-width: 567px) {
+            #preview-box{
+                display: block;
+                position: absolute;
+                top: 260px;
+                right: -10px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ user.nickname }}的个人主页
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    {{ user_page_header_ul('资料编辑') }}
+                    {{ user_page_header('资料编辑') }}
+                </div>
+                <div class="col-lg-9 col-md-3">
+                    {% include "_flash.html" %}
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">资料编辑</span></p>
+                    <div class="mt-2">
+                        <ul class="nav nav-tabs" id="editTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="avatar-tab" data-toggle="tab" href="#avatar" role="tab" aria-controls="avatar" aria-selected="true">头像</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="password-tab" data-toggle="tab" href="#password" role="tab" aria-controls="profile" aria-selected="false">密码</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active mt-2" id="avatar" role="tabpanel" aria-labelledby="avatar-tab">
+                                <form class="form-control-file" enctype="multipart/form-data" method="post" action="/user/upload-avatar/">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="custom-file">
+                                                <input type="file" name="image" class="custom-file-input" onchange="setFilename()" required id="inputGroupFile02">
+                                                <label class="custom-file-label" id="filenameLabel" for="inputGroupFile02">选择文件</label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <input type="submit" class="input-group-text" onclick="uploadRawAvatar()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <small class="text-muted">
+                                    <b>头像文件格式必须为.jpg或者.png且最大不超过2M！</b>
+                                </small>
+                                <div class="mt-2">
+                                    {{ avatars.crop_box('normal.get_avatar_raw', current_user.avatar_raw) }}
+                                    {{ avatars.preview_box('normal.get_avatar_raw',  current_user.avatar_raw) }}
+                                </div>
+                                <form class="form-group mt-2">
+                                    {{ render_form(crop_form, action=url_for('.index', user_id=user.id)) }}
+                                </form>
+                            </div>
+                            <div class="tab-pane fade mt-2" id="password" role="tabpanel" aria-labelledby="password-tab">
+                                <div class="div-user-page">
+                                    {{ render_form(pwd_form) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    </body>
+    {% block script %}
+        {{ super() }}
+        <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
+        {{ avatars.init_jcrop() }}
+    {% endblock %}
+    <script>
+        function uploadRawAvatar() {
+
+        }
+
+        function setFilename() {
+            let filename = $("#inputGroupFile02")[0].files[0];
+            $("#filenameLabel").text(filename.name);
+        }
+    </script>
+{% endblock %}

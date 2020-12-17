@@ -28,6 +28,12 @@ def get_image(path, filename):
     return send_from_directory(path, filename)
 
 
+@normal_bp.route('/image/<string:filename>/', methods=['GET'])
+def get_avatar_raw(filename):
+    path = basedir + '/resources/avatar_raw/'
+    return send_from_directory(path, filename)
+
+
 @normal_bp.route('/themes/<string:theme_name>')
 def change_theme(theme_name):
     if theme_name not in current_app.config['BBS_THEMES'].keys():
@@ -50,7 +56,6 @@ def ajax_upload():
     origin_filename = f.filename
     filename = get_md5(str(datetime.datetime.now())) + '.' + origin_filename.split(r'.')[-1]
     upload_path = os.path.join(basedir, 'resources/comments', filename)
-    print(upload_path)
     f.save(upload_path)
     md_str = '![{}](/normal/image/comments/{}/)'.format(origin_filename, filename)
     return jsonify({'tag': 1, 'imgPath': md_str})
