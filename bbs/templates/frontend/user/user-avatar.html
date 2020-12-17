@@ -7,6 +7,8 @@
     {{ super() }}
     <!--suppress ALL -->
     <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+    <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
+
     <style>
         #preview-box {
             display: block;
@@ -54,7 +56,7 @@
                                                 <label class="custom-file-label" id="filenameLabel" for="inputGroupFile02">选择文件</label>
                                             </div>
                                             <div class="input-group-append">
-                                                <input type="submit" class="input-group-text" onclick="uploadRawAvatar()">
+                                                <input type="submit" class="input-group-text">
                                             </div>
                                         </div>
                                     </div>
@@ -63,8 +65,7 @@
                                     <b>头像文件格式必须为.jpg或者.png且最大不超过2M！</b>
                                 </small>
                                 <div class="mt-2">
-                                    {{ avatars.crop_box('normal.get_avatar_raw', current_user.avatar_raw) }}
-                                    {{ avatars.preview_box('normal.get_avatar_raw',  current_user.avatar_raw) }}
+                                    <img id="dropImage" class="img-fluid" src="/normal/image/avatar_raw/{{ user.avatar_raw }}">
                                 </div>
                                 <form class="form-group mt-2">
                                     {{ render_form(crop_form, action=url_for('.index', user_id=user.id)) }}
@@ -78,14 +79,21 @@
         </div>
     </main>
     </body>
-    {% block script %}
-        {{ super() }}
-        <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
-        {{ avatars.init_jcrop() }}
-    {% endblock %}
     <script>
-        function uploadRawAvatar() {
-
+        $('#dropImage').Jcrop({
+            onChange: showPreview,
+            onSelect: showPreview,
+            aspectRatio: 1
+        });
+        function showPreview(coords) {
+            var rx = 100 / coords.w;
+            var ry = 100 / coords.h;
+            $('#preview').css({
+                width: Math.round(rx * 500) + 'px',
+                height: Math.round(ry * 370) + 'px',
+                marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+                marginTop: '-' + Math.round(ry * coords.y) + 'px'
+            });
         }
 
         function setFilename() {

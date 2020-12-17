@@ -114,4 +114,4 @@ def upload_avatar():
     file.save(upload_path)
     current_user.avatar_raw = filename
     db.session.commit()
-    return redirect(url_for('.edit_user', user_id=current_user.id))
+    return redirect(url_for('.edit_avatar', user_id=current_user.id))

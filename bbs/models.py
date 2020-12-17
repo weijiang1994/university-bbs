@@ -41,6 +41,10 @@ class User(db.Model, UserMixin):
     avatar_raw = db.Column(db.String(100), comment='use avatar raw file')
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
 
+    collect_permission = db.Column(db.BOOLEAN, default=True)
+    comment_permission = db.Column(db.BOOLEAN, default=True)
+    post_permission = db.Column(db.BOOLEAN, default=True)
+
     status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
     role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'), default=3, comment='user role id default is 3 '
