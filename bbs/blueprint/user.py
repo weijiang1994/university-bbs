@@ -72,16 +72,28 @@ def contact(user_id):
     return render_template('frontend/user/user-contact.html', user=user)
 
 
-@user_bp.route('/user-edit/<user_id>/')
+@user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
 @login_required
-def edit_user(user_id):
-    upload_form = UploadAvatarForm()
+def edit_avatar(user_id):
     crop_form = CropAvatarForm()
     pwd_form = ChangePasswordForm()
     judge(user_id)
     user = User.query.get_or_404(user_id)
-    return render_template('frontend/user/user-edit.html', user=user, upload_form=upload_form, crop_form=crop_form,
-                           pwd_form=pwd_form)
+    return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form)
+
+
+@user_bp.route('/change-password/', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    pwd_form = ChangePasswordForm()
+    judge(current_user.id)
+    if pwd_form.validate_on_submit():
+        password = pwd_form.password2.data
+        current_user.set_password(password)
+        db.session.commit()
+        flash('密码修改成功！', 'success')
+    user = User.query.get_or_404(current_user.id)
+    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user)
 
 
 @user_bp.route('/user-privacy-setting/<user_id>/')

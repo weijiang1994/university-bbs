@@ -348,7 +348,8 @@
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.index', user_id=user.id) }}">个人资料</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.notifications', user_id=user.id) }}">通知</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.contact', user_id=user.id) }}">私信</a>
-            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.edit_user', user_id=user.id) }}">资料编辑</a>
+            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
+            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.change_password', user_id=user.id) }}">修改密码</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
         </div>
     </div>
@@ -374,9 +375,14 @@
             <span class="badge badge-primary badge-pill">1</span>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a class="{% if title == '资料编辑' %}
+            <a class="{% if title == '修改头像' %}
                 a-link{% else %} li-fade
-            {% endif %}  text-decoration-none" href="{{ url_for('user.edit_user', user_id=user.id) }}">资料编辑</a>
+            {% endif %}  text-decoration-none" href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="{% if title == '修改密码' %}
+                a-link{% else %} li-fade
+            {% endif %}  text-decoration-none" href="{{ url_for('user.change_password') }}">修改密码</a>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a class="{% if title == '隐私设置' %}

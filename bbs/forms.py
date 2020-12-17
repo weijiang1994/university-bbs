@@ -176,6 +176,6 @@ class CropAvatarForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('旧密码', validators=[DataRequired()])
     password = PasswordField('新密码', validators=[
-        DataRequired(), Length(8, 128), EqualTo('password2')])
+        DataRequired(), Length(8, 128), EqualTo('password2', message='两次密码必须一致!')])
     password2 = PasswordField('确认', validators=[DataRequired()])
     set = SubmitField(u'修改', render_kw={'class': 'btn btn-success'})
