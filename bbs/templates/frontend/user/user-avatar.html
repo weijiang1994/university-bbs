@@ -8,7 +8,7 @@
     <!--suppress ALL -->
     <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
     <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
-
+    {{ avatars.init_jcrop() }}
     <style>
         #preview-box {
             display: block;
@@ -65,36 +65,26 @@
                                     <b>头像文件格式必须为.jpg或者.png且最大不超过2M！</b>
                                 </small>
                                 <div class="mt-2">
-                                    <img id="dropImage" class="img-fluid" src="/normal/image/avatar_raw/{{ user.avatar_raw }}">
+                                    {#                                    <img id="dropImage" class="img-fluid" src="/normal/image/avatar_raw/{{ user.avatar_raw }}">#}
+                                    {{ avatars.crop_box('normal.get_avatar_raw', current_user.avatar_raw, clsname='img-fluid') }}
+                                    <form method="post" action="{{ url_for('.crop_avatar') }}">
+                                        <input type="hidden" id="x" name="x">
+                                        <input type="hidden" id="y" name="y">
+                                        <input type="hidden" id="w" name="w">
+                                        <input type="hidden" id="h" name="h">
+                                        <input type="submit" class="btn btn-success mt-2" value="Crop!">
+                                    </form>
                                 </div>
-                                <form class="form-group mt-2">
-                                    {{ render_form(crop_form, action=url_for('.index', user_id=user.id)) }}
-                                </form>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
     </body>
     <script>
-        $('#dropImage').Jcrop({
-            onChange: showPreview,
-            onSelect: showPreview,
-            aspectRatio: 1
-        });
-        function showPreview(coords) {
-            var rx = 100 / coords.w;
-            var ry = 100 / coords.h;
-            $('#preview').css({
-                width: Math.round(rx * 500) + 'px',
-                height: Math.round(ry * 370) + 'px',
-                marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-                marginTop: '-' + Math.round(ry * coords.y) + 'px'
-            });
-        }
 
         function setFilename() {
             let filename = $("#inputGroupFile02")[0].files[0];

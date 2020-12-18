@@ -110,8 +110,22 @@ def upload_avatar():
     file = request.files.get('image')
     filename = file.filename
     filename = get_md5(str(datetime.datetime.now())) + '.' + filename.split(r'.')[-1]
-    upload_path = os.path.join(basedir, 'resources/avatar_raw', filename)
+    upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
     file.save(upload_path)
     current_user.avatar_raw = filename
+    db.session.commit()
+    return redirect(url_for('.edit_avatar', user_id=current_user.id))
+
+
+@user_bp.route('/crop-avatar/', methods=['POST'])
+@login_required
+def crop_avatar():
+    x = request.form.get('x')
+    y = request.form.get('y')
+    w = request.form.get('w')
+    h = request.form.get('h')
+    filename = 'raw/' + current_user.avatar_raw
+    files = avatars.crop_avatar(filename, x, y, w, h)
+    current_user.avatar = '/normal/image/avatars/'+files[2]
     db.session.commit()
     return redirect(url_for('.edit_avatar', user_id=current_user.id))

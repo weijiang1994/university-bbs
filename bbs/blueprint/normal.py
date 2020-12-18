@@ -30,7 +30,7 @@ def get_image(path, filename):
 
 @normal_bp.route('/image/<string:filename>/', methods=['GET'])
 def get_avatar_raw(filename):
-    path = basedir + '/resources/avatar_raw/'
+    path = basedir + '/resources/avatars/raw/'
     return send_from_directory(path, filename)
 
 

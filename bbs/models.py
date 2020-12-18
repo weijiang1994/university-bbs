@@ -39,16 +39,17 @@ class User(db.Model, UserMixin):
     location = db.Column(db.String(128), default='', comment='user location')
     avatar = db.Column(db.String(100), nullable=False, comment='user avatar')
     avatar_raw = db.Column(db.String(100), comment='use avatar raw file')
+    following_permission = db.Column(db.BOOLEAN, default=True)
+    follower_permission = db.Column(db.BOOLEAN, default=True)
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
-
-    collect_permission = db.Column(db.BOOLEAN, default=True)
-    comment_permission = db.Column(db.BOOLEAN, default=True)
-    post_permission = db.Column(db.BOOLEAN, default=True)
 
     status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
     role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'), default=3, comment='user role id default is 3 '
                                                                                    'that is student role')
+    post_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
+    comment_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
+    collect_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
 
     college = db.relationship('College', back_populates='user')
     role = db.relationship('Role', back_populates='user')
@@ -61,6 +62,10 @@ class User(db.Model, UserMixin):
                                 lazy='dynamic', cascade='all')
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
                                 lazy='dynamic', cascade='all')
+
+    range_post = db.relationship('Range', back_populates='user_post', foreign_keys=[post_range_id])
+    range_comment = db.relationship('Range', back_populates='user_comment', foreign_keys=[comment_range_id])
+    range_collect = db.relationship('Range', back_populates='user_collect', foreign_keys=[collect_range_id])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -231,3 +236,23 @@ class ReportCate(db.Model):
     timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
 
     post_report = db.relationship('PostReport', back_populates='report_cate', cascade='all')
+
+
+class Range(db.Model):
+    __tablename__ = 't_range'
+
+    id = db.Column(db.INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    name = db.Column(db.String(40), nullable=False)
+
+    user_post = db.relationship('User', back_populates='range_post', foreign_keys=[User.post_range_id], cascade='all')
+    user_comment = db.relationship('User', back_populates='range_comment', foreign_keys=[User.comment_range_id],
+                                   cascade='all')
+    user_collect = db.relationship('User', back_populates='range_collect', foreign_keys=[User.collect_range_id],
+                                   cascade='all')
+
+    @staticmethod
+    def init_range():
+        ranges = ['全部', '最近半年', '最近一个月', '最近三天', '不可见']
+        for r in ranges:
+            db.session.add(Range(name=r))
+        db.session.commit()

@@ -22,10 +22,8 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index_bp.index'))
-    print('爬虫请求...')
     form = LoginForm()
     if form.validate_on_submit():
-        print('通过了认证了!')
         usr = form.usr_email.data
         pwd = form.password.data
         user = User.query.filter(or_(User.username == usr, User.email == usr.lower())).first()
@@ -51,6 +49,7 @@ def logout():
     return redirect(url_for('index_bp.index'))
 
 
+# noinspection PyArgumentList
 @auth_bp.route('/register/', methods=['GET', 'POST'])
 def register():
     colleges = College.query.all()
