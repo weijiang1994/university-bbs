@@ -1,0 +1,20 @@
+{% extends "frontend/base.html" %}
+{% block title %}
+    页面未找到
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container mt-2">
+            <div class="card-body">
+                <div class="card text-white bg-dark mb-3">
+                    <div class="card-body">
+                        <img src="{{ url_for('static', filename='img/404.png') }}" class="img-fluid d-block mx-auto">
+                    </div>
+                    <div class="card-footer text-right">
+                        <a class="btn btn-outline-danger" href="/">返回主页</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
