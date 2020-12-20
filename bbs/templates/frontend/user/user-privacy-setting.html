@@ -16,31 +16,11 @@
                     {% include "_flash.html" %}
                     <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">隐私设置</span></p>
                     <div class="mt-2 div-user-page">
-                        <fieldset>
-                            <legend>帖子设置</legend>
-                            <div class="form-group d-flex">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-                                    <label class="custom-control-label" for="customSwitch1">全部</label>
-                                </div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-                                    <label class="custom-control-label" for="customSwitch1">半年</label>
-                                </div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-                                    <label class="custom-control-label" for="customSwitch1">一月</label>
-                                </div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-                                    <label class="custom-control-label" for="customSwitch1">三天</label>
-                                </div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-                                    <label class="custom-control-label" for="customSwitch1">隐藏</label>
-                                </div>
-                            </div>
-                        </fieldset>
+                        <input type="radio" value="全部" >
+                        <input type="radio" value="半年" >
+                        <input type="radio" value="一月" >
+                        <input type="radio" value="三天" >
+                        <input type="radio" value="隐藏" >
                     </div>
                 </div>
             </div>
