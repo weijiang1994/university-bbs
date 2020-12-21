@@ -136,6 +136,10 @@ def crop_avatar():
     y = request.form.get('y')
     w = request.form.get('w')
     h = request.form.get('h')
+    print('x is ', x)
+    print('y is ', y)
+    print('w is ', w)
+    print('h is ', h)
     filename = 'raw/' + current_user.avatar_raw
     files = avatars.crop_avatar(filename, x, y, w, h)
     current_user.avatar = '/normal/image/avatars/'+files[2]
