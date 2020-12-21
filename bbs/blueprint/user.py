@@ -12,8 +12,8 @@ import os
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from bbs.models import User
-from bbs.forms import EditUserForm, UploadAvatarForm, CropAvatarForm, ChangePasswordForm
+from bbs.models import User, Notification
+from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
 from bbs.utils import get_md5
@@ -47,7 +47,14 @@ def index(user_id):
     form.website.data = user.website
     form.slogan.data = user.slogan
     form.location.data = user.location
-    return render_template('frontend/user/user-index.html', user=user, form=form)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-index.html', user=user, form=form, notices=notices)
+
+
+def get_notices_counts():
+    notices = Notification.query.filter(Notification.read == 0, Notification.receive_id == current_user.id). \
+        order_by(Notification.timestamp.desc()).all()
+    return notices
 
 
 def judge(user_id):
@@ -61,7 +68,20 @@ def judge(user_id):
 def notifications(user_id):
     judge(user_id)
     user = User.query.get_or_404(user_id)
-    return render_template('frontend/user/user-notification.html', user=user)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-notification.html', user=user, notices=notices)
+
+
+@user_bp.route('/notification-read/<user_id>/')
+@login_required
+def read(user_id):
+    return '123'
+
+
+@user_bp.route('notification-unread/<user_id>/')
+@login_required
+def unread(user_id):
+    return 123
 
 
 @user_bp.route('/contacts/<user_id>/')
@@ -69,7 +89,8 @@ def notifications(user_id):
 def contact(user_id):
     judge(user_id)
     user = User.query.get_or_404(user_id)
-    return render_template('frontend/user/user-contact.html', user=user)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-contact.html', user=user, notices=notices)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
@@ -79,7 +100,9 @@ def edit_avatar(user_id):
     pwd_form = ChangePasswordForm()
     judge(user_id)
     user = User.query.get_or_404(user_id)
-    return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form,
+                           notices=notices)
 
 
 @user_bp.route('/change-password/', methods=['GET', 'POST'])
@@ -93,7 +116,8 @@ def change_password():
         db.session.commit()
         flash('密码修改成功！', 'success')
     user = User.query.get_or_404(current_user.id)
-    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user, notices=notices)
 
 
 @user_bp.route('/user-privacy-setting/<user_id>/', methods=['GET', 'POST'])
@@ -113,7 +137,8 @@ def privacy_setting(user_id):
         user.contact_range_id = contact_range
         db.session.commit()
         flash('数据更新成功!', 'success')
-    return render_template('frontend/user/user-privacy-setting.html', user=user)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-privacy-setting.html', user=user, notices=notices)
 
 
 @user_bp.route('/upload-avatar/', methods=['POST'])
@@ -136,12 +161,11 @@ def crop_avatar():
     y = request.form.get('y')
     w = request.form.get('w')
     h = request.form.get('h')
-    print('x is ', x)
-    print('y is ', y)
-    print('w is ', w)
-    print('h is ', h)
-    filename = 'raw/' + current_user.avatar_raw
+    if current_user.avatar_raw:
+        filename = 'raw/' + current_user.avatar_raw
+    else:
+        filename = None
     files = avatars.crop_avatar(filename, x, y, w, h)
-    current_user.avatar = '/normal/image/avatars/'+files[2]
+    current_user.avatar = '/normal/image/avatars/' + files[2]
     db.session.commit()
     return redirect(url_for('.edit_avatar', user_id=current_user.id))

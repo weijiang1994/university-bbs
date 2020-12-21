@@ -72,9 +72,7 @@
                                     <div class="d-flex flex-row-reverse">
                                         <a href="/post/new/" class="btn btn-secondary h-75 ml-2"><i class="fa fa-plus"></i></a>
                                     </div>
-
                                 </div>
-
                                 <hr class="bg-secondary">
                                 <div class="d-flex p-1">
                                     <div class="pr-2 dropdown">
@@ -96,8 +94,9 @@
                                             操作
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="{{url_for('profile.index', user_id=current_user.id)}}">个人中心</a>
-                                            <a class="dropdown-item" href="/auth/logout/">登出</a>
+                                            <a class="dropdown-item" href="{{url_for('profile.index', user_id=current_user.id)}}"><i class="fa fa-fw fa-user mr-2"></i>个人中心</a>
+                                            <a class="dropdown-item" href="{{url_for('user.index', user_id=current_user.id)}}"><i class="fa fa-fw fa-cog mr-2"></i>设置</a>
+                                            <a class="dropdown-item" href="/auth/logout/"><i class="fa fa-fw fa-sign-out mr-2"></i>登出</a>
                                         </div>
                                     </div>
                                 </div>

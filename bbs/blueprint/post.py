@@ -11,7 +11,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 
 from bbs.blueprint.normal import to_html
-from bbs.models import Post, Collect, PostReport, ReportCate, Comments
+from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -168,9 +168,14 @@ def post_collect(post_id):
 def post_comment():
     comment_content = request.form.get('commentContent')
     post_id = request.form.get('postId')
+    post = Post.query.get_or_404(post_id)
     comment_content = to_html(comment_content)
     com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
-    post = Post.query.get_or_404(post_id)
+    # 如果评论帖子用户与发帖用户不为同一人则发送消息通知
+    if current_user.id != post.author_id:
+        notice = Notification(target_id=post_id, target_name=post.title, send_user=current_user.username,
+                              receive_id=post.author_id, msg=comment_content)
+        db.session.add(notice)
     post.update_time = datetime.datetime.now()
     db.session.add(com)
     db.session.commit()
@@ -188,8 +193,11 @@ def reply_comment():
     post_id = request.form.get('post_id')
     reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id)
     post = Post.query.get_or_404(post_id)
+    notice = Notification(target_id=post_id, target_name=post.title, send_user=current_user.username, msg=comment,
+                          receive_id=comment_user_id)
     post.update_time = datetime.datetime.now()
     db.session.add(reply)
+    db.session.add(notice)
     db.session.commit()
     return jsonify({'tag': 1})
 

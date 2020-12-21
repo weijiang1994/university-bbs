@@ -68,6 +68,7 @@ class User(db.Model, UserMixin):
     range_comment = db.relationship('Range', back_populates='user_comment', foreign_keys=[comment_range_id])
     range_collect = db.relationship('Range', back_populates='user_collect', foreign_keys=[collect_range_id])
     range_contact = db.relationship('Range', back_populates='user_contact', foreign_keys=[contact_range_id])
+    receive_notify = db.relationship('Notification', back_populates='receive_user', cascade='all')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -260,3 +261,19 @@ class Range(db.Model):
         for r in ranges:
             db.session.add(Range(name=r))
         db.session.commit()
+
+
+class Notification(db.Model):
+    __tablename__ = 't_notification'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    type = db.Column(db.INTEGER, default=0, comment='notification type 1 post')
+    target_id = db.Column(db.INTEGER)
+    target_name = db.Column(db.String(200))
+    send_user = db.Column(db.String(40))
+    receive_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    msg = db.Column(db.String(400))
+    read = db.Column(db.INTEGER, default=0, comment='is read? 0 no 1 yes')
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    receive_user = db.relationship('User', back_populates='receive_notify')
