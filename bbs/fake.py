@@ -15,6 +15,7 @@ from bbs.extensions import db
 from bbs.setting import basedir
 from bbs.utils import get_text_plain
 
+
 # noinspection PyArgumentList
 def generate_user():
     fa = Faker()
@@ -23,7 +24,11 @@ def generate_user():
                     college_id=random.randint(1, 7),
                     email=fa.email(),
                     nickname=fa.name(),
-                    status_id=1)
+                    status_id=1,
+                    comment_range_id=1,
+                    collect_range_id=1,
+                    post_range_id=1,
+                    contact_range_id=1)
         user.set_password('12345678')
         user.generate_avatar()
         db.session.add(user)

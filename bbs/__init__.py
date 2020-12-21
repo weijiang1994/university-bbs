@@ -6,6 +6,9 @@ file: __init__.py
 @time: 2020/11/26 21:42
 @desc:
 """
+import logging
+from logging.handlers import RotatingFileHandler
+
 import click
 from flask import Flask, render_template
 from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment
@@ -28,7 +31,7 @@ def create_app(config_name=None):
     register_cmd(app)
     register_bp(app)
     register_error_handlers(app)
-
+    register_log(app)
     return app
 
 
@@ -96,6 +99,8 @@ def register_cmd(app: Flask):
         click.echo('初始化权限表完成!')
         init_role()
         click.echo('初始化角色表完成!')
+        Range.init_range()
+        click.echo('初始化隐私表完成!')
         db.session.commit()
         click.echo('数据库初始化完成!')
         click.confirm('是否添加测试数据?', abort=True)
@@ -162,3 +167,13 @@ def generate_fake_data():
     generate_user()
     generate_post()
     generate_real_post()
+
+
+def register_log(app: Flask):
+    app.logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler = RotatingFileHandler('logs/bbs.log', maxBytes=10 * 1024 * 1024, backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
+    # if not app.debug:
+    app.logger.addHandler(file_handler)

@@ -246,7 +246,7 @@
                 <a href="{{ url_for('profile.following', user_id=user.id) }}" class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
             </p>
             {% if current_user.id == user.id %}
-                <a class="btn btn-outline-success">个人主页</a>
+                <a class="btn btn-outline-success" href="{{ url_for('user.index', user_id=current_user.id) }}">个人主页</a>
             {% else %}
                 {% if current_user.is_following(user) %}
                     <a class="btn btn-outline-danger" href="/profile/unfollow/{{ user.id }}/">取消关注</a>

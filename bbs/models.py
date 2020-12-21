@@ -50,6 +50,7 @@ class User(db.Model, UserMixin):
     post_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
     comment_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
     collect_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
+    contact_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
 
     college = db.relationship('College', back_populates='user')
     role = db.relationship('Role', back_populates='user')
@@ -66,6 +67,7 @@ class User(db.Model, UserMixin):
     range_post = db.relationship('Range', back_populates='user_post', foreign_keys=[post_range_id])
     range_comment = db.relationship('Range', back_populates='user_comment', foreign_keys=[comment_range_id])
     range_collect = db.relationship('Range', back_populates='user_collect', foreign_keys=[collect_range_id])
+    range_contact = db.relationship('Range', back_populates='user_contact', foreign_keys=[contact_range_id])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -249,10 +251,12 @@ class Range(db.Model):
                                    cascade='all')
     user_collect = db.relationship('User', back_populates='range_collect', foreign_keys=[User.collect_range_id],
                                    cascade='all')
+    user_contact = db.relationship('User', back_populates='range_contact', foreign_keys=[User.contact_range_id],
+                                   cascade='all')
 
     @staticmethod
     def init_range():
-        ranges = ['全部', '最近半年', '最近一个月', '最近三天', '不可见']
+        ranges = ['全部', '半年', '一月', '三天', '隐藏', '关注我的']
         for r in ranges:
             db.session.add(Range(name=r))
         db.session.commit()

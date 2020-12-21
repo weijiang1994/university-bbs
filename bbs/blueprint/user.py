@@ -96,11 +96,23 @@ def change_password():
     return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user)
 
 
-@user_bp.route('/user-privacy-setting/<user_id>/')
+@user_bp.route('/user-privacy-setting/<user_id>/', methods=['GET', 'POST'])
 @login_required
 def privacy_setting(user_id):
     judge(user_id)
     user = User.query.get_or_404(user_id)
+
+    if request.method == 'POST':
+        post_range = request.form.get('postPrivacy')
+        comment_range = request.form.get('commentPrivacy')
+        collect_range = request.form.get('collectPrivacy')
+        contact_range = request.form.get('contactPrivacy')
+        user.post_range_id = post_range
+        user.comment_range_id = comment_range
+        user.collect_range_id = collect_range
+        user.contact_range_id = contact_range
+        db.session.commit()
+        flash('数据更新成功!', 'success')
     return render_template('frontend/user/user-privacy-setting.html', user=user)
 
 

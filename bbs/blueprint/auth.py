@@ -61,7 +61,7 @@ def register():
         email = form.user_email.data
         college = form.colleges.data
         user = User(username=username, college_id=college, nickname=nickname, email=email, password=password,
-                    status_id=1)
+                    status_id=1, post_range_id=1, comment_range_id=1, collect_range_id=1, contact_range_id=1)
         user.generate_avatar()
         user.set_password(password)
         db.session.add(user)
