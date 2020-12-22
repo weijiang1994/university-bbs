@@ -18,6 +18,11 @@
 
 .user-home-title{
     font-weight: bold;
+    font-size: 22px;
+}
+
+.user-sub-title{
+    font-weight: bold;
     font-size: 18px;
 }
 
@@ -29,4 +34,15 @@
     border-radius: 5px;
     padding: 10px;
     background: #292b2c;
+}
+
+.div-blockquote-comment{
+    border-radius: 5px;
+    color: white;
+    background: #353539;
+    padding: 8px;
+}
+
+.div-blockquote-comment>p{
+    margin-bottom: 3px;
 }

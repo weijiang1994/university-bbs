@@ -351,6 +351,7 @@
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.change_password', user_id=user.id) }}">修改密码</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
+            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.trash_station_post', user_id=user.id) }}">回收站</a>
         </div>
     </div>
 {% endmacro %}
@@ -393,5 +394,103 @@
                 a-link{% else %} li-fade
             {% endif %}  text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
         </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="{% if title == '回收站' %}
+                a-link{% else %} li-fade
+            {% endif %}  text-decoration-none" href="{{ url_for('user.trash_station_post', user_id=user.id) }}">回收站</a>
+        </li>
     </ul>
+{% endmacro %}
+
+{% macro post_list(posts) %}
+    <ul class="list-group list-group-flush ul-posts">
+        {% for post in posts %}
+            <li class="list-group-item">
+                <div class="d-flex flex-row-reverse">
+                    <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
+                    {% if current_user.id == post.author_id %}
+                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </a>
+                        {% if request.endpoint == 'profile.index' %}
+                            <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
+                                <a class="dropdown-item" href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">删除</a>
+                                <a class="dropdown-item" href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
+                            </div>
+                        {% else %}
+                            <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
+                                <a class="dropdown-item" href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">恢复</a>
+                            </div>
+                        {% endif %}
+
+                    {% endif %}
+                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
+                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
+                </div>
+                <p>{{ post.textplain|striptags|truncate(100) }}</p>
+                <div class="d-flex">
+                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ post.unlikes }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ post.comments|length }})&nbsp;&nbsp;</a>
+                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
+                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="float-right mt-1">
+        {% if tag %}
+            {{ render_pagination(pagination, size='sm') }}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% macro comment_list(comments) %}
+    <ul class="list-group list-group-flush ul-posts">
+        {% for comment in comments %}
+            <li class="list-group-item">
+                <div class="d-flex flex-row-reverse">
+                    {% if current_user.id == comment.author_id %}
+                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </a>
+                        {% if request.endpoint == 'profile.profile_comment' %}
+                            <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
+                                <a class="dropdown-item" href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">删除</a>
+                            </div>
+                        {% else %}
+                            <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
+                                <a class="dropdown-item" href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">恢复</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <a class="text-decoration-none text-muted flex-grow-1 text-left f-12-b" >
+                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                    </a>
+                </div>
+
+
+                {% if comment.replied_id %}
+                    <div class="div-blockquote-comment">
+                        <p>引用<span class="span-blockquote">@{{ comment.replied.author.nickname }}</span>回复</p>
+                        {{ comment.replied.body|safe }}
+                    </div>
+                    {{ comment.body|safe }}
+                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                {% else %}
+                    {{ comment.body|safe|string }}
+                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% if tag %}
+        <div class="float-right mt-1">
+            {{ render_pagination(pagination, size='sm') }}
+        </div>
+    {% endif %}
 {% endmacro %}

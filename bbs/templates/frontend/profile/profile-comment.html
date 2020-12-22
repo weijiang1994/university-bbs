@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import profile_header, profile_moment, render_pagination with context %}
+{% from "macro.html" import profile_header, profile_moment, comment_list with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -19,16 +19,7 @@
                 text-align: center;
             }
         }
-        .div-blockquote-comment{
-            border-radius: 5px;
-            color: white;
-            background: #353539;
-            padding: 8px;
-        }
 
-        .div-blockquote-comment>p{
-            margin-bottom: 3px;
-        }
 
         .span-blockquote{
             color: #80bdff;
@@ -44,35 +35,12 @@
     <main>
         {{ moment.locale(auto_detect=True) }}
         <div class="container mt-2">
+            {% include "_flash.html" %}
             {{ profile_header() }}
             {{ profile_moment('评论') }}
             {% if comments %}
                 <div class="mt-2">
-                    <ul class="list-group list-group-flush ul-posts">
-                        {% for comment in comments %}
-                            <li class="list-group-item">
-                                <a class="text-decoration-none text-muted flex-grow-1 text-left f-12-b" >
-                                    <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
-                                </a>
-                                {% if comment.replied_id %}
-                                    <div class="div-blockquote-comment">
-                                        <p>引用<span class="span-blockquote">@{{ comment.replied.author.nickname }}</span>回复</p>
-                                        {{ comment.replied.body|safe }}
-                                    </div>
-                                    {{ comment.body|safe }}
-                                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
-                                {% else %}
-                                    {{ comment.body|safe|string }}
-                                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    {% if tag %}
-                        <div class="float-right mt-1">
-                            {{ render_pagination(pagination, size='sm') }}
-                        </div>
-                    {% endif %}
+                    {{ comment_list(comments) }}
                 </div>
             {% else %}
                 {% if current_user.id == user.id %}

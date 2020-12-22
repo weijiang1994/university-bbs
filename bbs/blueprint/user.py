@@ -10,9 +10,9 @@
 import datetime
 import os
 
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification
+from bbs.models import User, Notification, Post, Comments
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
@@ -169,3 +169,65 @@ def crop_avatar():
     current_user.avatar = '/normal/image/avatars/' + files[2]
     db.session.commit()
     return redirect(url_for('.edit_avatar', user_id=current_user.id))
+
+
+@user_bp.route('/trash-station-post/<user_id>/')
+@login_required
+def trash_station_post(user_id):
+    judge(user_id)
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
+    pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 2).paginate(page=page,
+                                                                                            per_page=per_page)
+    posts = pagination.items
+    user = User.query.get_or_404(user_id)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-trash-post.html', posts=posts, tag=pagination.total > per_page,
+                           user=user, pagination=pagination, notices=notices)
+
+
+@user_bp.route('/trash-station-comment/<user_id>/')
+@login_required
+def trash_station_comment(user_id):
+    judge(user_id)
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
+    pagination = Comments.query.filter(Comments.author_id == user_id, Comments.delete_flag == 1). \
+        paginate(page=page, per_page=per_page)
+    comments = pagination.items
+    user = User.query.get_or_404(user_id)
+    notices = get_notices_counts()
+    return render_template('frontend/user/user-trash-comment.html', comments=comments, pagination=pagination,
+                           tag=pagination.total > per_page, user=user, notices=notices)
+
+
+@user_bp.route('/post-recover/<post_id>/')
+@login_required
+def post_delete_or_recover(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author_id != current_user.id:
+        flash('你无权操作!', 'info')
+        return redirect(request.referrer)
+    if post.status_id == 1:
+        post.status_id = 2
+    else:
+        post.status_id = 1
+    db.session.commit()
+    flash('帖子状态操作成功!', 'success')
+    return redirect(request.referrer)
+
+
+@user_bp.route('/comment-operator/<comment_id>/')
+@login_required
+def comment_operator(comment_id):
+    comment = Comments.query.get_or_404(comment_id)
+    if comment.author_id != current_user.id:
+        flash('你无权操作!', 'info')
+        return redirect(request.referrer)
+    if comment.delete_flag == 1:
+        comment.delete_flag = 0
+    else:
+        comment.delete_flag = 1
+    db.session.commit()
+    flash('评论状态操作成功！', 'success')
+    return redirect(request.referrer)

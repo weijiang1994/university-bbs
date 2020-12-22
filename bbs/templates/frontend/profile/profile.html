@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import profile_header, profile_moment, render_pagination with context %}
+{% from "macro.html" import profile_header, profile_moment, render_pagination, post_list with context %}
 {% block head %}
     {{ super() }}
     <style>
@@ -39,50 +39,16 @@
             {{ profile_moment('帖子') }}
             {% if posts %}
                 <div class="mt-2">
-                    <ul class="list-group list-group-flush ul-posts">
-                        {% for post in posts %}
-                            <li class="list-group-item">
-                                <div class="d-flex flex-row-reverse">
-                                    <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
-                                    {% if current_user.id == post.author_id %}
-                                        <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-h"></i>
-                                        </a>
-                                        <div class="dropdown-menu" x-placement="left" aria-labelledby="commentEmoji">
-                                            <a class="dropdown-item">删除</a>
-                                            <a class="dropdown-item" href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
-                                        </div>
-                                    {% endif %}
-                                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
-                                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
-                                </div>
-                                <p>{{ post.textplain|striptags|truncate(100) }}</p>
-                                <div class="d-flex">
-                                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ post.unlikes }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ post.comments|length }})&nbsp;&nbsp;</a>
-                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
-                                    </a>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="float-right mt-1">
-                        {% if tag %}
-                            {{ render_pagination(pagination, size='sm') }}
-                        {% endif %}
-                    </div>
+                {{ post_list(posts) }}
                 </div>
             {% else %}
                 {% if current_user.id == user.id %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">你还没有发送过评论!</p>
+                        <p class="text-muted">你还没有发送过帖子!</p>
                     </div>
                 {% else %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">他还没有发送过评论!</p>
+                        <p class="text-muted">他还没有发送过帖子!</p>
                     </div>
                 {% endif %}
             {% endif %}
