@@ -494,3 +494,29 @@
         </div>
     {% endif %}
 {% endmacro %}
+
+{% macro chat_content(person) %}
+    <div class="div-chat-content" data-chat="{{ person }}">
+        <div class="d-flex mb-2 ml-1">
+            <img class="img-profile-bg-50" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
+            <div class="div-msg-content">
+                <small><b>2020-12-22 16:43</b></small>
+                <p>But we’re probably gonna need a new carpet.</p>
+            </div>
+        </div>
+        <div class="d-flex mb-2 ml-1">
+            <img class="img-profile-bg-50" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
+            <div class="div-msg-content">
+                <small><b>2020-12-22 16:43</b></small>
+                <p>But we’re probably gonna need a new carpet.</p>
+            </div>
+        </div>
+        <div class="d-flex flex-row-reverse mb-2 mr-1">
+            <img class="img-profile-bg-50 ml-1" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
+            <div class="div-msg-content">
+                <small><b>2020-12-22 16:43</b></small>
+                <p>But we’re probably gonna need a new carpet.</p>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
