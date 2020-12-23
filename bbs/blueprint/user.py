@@ -17,15 +17,15 @@ from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
 from bbs.utils import get_md5
-
+from bbs.decorators import user_permission_required
 user_bp = Blueprint('user', __name__, url_prefix='/user/')
 
 
 @user_bp.route('/index/<user_id>/', methods=['GET', 'POST'])
 @login_required
+@user_permission_required
 def index(user_id):
     form = EditUserForm()
-    judge(user_id)
     user = User.query.get_or_404(user_id)
     if form.validate_on_submit():
         slogan = form.slogan.data
@@ -57,37 +57,41 @@ def get_notices_counts():
     return notices
 
 
-def judge(user_id):
-    if current_user.id != int(user_id):
-        flash('您没有权限访问该页面!', 'danger')
-        return redirect(url_for('index_bp.index'))
-
-
 @user_bp.route('/notifications/<user_id>/')
 @login_required
+@user_permission_required
 def notifications(user_id):
-    judge(user_id)
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
-    return render_template('frontend/user/user-notification.html', user=user, notices=notices)
-
-
-@user_bp.route('/notification-read/<user_id>/')
-@login_required
-def read(user_id):
-    return '123'
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
+    pagination = Notification.query.filter(Notification.receive_id == user_id, Notification.read == 1).paginate(
+        page=page,
+        per_page=per_page)
+    read_notices = pagination.items
+    return render_template('frontend/user/user-notification-read.html', user=user, notices=notices,
+                           read_notices=read_notices, tag=pagination.total > per_page)
 
 
 @user_bp.route('notification-unread/<user_id>/')
 @login_required
 def unread(user_id):
-    return 123
+    user = User.query.get_or_404(user_id)
+    notices = get_notices_counts()
+    page = request.args.get('page', default=1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
+    pagination = Notification.query.filter(Notification.receive_id == user_id, Notification.read == 0).paginate(
+        page=page,
+        per_page=per_page)
+    unread_notices = pagination.items
+    return render_template('frontend/user/user-notification-unread.html', user=user, notices=notices,
+                           unread_notices=unread_notices, tag=pagination.total > per_page)
 
 
 @user_bp.route('/contacts/<user_id>/')
 @login_required
+@user_permission_required
 def contact(user_id):
-    judge(user_id)
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
     return render_template('frontend/user/user-contact.html', user=user, notices=notices)
@@ -95,21 +99,21 @@ def contact(user_id):
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
 @login_required
+@user_permission_required
 def edit_avatar(user_id):
     crop_form = CropAvatarForm()
     pwd_form = ChangePasswordForm()
-    judge(user_id)
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
     return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form,
                            notices=notices)
 
 
-@user_bp.route('/change-password/', methods=['GET', 'POST'])
+@user_bp.route('/change-password/<user_id>/', methods=['GET', 'POST'])
 @login_required
-def change_password():
+@user_permission_required
+def change_password(user_id):
     pwd_form = ChangePasswordForm()
-    judge(current_user.id)
     if pwd_form.validate_on_submit():
         password = pwd_form.password2.data
         current_user.set_password(password)
@@ -122,10 +126,9 @@ def change_password():
 
 @user_bp.route('/user-privacy-setting/<user_id>/', methods=['GET', 'POST'])
 @login_required
+@user_permission_required
 def privacy_setting(user_id):
-    judge(user_id)
     user = User.query.get_or_404(user_id)
-
     if request.method == 'POST':
         post_range = request.form.get('postPrivacy')
         comment_range = request.form.get('commentPrivacy')
@@ -173,8 +176,8 @@ def crop_avatar():
 
 @user_bp.route('/trash-station-post/<user_id>/')
 @login_required
+@user_permission_required
 def trash_station_post(user_id):
-    judge(user_id)
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
     pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 2).paginate(page=page,
@@ -188,8 +191,8 @@ def trash_station_post(user_id):
 
 @user_bp.route('/trash-station-comment/<user_id>/')
 @login_required
+@user_permission_required
 def trash_station_comment(user_id):
-    judge(user_id)
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
     pagination = Comments.query.filter(Comments.author_id == user_id, Comments.delete_flag == 1). \

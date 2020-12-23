@@ -126,5 +126,14 @@ header{
     padding: 10px 10px 10px 0;
 }
 
+.span-blockquote{
+    color: #80bdff;
+}
 
+.p-mt-0{
+    margin-bottom: 0;
+}
 
+.p-mt-1{
+    margin-bottom: 3px;
+}

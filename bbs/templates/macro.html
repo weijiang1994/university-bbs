@@ -253,6 +253,8 @@
                 {% else %}
                     <a class="btn btn-outline-danger" href="/profile/follow/{{ user.id }}/">关注TA</a>
                 {% endif %}
+                <!-- 弹出私信窗口 -->
+                <a class="btn btn-outline-primary">私信</a>
             {% endif %}
 
         </div>
@@ -387,7 +389,7 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a class="{% if title == '修改密码' %}
                 a-link{% else %} li-fade
-            {% endif %}  text-decoration-none" href="{{ url_for('user.change_password') }}">修改密码</a>
+            {% endif %}  text-decoration-none" href="{{ url_for('user.change_password', user_id=user.id) }}">修改密码</a>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a class="{% if title == '隐私设置' %}
@@ -495,28 +497,36 @@
     {% endif %}
 {% endmacro %}
 
-{% macro chat_content(person) %}
-    <div class="div-chat-content" data-chat="{{ person }}">
-        <div class="d-flex mb-2 ml-1">
-            <img class="img-profile-bg-50" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
-            <div class="div-msg-content">
-                <small><b>2020-12-22 16:43</b></small>
-                <p>But we’re probably gonna need a new carpet.</p>
-            </div>
-        </div>
-        <div class="d-flex mb-2 ml-1">
-            <img class="img-profile-bg-50" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
-            <div class="div-msg-content">
-                <small><b>2020-12-22 16:43</b></small>
-                <p>But we’re probably gonna need a new carpet.</p>
-            </div>
-        </div>
-        <div class="d-flex flex-row-reverse mb-2 mr-1">
-            <img class="img-profile-bg-50 ml-1" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
-            <div class="div-msg-content">
-                <small><b>2020-12-22 16:43</b></small>
-                <p>But we’re probably gonna need a new carpet.</p>
-            </div>
-        </div>
+
+{% macro notifications(notices) %}
+    <ul class="list-group list-group-flush ul-posts mt-2">
+        {% for notice in notices %}
+            <li class="list-group-item">
+                <div class="d-flex">
+                    <p class="flex-grow-1 p-mt-1"><span class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 回复你:</span></p>
+                    <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </a>
+                    {% if request.endpoint == 'user.notifications' %}
+                        <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
+                            <a class="dropdown-item">未读</a>
+                            <a class="dropdown-item">删除</a>
+                        </div>
+                    {% else %}
+                        <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
+                            <a class="dropdown-item">已读</a>
+                            <a class="dropdown-item">删除</a>
+                        </div>
+                    {% endif %}
+                </div>
+                {{ notice.msg|safe }}
+                <p class="p-mt-1">来自:<a href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="float-right">
+        {% if tag %}
+            {{ render_pagination(pagination) }}
+        {% endif %}
     </div>
 {% endmacro %}

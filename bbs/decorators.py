@@ -8,7 +8,7 @@
 @Software: PyCharm
 """
 from functools import wraps
-from flask import abort
+from flask import abort, flash
 
 from flask_login import current_user
 
@@ -21,3 +21,13 @@ def admin_permission_required(func):
         return func(*args, **kwargs)
 
     return decorated_function
+
+
+def user_permission_required(func):
+    @wraps(func)
+    def authorized(user_id):
+        if current_user.id != int(user_id):
+            flash('这是别人的东西，你无权干涉!', 'danger')
+            abort(403)
+        return func(user_id)
+    return authorized
