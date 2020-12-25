@@ -6,11 +6,14 @@
 @File    : profile.py
 @Software: PyCharm
 """
+import datetime
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, jsonify
 from flask_login import current_user, login_required
 
 from bbs.models import User, Comments, Post, Collect
 from bbs.blueprint.post import post_collect
+from bbs.utils import TIME_RANGE, PANGU_DATE
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
 
@@ -27,11 +30,12 @@ def index(user_id):
             Post.create_time.desc()).paginate(page=page, per_page=per_page)
         posts = pagination.items
     else:
-        pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 1, Post.is_anonymous == 1).order_by(
-            Post.create_time.desc()).paginate(page=page, per_page=per_page)
-        posts = pagination.items
-    return render_template('frontend/profile/profile.html', user=user, tag=pagination.total > per_page, pagination=pagination,
-                           posts=posts)
+        pagination, posts = get_range_post(user.id,
+                                           page=page,
+                                           per_page=per_page,
+                                           range_day=TIME_RANGE.get(user.range_post.name))
+    return render_template('frontend/profile/profile.html', user=user, tag=pagination.total > per_page,
+                           pagination=pagination, posts=posts)
 
 
 @profile_bp.route('/comment/<user_id>/')
@@ -40,9 +44,13 @@ def profile_comment(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
     per_page = current_app.config['BBS_PER_PAGE']
-    pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
-        Comments.timestamps.desc()).paginate(page=page, per_page=per_page)
-    comments = pagination.items
+    if current_user.id == user.id:
+        pagination = Comments.query.filter(Comments.author_id == user.id, Comments.delete_flag == 0).order_by(
+            Comments.timestamps.desc()).paginate(page=page, per_page=per_page)
+        comments = pagination.items
+    else:
+        pagination, comments = get_range_comment(user_id=user_id, page=page, per_page=per_page, range_day=TIME_RANGE.
+                                                 get(user.range_comment.name))
     return render_template('frontend/profile/profile-comment.html', tag=pagination.total > per_page, user=user,
                            pagination=pagination, comments=comments)
 
@@ -86,9 +94,14 @@ def collect(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
-    pagination = Collect.query.with_parent(user).order_by(Collect.timestamps.desc()).paginate(page=page,
-                                                                                              per_page=per_page)
-    collects = pagination.items
+    if current_user.id == user.id:
+        pagination = Collect.query.filter(
+            Collect.timestamps > datetime.date.today() + datetime.timedelta(days=1)).with_parent(user).order_by(
+            Collect.timestamps.desc()).paginate(page=page, per_page=per_page)
+        collects = pagination.items
+    else:
+        pagination, collects = get_range_collect(user, page, per_page,
+                                                 range_day=TIME_RANGE.get(user.range_collect.name))
     return render_template('frontend/profile/profile-collections.html', user=user, tag=pagination.total > per_page,
                            pagination=pagination, collects=collects)
 
@@ -122,3 +135,39 @@ def following(user_id):
     followings = pagination.items
     return render_template('frontend/profile/profile-following.html', tag=pagination.total > per_page,
                            user=user, pagination=pagination, followings=followings)
+
+
+def get_range_post(user_id, page=1, per_page=10, range_day=-1):
+    date = get_date(range_day)
+    pagination = Post.query.filter(Post.author_id == user_id, Post.status_id == 1, Post.is_anonymous == 1,
+                                   Post.create_time >= date).order_by(Post.create_time.desc()).paginate(page=page,
+                                                                                                        per_page=
+                                                                                                        per_page)
+    posts = pagination.items
+    return pagination, posts
+
+
+def get_range_comment(user_id, page=1, per_page=10, range_day=-1):
+    date = get_date(range_day)
+    pagination = Comments.query.filter(Comments.author_id == user_id, Comments.delete_flag == 0,
+                                       Comments.timestamps >= date).order_by(
+        Comments.timestamps.desc()).paginate(page=page, per_page=per_page)
+    comments = pagination.items
+    return pagination, comments
+
+
+def get_range_collect(user, page=1, per_page=10, range_day=-1):
+    date = get_date(range_day)
+    pagination = Collect.query.filter(Collect.timestamps > date).with_parent(user).order_by(
+        Collect.timestamps.desc()).paginate(page=page,
+                                            per_page=per_page)
+    collects = pagination.items
+    return pagination, collects
+
+
+def get_date(range_day):
+    if range_day == 1:
+        date = datetime.datetime.strptime(PANGU_DATE, '%Y-%m-%d').date()
+    else:
+        date = datetime.date.today() - datetime.timedelta(range_day)
+    return date

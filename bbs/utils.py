@@ -112,6 +112,9 @@ EMOJI_INFOS = [[('angry-face_1f620.png', 'angry-face'),
                 ('worried-face_1f61f.png', 'worried-face'),
                 ('yellow-heart_1f49b.png', 'yellow-heart'),
                 ('zipper-mouth-face_1f910.png', 'zipper-mouth-face')]]
+# 用户帖子、评论、收藏可查范围map
+PANGU_DATE = '1970-01-01'
+TIME_RANGE = {'全部': 1, '半年': 180, '一月': 30, '三天': 3, '隐藏': -1}
 
 
 def get_emoji_url():
