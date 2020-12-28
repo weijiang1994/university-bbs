@@ -6,9 +6,8 @@
 @File    : auth.py
 @Software: PyCharm
 """
-from datetime import datetime
 
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for
 from bbs.models import User, College
 from bbs.extensions import db
 from bbs.forms import RegisterForm, LoginForm

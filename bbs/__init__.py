@@ -12,7 +12,7 @@ from logging.handlers import RotatingFileHandler
 import click
 from flask import Flask, render_template
 from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment
-from bbs.setting import DevelopmentConfig
+from bbs.setting import DevelopmentConfig, ProductionConfig
 from bbs.models import *
 from bbs.blueprint.index import index_bp
 from bbs.blueprint.auth import auth_bp
@@ -26,7 +26,10 @@ from bbs.utils import get_text_plain
 
 def create_app(config_name=None):
     app = Flask('bbs')
-    app.config.from_object(DevelopmentConfig)
+    if config_name is None:
+        app.config.from_object(DevelopmentConfig)
+    else:
+        app.config.from_object(ProductionConfig)
     register_extensions(app)
     register_cmd(app)
     register_bp(app)

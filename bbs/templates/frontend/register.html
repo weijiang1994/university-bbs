@@ -40,6 +40,13 @@
                                     {{ wtf.form_field(form.password) }}
                                     {{ wtf.form_field(form.confirm_pwd) }}
                                     {{ wtf.form_field(form.colleges) }}
+                                    <label for="validationDefaultUsername">验证码</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="captcha" placeholder="请输入验证码" aria-required="true" aria-describedby="inputGroupPrepend2" required>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" onclick="sendCapt()" id="sendCaptcha">发送</button>
+                                        </div>
+                                    </div>
                                     {{ form.submit }}
                                     <hr>
                                     <small>已有账号? <a style="text-decoration: none;" href="{{ url_for('.login') }}">登录.</a>
@@ -50,8 +57,31 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
+    <script>
+        let time = 60;
+        function sendCapt(){
+            let $sendBtn = $("#sendCaptcha");
+            $sendBtn.attr('disabled', true);
+            getRandomCode($sendBtn);
+        }
+
+        //倒计时
+        function getRandomCode(obj) {
+            if (time === 0) {
+                time = 60;
+                obj.text('发送');
+                obj.attr('disabled', false);
+                return;
+            } else {
+                time--;
+                obj.text(time+'(秒)');
+            }
+            setTimeout(function() {
+                getRandomCode(obj);
+            },1000);
+        }
+    </script>
     </body>
 {% endblock %}
