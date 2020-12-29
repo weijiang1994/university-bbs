@@ -14,7 +14,7 @@ from flask_avatars import Avatars
 from flask_ckeditor import CKEditor
 import redis
 from flask_moment import Moment
-
+from flask_mail import Mail
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -25,6 +25,7 @@ ck = CKEditor()
 pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
 rd = redis.Redis(connection_pool=pool)
 moment = Moment()
+mail = Mail()
 
 
 @login_manager.user_loader

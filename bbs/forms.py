@@ -97,7 +97,7 @@ class RegisterForm(FlaskForm):
                                           Length(min=8, max=40, message='用户密码长度限定在8-40位之间')],
                               render_kw={'placeholder': '输入确认密码', 'type': 'password'})
     colleges = SelectField(u'学院', choices=[(1, '计算机')])
-    submit = SubmitField(u'注册', render_kw={'class': 'source-button btn btn-primary btn-xs'})
+    submit = SubmitField(u'注册', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2'})
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)

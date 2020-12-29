@@ -12,12 +12,14 @@ import os
 from bleach import clean, linkify
 from flask import Blueprint, send_from_directory, request, jsonify
 from markdown import markdown
-from werkzeug.utils import secure_filename
 from bbs.setting import basedir
 from flask import current_app, make_response, abort
-from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5
-from flask_login import login_required, current_user
+from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code
+from flask_login import login_required
 import re
+from bbs.email import send_email
+from bbs.models import VerifyCode
+from bbs.extensions import db
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
@@ -67,6 +69,27 @@ def render_md():
     md = request.form.get('md')
     html = to_html(md)
     return jsonify({'html': html})
+
+
+@normal_bp.route('/send-email/', methods=['POST'])
+def send():
+    to_email = request.form.get('user_email')
+    username = request.form.get('user_name')
+    ver_code = generate_ver_code()
+    send_email(to_mail=to_email, subject='Captcha', template='email/verifyCode', username=username,
+               ver_code=ver_code)
+
+    # 判断是否已经存在一个最新的可用的验证码,以确保生效的验证码是用户收到最新邮件中的验证码
+    exist_code = VerifyCode.query.filter(VerifyCode.who == to_email, VerifyCode.is_work == 1).order_by(
+        VerifyCode.timestamps.desc()).first()
+    if exist_code:
+        exist_code.is_work = False
+    nt = datetime.datetime.now()
+    et = nt + datetime.timedelta(minutes=10)
+    verify_code = VerifyCode(val=ver_code, who=to_email, expire_time=et)
+    db.session.add(verify_code)
+    db.session.commit()
+    return jsonify({'tag': 1, 'info': '邮件发送成功!'})
 
 
 # noinspection PyTypeChecker

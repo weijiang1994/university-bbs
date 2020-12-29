@@ -47,10 +47,10 @@ class User(db.Model, UserMixin):
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
     role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'), default=3, comment='user role id default is 3 '
                                                                                    'that is student role')
-    post_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
-    comment_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
-    collect_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
-    contact_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'))
+    post_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
+    comment_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
+    collect_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
+    contact_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
 
     college = db.relationship('College', back_populates='user')
     role = db.relationship('Role', back_populates='user')
@@ -277,3 +277,14 @@ class Notification(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
 
     receive_user = db.relationship('User', back_populates='receive_notify')
+
+
+class VerifyCode(db.Model):
+    __tablename__ = 't_ver_code'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    val = db.Column(db.INTEGER, nullable=False)
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+    expire_time = db.Column(db.DateTime, nullable=False)
+    is_work = db.Column(db.Boolean, default=True)
+    who = db.Column(db.String(40), nullable=False, comment='this ver code belong who')

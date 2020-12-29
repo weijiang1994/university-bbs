@@ -162,6 +162,11 @@ def get_text_plain(html_text):
     return bs.get_text()
 
 
+def generate_ver_code():
+    import random
+    return random.randint(134299, 873242)
+
+
 class MyMDStyleTreeProcessor(Treeprocessor):
     def run(self, root):
         for child in root.getiterator():

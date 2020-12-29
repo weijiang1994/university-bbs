@@ -40,13 +40,14 @@
                                     {{ wtf.form_field(form.password) }}
                                     {{ wtf.form_field(form.confirm_pwd) }}
                                     {{ wtf.form_field(form.colleges) }}
-                                    <label for="validationDefaultUsername">验证码</label>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="captcha" placeholder="请输入验证码" aria-required="true" aria-describedby="inputGroupPrepend2" required>
+                                    <label for="captcha">验证码</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="captcha" id="captcha" placeholder="请输入验证码" aria-required="true" aria-describedby="captcha" required>
                                         <div class="input-group-append">
                                             <button class="btn btn-success" onclick="sendCapt()" id="sendCaptcha">发送</button>
                                         </div>
                                     </div>
+                                    <p class="p-hint">验证码发送成功,10分钟内有效!</p>
                                     {{ form.submit }}
                                     <hr>
                                     <small>已有账号? <a style="text-decoration: none;" href="{{ url_for('.login') }}">登录.</a>
@@ -61,10 +62,27 @@
     </main>
     <script>
         let time = 60;
+        let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+
         function sendCapt(){
             let $sendBtn = $("#sendCaptcha");
+            let $email = $("#user_email");
+            let $username = $("#user_name");
+            if ($username.val() === '' || $email.val() === '' || !reg.test($email.val())){
+                return false;
+            }
             $sendBtn.attr('disabled', true);
             getRandomCode($sendBtn);
+            $.ajax({
+                url: '/normal/send-email/',
+                type: 'post',
+                data: {'user_name': $username.val(), 'user_email': $email.val()},
+                success: function (res){
+                    if (res.tag){
+                        $(".p-hint").slideDown(500).delay(3000).hide(500);
+                    }
+                }
+            })
         }
 
         //倒计时

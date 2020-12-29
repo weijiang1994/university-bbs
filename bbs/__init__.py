@@ -11,8 +11,8 @@ from logging.handlers import RotatingFileHandler
 
 import click
 from flask import Flask, render_template
-from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment
-from bbs.setting import DevelopmentConfig, ProductionConfig
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail
+from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
 from bbs.blueprint.index import index_bp
 from bbs.blueprint.auth import auth_bp
@@ -30,6 +30,7 @@ def create_app(config_name=None):
         app.config.from_object(DevelopmentConfig)
     else:
         app.config.from_object(ProductionConfig)
+
     register_extensions(app)
     register_cmd(app)
     register_bp(app)
@@ -46,6 +47,7 @@ def register_extensions(app: Flask):
     avatars.init_app(app)
     ck.init_app(app)
     moment.init_app(app)
+    mail.init_app(app)
 
 
 def register_bp(app: Flask):

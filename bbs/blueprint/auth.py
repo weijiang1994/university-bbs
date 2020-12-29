@@ -6,9 +6,10 @@
 @File    : auth.py
 @Software: PyCharm
 """
+import datetime
 
-from flask import Blueprint, render_template, flash, redirect, url_for
-from bbs.models import User, College
+from flask import Blueprint, render_template, flash, redirect, url_for, request
+from bbs.models import User, College, VerifyCode
 from bbs.extensions import db
 from bbs.forms import RegisterForm, LoginForm
 from flask_login import current_user, login_user, logout_user
@@ -59,10 +60,29 @@ def register():
         password = form.confirm_pwd.data
         email = form.user_email.data
         college = form.colleges.data
-        user = User(username=username, college_id=college, nickname=nickname, email=email, password=password,
-                    status_id=1, post_range_id=1, comment_range_id=1, collect_range_id=1, contact_range_id=1)
+        captcha = request.form.get('captcha')
+        code = VerifyCode.query.filter(VerifyCode.who == email, VerifyCode.is_work == 1).order_by(
+            VerifyCode.timestamps.desc()).first()
+        if code:
+            if code.val != int(captcha):
+                flash('验证码错误!', 'danger')
+                return redirect(request.referrer)
+            elif code.expire_time < datetime.datetime.now():
+                flash('验证码已过期!', 'danger')
+                return redirect(request.referrer)
+        else:
+            flash('请先发送验证码到邮箱!', 'info')
+            return redirect(request.referrer)
+
+        user = User(username=username,
+                    college_id=college,
+                    nickname=nickname,
+                    email=email,
+                    password=password,
+                    status_id=1)
         user.generate_avatar()
         user.set_password(password)
+        code.is_work = False
         db.session.add(user)
         db.session.commit()
         flash('注册成功,欢迎加入二狗学院!', 'success')

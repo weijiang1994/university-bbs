@@ -137,3 +137,19 @@ header{
 .p-mt-1{
     margin-bottom: 3px;
 }
+
+.p-hint{
+    color: #147b14;
+    margin-bottom: 2px;
+    font-weight: bold;
+    font-size: 12px;
+    display: none;
+}
+
+.p-hint-error{
+    color: rgba(255,18,23,0.8);
+    margin-bottom: 2px;
+    font-weight: bold;
+    font-size: 12px;
+    display: none;
+}
