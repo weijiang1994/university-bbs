@@ -59,20 +59,15 @@ def profile_comment(user_id):
 @login_required
 def follow_user(user_id):
     user = User.query.get_or_404(user_id)
-    # 通过ajax发送关注请求
-    if request.method == 'POST':
-        if current_user.is_following(user):
-            flash('你已经关注TA了!', 'info')
-            return jsonify({'tag': 1})
-        current_user.follow(user)
-        return jsonify({'tag': 1})
-
+    if user.id == current_user.id:
+        flash('我关注我自己?禁止套娃!', 'info')
+        return redirect(request.referrer)
     if current_user.is_following(user):
         flash('你已经关注TA了!', 'info')
-        return redirect(url_for('.index', user_id=user_id))
+        return redirect(request.referrer)
     current_user.follow(user)
     flash('关注成功!', 'success')
-    return redirect(url_for('.index', user_id=user_id))
+    return redirect(request.referrer)
 
 
 @profile_bp.route('/unfollow/<user_id>/', methods=['GET', 'POST'])
@@ -83,7 +78,6 @@ def unfollow_user(user_id):
         current_user.unfollow(user)
     if request.method == 'POST':
         return jsonify({'tag': 1})
-
     flash('取关成功!', 'success')
     return redirect(url_for('.index', user_id=user_id))
 

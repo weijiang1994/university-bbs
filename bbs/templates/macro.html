@@ -315,9 +315,9 @@
             <a class="text-decoration-none a-link" href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
         </h6>
         {% if current_user.is_following(user) %}
-            <a class="btn btn-outline-danger" onclick="unfollow($(this).data('userid'))" data-userid="{{ user.id }}">取关</a>
+            <a class="btn btn-outline-danger" href="{{ url_for('profile.unfollow_user', user_id=user.id) }}">取关</a>
         {% else %}
-            <a class="btn btn-outline-success" onclick="follow($(this).data('userid'))" data-userid="{{ user.id }}">关注</a>
+            <a class="btn btn-outline-success" href="{{ url_for('profile.follow_user', user_id=user.id) }}">关注</a>
         {% endif %}
     </div>
 {% endmacro %}
@@ -332,9 +332,9 @@
                 <p class="mb-0"><a href="{{ url_for('profile.index', user_id=user.id) }}" class="span-blockquote text-decoration-none">@{{user.username}}</a></p>
             </div>
             {% if current_user.is_following(user) %}
-                <a class="btn btn-outline-danger btn-sm h-50" onclick="unfollow($(this).data('userid'))" data-userid="{{ user.id }}">取关</a>
+                <a class="btn btn-outline-danger btn-sm h-50" href="{{ url_for('profile.unfollow_user', user_id=user.id) }}">取关</a>
             {% else %}
-                <a class="btn btn-outline-success btn-sm h-50" onclick="follow($(this).data('userid'))" data-userid="{{ user.id }}">关注</a>
+                <a class="btn btn-outline-success btn-sm h-50" href="{{ url_for('profile.follow_user', user_id=user.id) }}">关注</a>
             {% endif %}
         </div>
     </li>

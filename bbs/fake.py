@@ -19,7 +19,7 @@ from bbs.utils import get_text_plain
 # noinspection PyArgumentList
 def generate_user():
     fa = Faker()
-    for i in range(50):
+    for i in range(30):
         user = User(username=fa.name().replace(' ', '').lower(),
                     college_id=random.randint(1, 7),
                     email=fa.email(),
@@ -42,11 +42,11 @@ def generate_post():
         for text in fa.texts():
             content += text
         p = Post(title=fa.sentence(),
-                 cate_id=1,
-                 is_anonymous=1,
+                 cate_id=random.randint(1, 6),
+                 is_anonymous=random.randint(1, 2),
                  content=content,
                  textplain=get_text_plain(content),
-                 author_id=random.randint(1, 50))
+                 author_id=random.randint(1, 30))
         db.session.add(p)
     db.session.commit()
 
