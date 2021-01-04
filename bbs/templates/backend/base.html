@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/layui/css/layui.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='/layui/layui.js') }}"></script>
+    <title>狗子学院论坛后台管理系统</title>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">后台管理页面</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="{{ url_for('index_bp.index') }}">主页</a></li>
+            <li class="layui-nav-item"><a href="">举报</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:void(0);">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:void(0);">
+                    <img src="{{ user.avatar }}" alt="{{ user.nickname }}" class="layui-nav-img">
+                    {{ user.nickname }}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="{{ url_for('profile.index', user_id=user.id) }}">基本资料</a></dd>
+                    <dd><a href="{{ url_for('user.index', user_id=user.id) }}">安全设置</a></dd>
+                    <dd><a href="{{ url_for('auth.logout') }}">退出系统</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item {% if 'user_manage' in request.endpoint %}layui-nav-itemed{% endif %}">
+                    <a class="" href="javascript:void(0);">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="{{ url_for('user_manage.website_user') }}" class="{% if request.endpoint == 'user_manage.website_user' %}layui-this{% endif %}">网站用户</a></dd>
+                        <dd><a href="{{ url_for('user_manage.admin_user') }}" class="{% if request.endpoint == 'user_manage.admin_user' %}layui-this{% endif %}">后台管理员</a></dd>
+                        <dd><a href="javascript:void(0);">角色管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:void(0);">内容管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:void(0);">帖子管理</a></dd>
+                        <dd><a href="javascript:void(0);">评论管理</a></dd>
+                        <dd><a href="javascript:void(0);">分区管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © bbs.2dogz.cn
+    </div>
+</div>
+{% block script %}
+    <script>
+        //JavaScript代码区域
+        layui.use('element', function(){
+            var element = layui.element;
+
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

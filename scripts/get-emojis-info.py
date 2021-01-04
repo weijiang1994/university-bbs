@@ -16,6 +16,7 @@ from bbs.setting import basedir
 """
 destination_dir = basedir + '/bbs/static/emojis/'
 emoji_infos = []
+tmp = None
 
 for root, dirs, files in os.walk(destination_dir):
     tmp = []

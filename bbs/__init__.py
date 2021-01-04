@@ -14,12 +14,16 @@ from flask import Flask, render_template
 from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
-from bbs.blueprint.index import index_bp
-from bbs.blueprint.auth import auth_bp
-from bbs.blueprint.normal import normal_bp
-from bbs.blueprint.post import post_bp
-from bbs.blueprint.profile import profile_bp
-from bbs.blueprint.user import user_bp
+# 前台蓝图
+from bbs.blueprint.frontend.index import index_bp
+from bbs.blueprint.frontend.auth import auth_bp
+from bbs.blueprint.frontend.normal import normal_bp
+from bbs.blueprint.frontend.post import post_bp
+from bbs.blueprint.frontend.profile import profile_bp
+from bbs.blueprint.frontend.user import user_bp
+# 后台蓝图
+from bbs.blueprint.backend.index import be_index_bp
+from bbs.blueprint.backend.user_manage import be_user_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
 from bbs.utils import get_text_plain
 
@@ -57,6 +61,8 @@ def register_bp(app: Flask):
     app.register_blueprint(post_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(be_index_bp)
+    app.register_blueprint(be_user_manage_bp)
 
 
 def register_error_handlers(app: Flask):

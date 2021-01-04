@@ -1,0 +1,35 @@
+{% extends "backend/base.html" %}
+{% block content %}
+    <div style="padding: 15px">
+        <span class="layui-breadcrumb"><a href="javascript:void(0);">用户管理</a><a><cite>网站用户</cite></a></span>
+        <hr>
+        <table id="userTable"></table>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+{% endblock %}
+{% block script %}
+    {{ super() }}
+    <script>
+        layui.use('table', function(){
+            let table = layui.table;
+            table.render({
+                elem: '#userTable',
+                url: '/backend/user/website-user/',
+                method: 'post',
+                page: true,
+                cols: [[ //表头
+                    {field: 'id', title: 'ID', sort: true, fixed: 'left'},
+                    {field: 'username', title: '用户名'},
+                    {field: 'nickname', title: '昵称'},
+                    {field: 'website', title: '个人网站'},
+                    {field: 'city', title: '城市'},
+                    {field: 'slogan', title: '签名'},
+                    {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]]
+            });
+        });
+    </script>
+{% endblock %}

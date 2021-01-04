@@ -10,7 +10,7 @@ import datetime
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 
-from bbs.blueprint.normal import to_html
+from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
