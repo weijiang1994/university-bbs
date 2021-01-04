@@ -1,35 +1,77 @@
 {% extends "backend/base.html" %}
 {% block content %}
     <div style="padding: 15px">
-        <span class="layui-breadcrumb"><a href="javascript:void(0);">用户管理</a><a><cite>网站用户</cite></a></span>
+        <span class="layui-breadcrumb"><a href="/backend/index/">主页</a><a><cite>用户管理</cite></a><a><cite>网站用户</cite></a></span>
         <hr>
-        <table id="userTable"></table>
+        <table id="userTable" lay-filter="userTable"></table>
     </div>
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+        </div>
+    </script>
+    <script type="text/html" id="checkboxTpl">
+        <input type="checkbox" name="lock" value="{{'{{d.id}}'}}" title="锁定" lay-filter="lockDemo" {{ "{{d.status == 2 ? 'checked' : ''}}" }}>
     </script>
 {% endblock %}
 {% block script %}
     {{ super() }}
     <script>
         layui.use('table', function(){
-            let table = layui.table;
+            let table = layui.table,form = layui.form;
             table.render({
                 elem: '#userTable',
+                toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
                 url: '/backend/user/website-user/',
+                height: 'full-200',
+                cellMinWidth: 80,
+                limit:50,
                 method: 'post',
                 page: true,
                 cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'},
                     {field: 'id', title: 'ID', sort: true, fixed: 'left'},
-                    {field: 'username', title: '用户名'},
-                    {field: 'nickname', title: '昵称'},
+                    {field: 'username', title: '用户名', sort: true},
+                    {field: 'nickname', title: '昵称', sort: true},
+                    {field: 'email', title: '邮箱', sort: true},
                     {field: 'website', title: '个人网站'},
-                    {field: 'city', title: '城市'},
+                    {field: 'city', title: '城市', sort: true},
                     {field: 'slogan', title: '签名'},
-                    {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                    {field: 'role', title: '角色'},
+                    {field: 'join', title: '加入时间'},
+                    {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150},
+                    {field:'lock', title:'是否锁定', width:110, templet: '#checkboxTpl', unresize: true}
                 ]]
             });
+
+            table.on('tool(userTable)', function(obj){
+                let data = obj.data;
+                //console.log(obj)
+                if(obj.event === 'del'){
+                    layer.confirm('真的删除行么', function(index){
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if(obj.event === 'edit'){
+                    layer.prompt({
+                        formType: 2
+                        ,value: data.username
+                    }, function(value, index){
+                        obj.update({
+                            username: value
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+            //监听锁定操作
+            form.on('checkbox(lockDemo)', function(obj){
+                layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+            });
         });
+
     </script>
 {% endblock %}

@@ -51,7 +51,9 @@ class User(db.Model, UserMixin):
     comment_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
     collect_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
     contact_range_id = db.Column(db.INTEGER, db.ForeignKey('t_range.id'), default=1)
+    gender_id = db.Column(db.INTEGER, db.ForeignKey('t_gender.id'), default=1)
 
+    gender = db.relationship('Gender', back_populates='user')
     college = db.relationship('College', back_populates='user')
     role = db.relationship('Role', back_populates='user')
     post = db.relationship('Post', back_populates='user', cascade='all')
@@ -288,3 +290,20 @@ class VerifyCode(db.Model):
     expire_time = db.Column(db.DateTime, nullable=False)
     is_work = db.Column(db.Boolean, default=True)
     who = db.Column(db.String(40), nullable=False, comment='this ver code belong who')
+
+
+class Gender(db.Model):
+    __tablename__ = 't_gender'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20), nullable=False)
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    user = db.relationship('User', back_populates='gender', cascade='all')
+
+    @staticmethod
+    def init_gender():
+        for g in ['保密', '男', '女']:
+            n = Gender(name=g)
+            db.session.add(n)
+        db.session.commit()

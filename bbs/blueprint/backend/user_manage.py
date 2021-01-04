@@ -20,11 +20,8 @@ be_user_manage_bp = Blueprint('user_manage', __name__, url_prefix='/backend/user
 @admin_permission_required
 def website_user():
     if request.method == 'POST':
-        print(request.args)
         page = request.form.get('page', default=1, type=int)
         limit = request.form.get('limit', default=10, type=int)
-        print('page is ', page)
-        print('limit is ', limit)
         pagination = User.query.paginate(page=page, per_page=limit)
         users = pagination.items
         user_dict = {"code": 0, "msg": "website users", "count": pagination.total}
@@ -35,7 +32,11 @@ def website_user():
                  'nickname': user.nickname,
                  'city': user.location,
                  'slogan': user.slogan,
-                 'website': user.website}
+                 'website': user.website,
+                 'join': str(user.create_time),
+                 'role': user.role.name,
+                 'email': user.email,
+                 'status': user.status_id}
             data.append(s)
         user_dict['data'] = data
         return jsonify(user_dict)
