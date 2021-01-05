@@ -18,7 +18,7 @@ from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, g
 from flask_login import login_required
 import re
 from bbs.email import send_email
-from bbs.models import VerifyCode
+from bbs.models import VerifyCode, Gender, Role, College
 from bbs.extensions import db
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
@@ -108,3 +108,24 @@ def to_html(raw):
             emoji_url = img_url.format(ii[0], ii[1], ii[1])
             clean_html = re.sub(':{}:'.format(ii[1]), emoji_url, clean_html)
     return linkify(clean_html)
+
+
+@normal_bp.route('/init-select/', methods=['GET', 'POST'])
+def init_select():
+    genders = Gender.query.all()
+    roles = Role.query.all()
+    colleges = College.query.all()
+    data_dict = dict()
+    g = []
+    r = []
+    c = []
+    for gender in genders:
+        g.append({'id': gender.id, 'name': gender.name})
+    for role in roles:
+        r.append({'id': role.id, 'name': role.name})
+    for college in colleges:
+        c.append({'id': college.id, 'name': college.name})
+    data_dict['gender'] = g
+    data_dict['role'] = r
+    data_dict['college'] = c
+    return jsonify({'tag': 1, 'data': data_dict})

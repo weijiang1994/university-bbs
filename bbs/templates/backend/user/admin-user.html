@@ -1,6 +1,76 @@
 {% extends "backend/base.html" %}
 {% block content %}
     <div style="padding: 15px">
-        <span class="layui-breadcrumb"><a href="javascript:void(0);">用户管理</a><a><cite>后台管理用户</cite></a></span>
+        <span class="layui-breadcrumb"><a href="/backend/index/">首页</a><a><cite>用户管理</cite></a><a><cite>后台管理用户</cite></a></span>
+        <hr>
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="padding-left: 0" for="keyword">关键字:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="keyword" id="keyword" lay-verify="required" autocomplete="true" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label style="padding-left: 0" class="layui-form-label" for="searchCate">类别:</label>
+                    <div class="layui-input-inline">
+                        <select id="searchCate" name="searchCate">
+                            <option value="">选择搜索类别</option>
+                            <option value="id" selected="">ID</option>
+                            <option value="username">用户名</option>
+                            <option value="nickname">昵称</option>
+                            <option value="email">邮箱</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="submit" class="layui-btn" data-type="search">搜索</button>
+                </div>
+            </div>
+        </div>
+        <table id="adminTable" lay-filter="adminTable"></table>
     </div>
+    <script type="text/html" id="topToolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn" lay-event="addUser" lay-filter="userTable">添加</button>
+            <button class="layui-btn" lay-event="resetPwd" lay-filter="userTable">重置密码</button>
+            <button class="layui-btn layui-btn-danger" lay-event="lockUnlock" lay-filter="userTable">锁定/解锁</button>
+        </div>
+    </script>
+{% endblock %}
+{% block script %}
+    {{ super() }}
+    <script>
+        layui.use('table', function (){
+            let layer = layui.layer
+            let table = layui.table,form = layui.form;
+            table.render(
+                {
+                    elem: '#adminTable',
+                    toolbar: '#topToolbar', //开启头部工具栏，并为其绑定左侧模板
+                    url: '/backend/user/admin-user/',
+                    height: 'full-200',
+                    limit: 50,
+                    method: 'post',
+                    skin: 'line', //行边框风格
+                    cols: [[ //表头
+                        {type: 'checkbox', width: 100},
+                        {field: 'id', title: 'ID', sort: true, width:80},
+                        {field: 'username', title: '用户名', sort: true},
+                        {field: 'nickname', title: '昵称', sort: true, width: 120},
+                        {field: 'email', title: '邮箱', sort: true},
+                        {field: 'gender', title: '性别', sort: true, width: 80},
+                        {field: 'college', title: '学院', sort: true},
+                        {field: 'website', title: '个人网站', width: 80},
+                        {field: 'city', title: '城市', sort: true, width: 80},
+                        {field: 'slogan', title: '签名', width: 80},
+                        {field: 'role', title: '角色', width: 100},
+                        {field: 'join', title: '加入时间'},
+                        {field:'lock', title:'是否锁定', width:110, templet: '#checkboxTpl', unresize: true}
+                    ]],
+                    page: true,
+                    id: 'usersTable'
+                });
+        })
+    </script>
 {% endblock %}

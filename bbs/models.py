@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
     follower_permission = db.Column(db.BOOLEAN, default=True)
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
 
-    status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'))
+    status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'), default=1)
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
     role_id = db.Column(db.INTEGER, db.ForeignKey('t_role.id'), default=3, comment='user role id default is 3 '
                                                                                    'that is student role')
@@ -306,4 +306,3 @@ class Gender(db.Model):
         for g in ['保密', '男', '女']:
             n = Gender(name=g)
             db.session.add(n)
-        db.session.commit()

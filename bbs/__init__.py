@@ -112,8 +112,11 @@ def register_cmd(app: Flask):
         click.echo('初始化角色表完成!')
         Range.init_range()
         click.echo('初始化隐私表完成!')
+        Gender.init_gender()
+        click.echo('初始化性别表成功!')
         db.session.commit()
         click.echo('数据库初始化完成!')
+
         click.confirm('是否添加测试数据?', abort=True)
         generate_fake_data()
 
