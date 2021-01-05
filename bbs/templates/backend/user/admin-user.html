@@ -33,9 +33,12 @@
     <script type="text/html" id="topToolbar">
         <div class="layui-btn-container">
             <button class="layui-btn" lay-event="addUser" lay-filter="userTable">添加</button>
-            <button class="layui-btn" lay-event="resetPwd" lay-filter="userTable">重置密码</button>
+            <button class="layui-btn" lay-event="editAdmin" lay-filter="edit">编辑</button>
             <button class="layui-btn layui-btn-danger" lay-event="lockUnlock" lay-filter="userTable">锁定/解锁</button>
         </div>
+    </script>
+    <script type="text/html" id="checkboxTpl">
+        <input type="checkbox" name="lock" value="{{'{{d.id}}'}}" title="锁定" lay-filter="lockUser" {{ "{{d.status == 2 ? 'checked' : ''}}"|safe }}>
     </script>
 {% endblock %}
 {% block script %}
