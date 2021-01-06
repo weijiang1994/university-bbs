@@ -128,8 +128,12 @@ def lock_or_unlock():
         return jsonify({'tag': 1, 'info': '查无此人!'})
     if user.status_id == 1:
         user.status_id = 2
+        al = AdminLog(admin_id=current_user.id, target_id=user.id, notes='锁定了用户{}'.format(user.username))
+        db.session.add(al)
     else:
         user.status_id = 1
+        al = AdminLog(admin_id=current_user.id, target_id=user.id, notes='解锁了用户{}'.format(user.username))
+        db.session.add(al)
     db.session.commit()
     return jsonify({'tag': 1, 'info': '操作成功!'})
 

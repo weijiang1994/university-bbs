@@ -230,7 +230,6 @@
                     <div class="layui-card">
                         <div class="layui-card-header">
                             <i class="fa fa-toggle-on icon mr-2"></i>操作日志
-                                <a class="layui-inline">更多</a>
                         </div>
                         <div class="layui-card-body" id="adminLog">
                             <i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
@@ -257,6 +256,10 @@
                 success: function (res){
                     if (res.tag == 1){
                         $("#adminLog").empty();
+                    }
+                    if (res.adminLogs.length == 0){
+                        $("#adminLog").append("<p>暂无操作日志</p>");
+                        return false;
                     }
                     for (let i=0;i<res.adminLogs.length;i++){
                         $("#adminLog").append('<p class="text-muted"><small>'+res.adminLogs[i].notes+'</small></p>')

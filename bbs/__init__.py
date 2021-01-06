@@ -114,6 +114,8 @@ def register_cmd(app: Flask):
         click.echo('初始化隐私表完成!')
         Gender.init_gender()
         click.echo('初始化性别表成功!')
+        OperatorCate.init_cate()
+        click.echo('初始化操作类别表成功!')
         db.session.commit()
         click.echo('数据库初始化完成!')
 
@@ -180,7 +182,6 @@ def init_report_cate():
 def generate_fake_data():
     generate_user()
     generate_post()
-    generate_real_post()
 
 
 def register_log(app: Flask):

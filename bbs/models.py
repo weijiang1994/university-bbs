@@ -341,3 +341,4 @@ class OperatorCate(db.Model):
         for c in ['锁定用户', '解锁用户', '设置权限', '添加用户', '添加管理员']:
             cate = OperatorCate(name=c)
             db.session.add(cate)
+        db.session.commit()
