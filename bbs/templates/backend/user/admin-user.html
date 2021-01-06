@@ -33,7 +33,7 @@
     <script type="text/html" id="topToolbar">
         <div class="layui-btn-container">
             <button class="layui-btn" lay-event="addUser" lay-filter="userTable">添加</button>
-            <button class="layui-btn" lay-event="editAdmin" lay-filter="edit">编辑</button>
+            <button class="layui-btn" lay-event="resetPwd" lay-filter="edit">重置密码</button>
             <button class="layui-btn layui-btn-danger" lay-event="lockUnlock" lay-filter="userTable">锁定/解锁</button>
         </div>
     </script>
@@ -53,7 +53,7 @@
                     toolbar: '#topToolbar', //开启头部工具栏，并为其绑定左侧模板
                     url: '/backend/user/admin-user/',
                     height: 'full-200',
-                    limit: 50,
+                    limit: 20,
                     method: 'post',
                     skin: 'line', //行边框风格
                     cols: [[ //表头
@@ -74,6 +74,82 @@
                     page: true,
                     id: 'usersTable'
                 });
+
+            form.on('checkbox(lockUser)', function(obj){
+                $.ajax({
+                    url:'/backend/user/lock-or-unlock/',
+                    type: 'post',
+                    data: {'userId': this.value},
+                    success: function (res){
+                        obj.elem.checked;
+                        layer.msg(res.info);
+                    }
+                })
+            });
+
+            table.on('toolbar(adminTable)', function(obj){
+                let checkStatus = table.checkStatus(obj.config.id); //获取选中行状态
+                let data = checkStatus.data;  //获取选中行数据
+                switch(obj.event){
+                    case 'lockUnlock':
+                        if (data.length === 0){
+                            layer.msg('请选中后再操作!');
+                            break;
+                        }
+                        let userIds = []
+                        for (let i=0; i<data.length; i++){
+                            userIds.push(data[i]['id']);
+                        }
+
+                        // 向后台发送ajax请求
+                        $.ajax({
+                            url: '/backend/user/multi-lock-unlock/',
+                            data: JSON.stringify(userIds),
+                            dataType: 'json',
+                            type: 'post',
+                            success: function (res){
+                                layer.msg(res.info);
+                                // 重载表格,刷新锁定选项的UI
+                                table.reload('usersTable', {
+                                    page: {
+                                        curr: table.page,
+                                        limit: table.limit
+                                    }
+                                })
+                            }
+                        })
+                        break;
+                    case 'addUser':
+                        layer.open({
+                            type: 2,
+                            title: '添加用户',
+                            skin: 'layui-layer-molv',
+                            area: ['20%', '60%'],
+                            shadeClose: true,
+                            anim: 2,
+                            content: '/backend/user/add-admin/',
+                        })
+                        break;
+                    case 'resetPwd':
+                        if (data.length === 0){
+                            layer.msg('请选中后再操作!');
+                            break;
+                        }
+                        if (data.length > 1){
+                            layer.msg('最多只能选中一行进行操作!');
+                            break;
+                        }
+                        $.ajax({
+                            url: '/backend/user/reset-pwd/',
+                            type: 'post',
+                            data:{'id': data[0].id},
+                            success: function (res){
+                                layer.msg(res.info);
+                            }
+                        })
+                        break;
+                }
+            });
         })
     </script>
 {% endblock %}

@@ -10,7 +10,7 @@
 from flask import Blueprint, request, render_template, jsonify
 from flask_login import login_required, current_user
 from bbs.decorators import admin_permission_required
-from bbs.models import User
+from bbs.models import User, AdminLog, OperatorCate, Role
 from bbs.extensions import db
 import json
 
@@ -97,11 +97,25 @@ def add_user():
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
+
+            r = Role.query.filter_by(id=role).first()
+            log = AdminLog(admin_id=current_user.id,
+                           target_id=user.id,
+                           op_id=4,
+                           notes='添加了用户{},角色为{}'.format(user.username, r.name))
+            db.session.add(log)
+            db.session.commit()
             tag = 1
             info = '添加用户成功!'
         return jsonify({'tag': tag, 'info': info})
-
     return render_template('backend/user/add-user.html')
+
+
+@be_user_manage_bp.route('/add-admin/', methods=['GET', 'POST'])
+@login_required
+@admin_permission_required
+def add_admin():
+    return render_template('backend/user/add-admin.html')
 
 
 @be_user_manage_bp.route('/lock-or-unlock/', methods=['post'])
@@ -139,7 +153,7 @@ def multi_lock_unlock():
             user.status_id = 1
             unlock_count += 1
     db.session.commit()
-    return jsonify({'tag': 1, 'info': '锁定了{}个账号,解锁了{}个账号!'.format(lock_count, unlock_count)})
+    return jsonify({'tag': 1, 'info': '操作成功!锁定了{}个账号,解锁了{}个账号!'.format(lock_count, unlock_count)})
 
 
 @be_user_manage_bp.route('/reset-pwd/', methods=['POST'])

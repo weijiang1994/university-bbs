@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <!--suppress ALL -->
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="{{url_for('static', filename='img/favorite.png')}}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename = 'img/favorite.png') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/layui/css/layui.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='/layui/layui.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-    <title>狗子学院论坛后台管理系统</title>
-</head>
+{% block head %}
+    <head>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="{{url_for('static', filename='img/favorite.png')}}" type="image/x-icon">
+        <link rel="icon" href="{{ url_for('static', filename = 'img/favorite.png') }}" type="image/x-icon">
+        <link rel="stylesheet" href="{{ url_for('static', filename='/layui/css/layui.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='/layui/layui.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <title>狗子学院论坛后台管理系统</title>
+    <style>
+        .logo-img{
+            height: 50%;
+            width: 50%;
+        }
+    </style>
+    </head>
+{% endblock %}
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">后台管理页面</div>
+        <div class="layui-logo">后台管理</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="{{ url_for('index_bp.index') }}">主页</a></li>
-            <li class="layui-nav-item"><a href="">举报</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item"><a title="前台主页" href="{{ url_for('index_bp.index') }}"><i class="fa fa-home"></i></a></li>
+            <li class="layui-nav-item"><a title="后台主页" href="{{ url_for('be_index.index') }}"><i class="fa fa-code"></i></a></li>
+            <li class="layui-nav-item"><a title="消息提示" href="{{ url_for('be_index.index') }}"><i class="fa fa-bell-o"></i><span class="layui-badge-dot"></span></a></li>
             <li class="layui-nav-item">
                 <a href="javascript:void(0);">其它系统</a>
                 <dl class="layui-nav-child">
@@ -47,7 +56,7 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item {% if 'user_manage' in request.endpoint %}layui-nav-itemed{% endif %}">
+                <li class="layui-nav-item {% if 'user_manage' in request.endpoint or 'index' in request.endpoint %}layui-nav-itemed{% endif %}">
                     <a class="" href="javascript:void(0);">用户管理</a>
                     <dl class="layui-nav-child">
                         <dd><a href="{{ url_for('user_manage.website_user') }}" class="{% if request.endpoint == 'user_manage.website_user' %}layui-this{% endif %}">网站用户</a></dd>
@@ -61,6 +70,12 @@
                         <dd><a href="javascript:void(0);">帖子管理</a></dd>
                         <dd><a href="javascript:void(0);">评论管理</a></dd>
                         <dd><a href="javascript:void(0);">分区管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:void(0);">管理员</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:void(0);">操作记录</a></dd>
                     </dl>
                 </li>
             </ul>

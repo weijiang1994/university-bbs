@@ -13,6 +13,21 @@ import datetime
 from flask_login import UserMixin, current_user
 
 
+class AdminLog(db.Model):
+    __tablename__ = 't_admin_log'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    op_id = db.Column(db.INTEGER, db.ForeignKey('t_operator_cate.id'))
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+    admin_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    notes = db.Column(db.TEXT, default='')
+    target_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    op_cate = db.relationship('OperatorCate', back_populates='admin_log')
+    admin_user = db.relationship('User', foreign_keys=[admin_id], back_populates='admin_log', lazy='joined')
+    target_user = db.relationship('User', foreign_keys=[target_id], back_populates='user_log', lazy='joined')
+
+
 class Follow(db.Model):
     __tablename__ = 't_follow'
 
@@ -71,6 +86,9 @@ class User(db.Model, UserMixin):
     range_collect = db.relationship('Range', back_populates='user_collect', foreign_keys=[collect_range_id])
     range_contact = db.relationship('Range', back_populates='user_contact', foreign_keys=[contact_range_id])
     receive_notify = db.relationship('Notification', back_populates='receive_user', cascade='all')
+
+    admin_log = db.relationship('AdminLog', back_populates='admin_user', foreign_keys=[AdminLog.admin_id])
+    user_log = db.relationship('AdminLog', back_populates='target_user', foreign_keys=[AdminLog.target_id])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -306,3 +324,20 @@ class Gender(db.Model):
         for g in ['保密', '男', '女']:
             n = Gender(name=g)
             db.session.add(n)
+
+
+class OperatorCate(db.Model):
+    __tablename__ = 't_operator_cate'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True, comment='table column id')
+    name = db.Column(db.String(256), nullable=False)
+    tag = db.Column(db.INTEGER, default=1, comment='work? 1 yes 0 no')
+    timestamps = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    admin_log = db.relationship('AdminLog', back_populates='op_cate', cascade='all')
+
+    @staticmethod
+    def init_cate():
+        for c in ['锁定用户', '解锁用户', '设置权限', '添加用户', '添加管理员']:
+            cate = OperatorCate(name=c)
+            db.session.add(cate)

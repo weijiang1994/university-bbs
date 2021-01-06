@@ -1,7 +1,7 @@
 {% extends "backend/base.html" %}
 {% block content %}
     <!--suppress ALL -->
-    <div style="padding: 15px">
+    <div style="padding: 15px;">
         <span class="layui-breadcrumb"><a href="/backend/index/">主页</a><a><cite>用户管理</cite></a><a><cite>网站用户</cite></a></span>
         <hr>
         <div class="layui-form">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <button type="submit" class="layui-btn" data-type="search">搜索</button>
+                    <button type="submit" class="layui-btn" data-type="search"><i class="fa fa-search"></i></button>
                 </div>
             </div>
         </div>
@@ -34,9 +34,9 @@
 
     <script type="text/html" id="topToolbar">
         <div class="layui-btn-container">
-            <button class="layui-btn" lay-event="addUser" lay-filter="userTable">添加</button>
-            <button class="layui-btn" lay-event="resetPwd" lay-filter="userTable">重置密码</button>
-            <button class="layui-btn layui-btn-danger" lay-event="lockUnlock" lay-filter="userTable">锁定/解锁</button>
+            <button title="添加用户" class="layui-btn" lay-event="addUser" lay-filter="userTable"><i class="fa fa-plus"></i></button>
+            <button title="重置密码" class="layui-btn" lay-event="resetPwd" lay-filter="userTable"><i class="fa fa-circle-o"></i></button>
+            <button title="锁定/解锁" class="layui-btn layui-btn-danger" lay-event="lockUnlock" lay-filter="userTable"><i class="fa fa-lock"></i> & <i class="fa fa-unlock-alt"></i></button>
         </div>
     </script>
     <script type="text/html" id="checkboxTpl">
@@ -54,8 +54,8 @@
                     elem: '#userTable',
                     toolbar: '#topToolbar', //开启头部工具栏，并为其绑定左侧模板
                     url: '/backend/user/website-user/',
-                    height: 'full-200',
-                    limit: 50,
+                    height: 'full-250',
+                    limit: 20,
                     method: 'post',
                     skin: 'line', //行边框风格
                     cols: [[ //表头
