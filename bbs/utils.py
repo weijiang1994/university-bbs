@@ -10,6 +10,7 @@ import re
 from markdown import extensions
 from markdown.treeprocessors import Treeprocessor
 import hashlib
+import psutil
 
 try:
     from urlparse import urlparse, urljoin
@@ -199,3 +200,9 @@ class MyMDStyleExtension(extensions.Extension):
         self.processor.md = md
         self.processor.config = self.getConfigs()
         md.treeprocessors.add('mystyle', self.processor, '_end')
+
+
+def hardware_monitor():
+    cpu_per = psutil.cpu_percent()
+    me_per = psutil.virtual_memory().percent
+    return cpu_per, me_per

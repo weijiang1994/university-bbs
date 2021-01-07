@@ -342,3 +342,28 @@ class OperatorCate(db.Model):
             cate = OperatorCate(name=c)
             db.session.add(cate)
         db.session.commit()
+
+
+class VisitStatistic(db.Model):
+    __tablename__ = 't_visit_statistic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    times = db.Column(db.INTEGER, default=0)
+    day = db.Column(db.Date, default=datetime.date.today, unique=True)
+
+
+class SearchStatistic(db.Model):
+    __tablename__ = 't_search_statistic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    times = db.Column(db.INTEGER, default=0)
+    day = db.Column(db.Date, default=datetime.date.today, unique=True)
+
+
+class CommentStatistic(db.Model):
+    __tablename__ = 't_comment_statistic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    times = db.Column(db.INTEGER, default=0)
+    day = db.Column(db.Date, default=datetime.date.today, unique=True)
+

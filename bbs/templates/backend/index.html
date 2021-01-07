@@ -2,6 +2,11 @@
 {% block head %}
     {{ super() }}
     <!--suppress ALL -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.0/dist/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='js/wonderlan.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/macarons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dark.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chalk.js') }}"></script>
     <style>
         .layui-card {
             border:1px solid #f2f2f2;
@@ -81,6 +86,30 @@
         }
         .text-muted{
             color: rgba(126,126,126,0.72);
+        }
+        .pt-1{
+            padding-bottom: .5rem;
+        }
+        .flex-box{
+            display: flex;
+        }
+        .flex-box-row-reverse{
+            flex-flow: row-reverse;
+        }
+        .flex-grow-1{
+            flex-grow: 1;
+        }
+        .mb-1{
+            margin-bottom: .5rem;
+        }
+        .color-deep-gray{
+            color: #666666;
+        }
+        .color-light-gray{
+            color: #999999;
+        }
+        .div-monitor{
+            margin: 10px 5px 10px 5px;
         }
     </style>
 {% endblock %}
@@ -220,7 +249,7 @@
                     <div class="layui-card">
                         <div class="layui-card-header"><i class="fa fa-line-chart mr-2 icon"></i>数据报表</div>
                         <div class="layui-card-body">
-                            显示今日流量、评论、注册等数据
+                            <div id="echarts-records" style="width: 100%;min-height:450px"></div>
                         </div>
                     </div>
                 </div>
@@ -232,41 +261,161 @@
                             <i class="fa fa-toggle-on icon mr-2"></i>操作日志
                         </div>
                         <div class="layui-card-body" id="adminLog">
-                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
+                            {% if admin_logs %}
+                                <ul class="layui-timeline">
+                                    {% for al in admin_logs %}
+                                        <li class="layui-timeline-item pt-1">
+                                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                            <div class="layui-timeline-content layui-text">
+                                                <h5 class="layui-timeline-title"><b>{{ al.timestamps }}</b></h5>
+                                                <p>
+                                                    管理员<b>{{ al.admin_user.username }}</b>{{ al.notes }}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="layui-col-md12 mt-10">
                     <div class="layui-card">
-                        <div class="layui-card-header"><i class="fa fa-toggle-on icon mr-2"></i>版本信息</div>
+                        <div class="layui-card-header"><i class="fa fa-server icon mr-2"></i>实时监测</div>
                         <div class="layui-card-body">
-                            展示管理员的操作日志
+                            <div class="div-monitor">
+                                <div class="flex-box flex-box-row-reverse">
+                                    <p class="color-light-gray">CPU使用率</p>
+                                    <h1 id="cpuPer" class="flex-grow-1 mb-1 color-deep-gray">10%</h1>
+                                </div>
+                                <div class="layui-progress" lay-filter="cpu">
+                                    <div id="cpuBar" class="layui-progress-bar" lay-percent="0%"></div>
+                                </div>
+                            </div>
+                            <div class="div-monitor">
+                                <div class="flex-box flex-box-row-reverse">
+                                    <p class="color-light-gray">内存使用率</p>
+                                    <h1 id="mePer" class="flex-grow-1 mb-1 color-deep-gray">10%</h1>
+                                </div>
+                                <div class="layui-progress" lay-filter="memory">
+                                    <div id="meBar" class="layui-progress-bar" lay-percent="0%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
     <script>
-        $(function (){
+        function renderBar(element, res) {
+            let cpu = res.cpu_per;
+            let me = res.me_per;
+            $("#cpuPer").text(cpu + '%');
+            $("#mePer").text(me + '%');
+            element.progress('cpu', cpu + '%');
+            element.progress('memory', me + '%');
+            $("#cpuBar").removeClass();
+            $("#meBar").removeClass();
+            if (cpu > 60) {
+                $("#cpuBar").addClass('layui-progress-bar layui-bg-orange');
+            } else if (cpu > 90) {
+                $("#cpuBar").addClass('layui-progress-bar layui-bg-red');
+            } else {
+                $("#cpuBar").addClass('layui-progress-bar');
+            }
+            if (me > 60) {
+                $("#meBar").addClass('layui-progress-bar layui-bg-orange');
+            } else if (cpu > 90) {
+                $("#meBar").addClass('layui-progress-bar layui-bg-red');
+            } else {
+                $("#meBar").addClass('layui-progress-bar');
+            }
+        }
+        function getMonitor(element){
             $.ajax({
                 url: '/backend/init-data/',
                 type: 'post',
                 success: function (res){
-                    if (res.tag == 1){
-                        $("#adminLog").empty();
-                    }
-                    if (res.adminLogs.length == 0){
-                        $("#adminLog").append("<p>暂无操作日志</p>");
-                        return false;
-                    }
-                    for (let i=0;i<res.adminLogs.length;i++){
-                        $("#adminLog").append('<p class="text-muted"><small>'+res.adminLogs[i].notes+'</small></p>')
-                    }
-                    console.log(res.adminLogs);
+                    renderBar(element, res);
                 }
             })
-        })
+        }
+
+
+        layui.use('element', function(){
+            var element = layui.element;
+            $.ajax({
+                url: '/backend/init-data/',
+                type: 'post',
+                success: function (res){
+                    renderBar(element, res);
+                    setInterval(function (){
+                        getMonitor(element);
+                    }, 5000)
+                }
+            })
+        });
+        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'wonderlan');
+        var optionRecords = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['周一','周二','周三','周四','周五','周六','周日']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name:'邮件营销',
+                    type:'line',
+                    data:[120, 132, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'联盟广告',
+                    type:'line',
+                    data:[220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name:'视频广告',
+                    type:'line',
+                    data:[150, 232, 201, 154, 190, 330, 410]
+                },
+                {
+                    name:'直接访问',
+                    type:'line',
+                    data:[320, 332, 301, 334, 390, 330, 320]
+                },
+                {
+                    name:'搜索引擎',
+                    type:'line',
+                    data:[820, 932, 901, 934, 1290, 1330, 1320]
+                }
+            ]
+        };
+        echartsRecords.setOption(optionRecords);
+
+        // echarts 窗口缩放自适应
+        window.onresize = function(){
+            echartsRecords.resize();
+        }
     </script>
 {% endblock %}

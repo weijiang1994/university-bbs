@@ -11,7 +11,7 @@ from flask import Blueprint, render_template, jsonify
 from bbs.decorators import admin_permission_required
 from flask_login import login_required, current_user
 from bbs.models import User, Comments, Post, AdminLog
-
+from bbs.utils import hardware_monitor
 
 be_index_bp = Blueprint('be_index', __name__, url_prefix='/backend')
 
@@ -23,16 +23,15 @@ def index():
     users = User.query.all()
     posts = Post.query.all()
     comments = Comments.query.all()
+    admin_logs = AdminLog.query.order_by(AdminLog.timestamps.desc())[:10]
     return render_template('backend/index.html', user=current_user, users=len(users), posts=len(posts),
-                           comments=len(comments))
+                           comments=len(comments), admin_logs=admin_logs)
 
 
 @be_index_bp.route('/init-data/', methods=['GET', 'POST'])
 @login_required
 @admin_permission_required
 def init_data():
-    admin_logs = AdminLog.query.order_by(AdminLog.timestamps.desc())[:10]
-    als = []
-    for a in admin_logs:
-        als.append({'id': a.id, 'notes': '管理员'+a.admin_user.username+a.notes})
-    return jsonify({'tag': 1, 'adminLogs': als})
+    cpu_per, me_per = hardware_monitor()
+    return jsonify({'tag': 1, 'cpu_per': cpu_per, 'me_per': me_per})
+
