@@ -7,13 +7,16 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request
-from bbs.models import Post
+from bbs.models import Post, VisitStatistic
+from bbs.extensions import db
 from sqlalchemy.sql.expression import func
+from bbs.decorators import statistic_traffic
 index_bp = Blueprint('index_bp', __name__)
 
 
 @index_bp.route('/')
 @index_bp.route('/index/')
+@statistic_traffic(db, VisitStatistic)
 def index():
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.filter_by(status_id=1).order_by(Post.update_time.desc()).paginate(page, per_page=10)

@@ -367,3 +367,10 @@ class CommentStatistic(db.Model):
     times = db.Column(db.INTEGER, default=0)
     day = db.Column(db.Date, default=datetime.date.today, unique=True)
 
+
+class PostStatistic(db.Model):
+    __tablename__ = 't_post_statistic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    times = db.Column(db.INTEGER, default=0)
+    day = db.Column(db.Date, default=datetime.date.today, unique=True)

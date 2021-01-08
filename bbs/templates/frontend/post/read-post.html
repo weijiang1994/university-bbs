@@ -239,9 +239,9 @@
                                         {% endif %}
                                     {% endif %}
                                     <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}" class="badge badge-secondary">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}"><small>{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</small></span>
                                     </a>
-                                    <a class="text-decoration-none " href="#"><small><span class="badge badge-secondary">#{{ loop.index + (page-1)*per_page }}</span></small></a>
+                                    <a class="text-decoration-none ml-2 text-muted text-left" href="#"><small><span>#{{ loop.index + (page-1)*per_page }}</span></small></a>
                                 </div>
                             </div>
                         {% endfor %}

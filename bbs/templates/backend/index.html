@@ -7,6 +7,8 @@
     <script src="{{ url_for('static', filename='js/macarons.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dark.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chalk.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/westeros.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/walden.js') }}"></script>
     <style>
         .layui-card {
             border:1px solid #f2f2f2;
@@ -247,9 +249,16 @@
                 </div>
                 <div class="layui-col-md12">
                     <div class="layui-card">
-                        <div class="layui-card-header"><i class="fa fa-line-chart mr-2 icon"></i>数据报表</div>
+                        <div class="layui-card-header flex-box-row-reverse">
+                            <i class="fa fa-line-chart mr-2 icon"></i>数据报表
+                        </div>
                         <div class="layui-card-body">
-                            <div id="echarts-records" style="width: 100%;min-height:450px"></div>
+                            <div class="layui-carousel" id="echartCarousel" lay-filter="echartCarousel">
+                                <div carousel-item="">
+                                    <div id="echarts-records" style="width: 100%;min-height:450px"></div>
+                                    <div>页面2</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -332,9 +341,10 @@
                 $("#meBar").addClass('layui-progress-bar');
             }
         }
+
         function getMonitor(element){
             $.ajax({
-                url: '/backend/init-data/',
+                url: '/backend/get-monitor/',
                 type: 'post',
                 success: function (res){
                     renderBar(element, res);
@@ -342,80 +352,87 @@
             })
         }
 
+        function renderChart(statistics) {
+            var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+            var optionRecords = {
+                title: {
+                    padding: 8,
+                    text: '最近七天流量数据'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['首页流量', '评论次数', '搜索次数']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    smooth: true,
+                    type: 'category',
+                    boundaryGap: false,
+                    data: statistics.days
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '首页流量',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {},
+                        data: statistics.vsts
+                    },
+                    {
+                        name: '评论流量',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {},
+                        data: statistics.csts
+                    },
+                    {
+                        name: '搜索流量',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {},
+                        data: statistics.ssts
+                    }
+                ]
+            };
+            echartsRecords.setOption(optionRecords);
+            return echartsRecords;
+        }
 
-        layui.use('element', function(){
-            var element = layui.element;
+        layui.use(['element', 'carousel'], function(){
+            var element = layui.element, carousel=layui.carousel;
+            let chartCarousel = carousel.render({
+                elem: "#echartCarousel",
+                height: '450',
+                autoplay: false,
+                width: '100%',
+                indicator: 'none'
+            })
             $.ajax({
                 url: '/backend/init-data/',
                 type: 'post',
                 success: function (res){
+                    echartsRecords = renderChart(res.statistics);
                     renderBar(element, res);
                     setInterval(function (){
                         getMonitor(element);
                     }, 5000)
                 }
             })
-        });
-        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'wonderlan');
-        var optionRecords = {
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['周一','周二','周三','周四','周五','周六','周日']
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name:'邮件营销',
-                    type:'line',
-                    data:[120, 132, 101, 134, 90, 230, 210]
-                },
-                {
-                    name:'联盟广告',
-                    type:'line',
-                    data:[220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name:'视频广告',
-                    type:'line',
-                    data:[150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name:'直接访问',
-                    type:'line',
-                    data:[320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name:'搜索引擎',
-                    type:'line',
-                    data:[820, 932, 901, 934, 1290, 1330, 1320]
-                }
-            ]
-        };
-        echartsRecords.setOption(optionRecords);
 
-        // echarts 窗口缩放自适应
-        window.onresize = function(){
-            echartsRecords.resize();
-        }
+            // echarts 窗口缩放自适应
+            window.onresize = function(){
+                echartsRecords.resize();
+            }
+        });
     </script>
 {% endblock %}

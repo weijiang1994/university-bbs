@@ -11,17 +11,19 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 
 from bbs.blueprint.frontend.normal import to_html
-from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification
+from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
 from bbs.utils import get_text_plain, EMOJI_INFOS
+from bbs.decorators import statistic_traffic
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
 
 @post_bp.route('/new/', methods=['GET', 'POST'])
 @login_required
+@statistic_traffic(db, PostStatistic)
 def new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -165,6 +167,7 @@ def post_collect(post_id):
 
 @post_bp.route('/post-comment/', methods=['POST'])
 @login_required
+@statistic_traffic(db, CommentStatistic)
 def post_comment():
     comment_content = request.form.get('commentContent')
     post_id = request.form.get('postId')
@@ -184,6 +187,7 @@ def post_comment():
 
 @post_bp.route('/reply-comment/', methods=['POST'])
 @login_required
+@statistic_traffic(db, CommentStatistic)
 def reply_comment():
     comment_id = request.form.get('comment_id')
     # 用于处理消息通知
