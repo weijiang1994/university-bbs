@@ -11,12 +11,12 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
         <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <title>狗子学院论坛后台管理系统</title>
-    <style>
-        .logo-img{
-            height: 50%;
-            width: 50%;
-        }
-    </style>
+        <style>
+            .logo-img{
+                height: 50%;
+                width: 50%;
+            }
+        </style>
     </head>
 {% endblock %}
 <body class="layui-layout-body">
@@ -98,6 +98,9 @@
         layui.use('element', function(){
             var element = layui.element;
 
+        });
+        $(".layui-side").on("click", ".layui-nav-item", function(){
+            $(this).siblings('li').attr('class','layui-nav-item');
         });
     </script>
 {% endblock %}
