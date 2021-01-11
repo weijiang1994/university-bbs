@@ -59,8 +59,8 @@
                         </div>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-md-0">
-                    <input class="form-control" type="text" placeholder="请输入关键字" aria-label="Search" required>
+                <form class="form-inline my-2 my-md-0" action="{{ url_for('normal.search') }}">
+                    <input class="form-control" type="text" name="keyword" placeholder="请输入关键字" aria-label="Search" required>
                 </form>
                 {% if current_user.is_authenticated and request.endpoint !='index_bp.index' %}
                     <ul class="navbar-nav">

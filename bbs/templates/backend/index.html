@@ -256,7 +256,16 @@
                             <div class="layui-carousel" id="echartCarousel" lay-filter="echartCarousel">
                                 <div carousel-item="">
                                     <div id="echarts-records" style="width: 100%;min-height:450px"></div>
-                                    <div>页面2</div>
+                                    <div><div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                        <ul class="layui-tab-title">
+                                            <li class="layui-this">今日热搜</li>
+                                            <li>今日热帖</li>
+                                        </ul>
+                                        <div class="layui-tab-content">
+                                            <div class="layui-tab-item layui-show">内容不一样是要有，因为你可以监听tab事件(阅读下文档就是了)</div>
+                                            <div class="layui-tab-item">内容2</div>
+                                        </div>
+                                    </div> </div>
                                 </div>
                             </div>
                         </div>
@@ -317,6 +326,7 @@
         </div>
     </div>
     <script>
+        // 渲染服务器数据监控进度条
         function renderBar(element, res) {
             let cpu = res.cpu_per;
             let me = res.me_per;
@@ -342,6 +352,7 @@
             }
         }
 
+        // 获取服务器实时状态
         function getMonitor(element){
             $.ajax({
                 url: '/backend/get-monitor/',
@@ -352,6 +363,7 @@
             })
         }
 
+        // 渲染表格数据
         function renderChart(statistics) {
             var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'wonderlan');
             var optionRecords = {
@@ -363,7 +375,7 @@
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['首页流量', '评论次数', '搜索次数']
+                    data: ['首页流量', '评论流量', '搜索流量']
                 },
                 grid: {
                     left: '3%',

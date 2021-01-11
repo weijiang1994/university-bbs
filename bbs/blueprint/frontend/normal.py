@@ -13,15 +13,26 @@ from bleach import clean, linkify
 from flask import Blueprint, send_from_directory, request, jsonify
 from markdown import markdown
 from bbs.setting import basedir
-from flask import current_app, make_response, abort
+from flask import current_app, make_response, abort, render_template
 from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code
 from flask_login import login_required
 import re
 from bbs.email import send_email
-from bbs.models import VerifyCode, Gender, Role, College
+from bbs.models import VerifyCode, Gender, Role, College, User, Post
 from bbs.extensions import db
 
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
+
+
+@normal_bp.route('/search/')
+def search():
+    keyword = request.args.get('keyword')
+    cate = request.args.get('category', default='user')
+    if cate == 'user':
+        users = User.query.whooshee_search(keyword)
+        for user in users:
+            print(user.username, user.nickname)
+    return render_template('frontend/search-result.html', keyword=keyword)
 
 
 @normal_bp.route('/image/<string:path>/<string:filename>/', methods=['GET'])

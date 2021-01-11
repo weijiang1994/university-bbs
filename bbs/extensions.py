@@ -15,6 +15,7 @@ from flask_ckeditor import CKEditor
 import redis
 from flask_moment import Moment
 from flask_mail import Mail
+from flask_whooshee import Whooshee
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -26,6 +27,7 @@ pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
 rd = redis.Redis(connection_pool=pool)
 moment = Moment()
 mail = Mail()
+whooshee = Whooshee()
 
 
 @login_manager.user_loader

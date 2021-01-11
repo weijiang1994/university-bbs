@@ -8,7 +8,7 @@ file: models.py
 """
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_avatars import Identicon
-from bbs.extensions import db
+from bbs.extensions import db, whooshee
 import datetime
 from flask_login import UserMixin, current_user
 
@@ -41,6 +41,7 @@ class Follow(db.Model):
     followed = db.relationship('User', foreign_keys=[followed_id], back_populates='followers', lazy='joined')
 
 
+@whooshee.register_model('username', 'nickname')
 class User(db.Model, UserMixin):
     __tablename__ = 't_user'
 
@@ -162,6 +163,7 @@ class PostCategory(db.Model):
     post = db.relationship('Post', back_populates='cats', cascade='all')
 
 
+@whooshee.register_model('title', 'content')
 class Post(db.Model):
     __tablename__ = 't_post'
 
@@ -374,3 +376,11 @@ class PostStatistic(db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     times = db.Column(db.INTEGER, default=0)
     day = db.Column(db.Date, default=datetime.date.today, unique=True)
+
+
+class SearchTraffic(db.Model):
+    __tablename__ = 't_search_traffic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    search_word = db.Column(db.String(40), nullable=False, default='')
+    day = db.Column(db.Date, default=datetime.date.today())

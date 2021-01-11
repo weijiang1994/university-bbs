@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+{% block title %}
+    搜索{{ keyword }}结果
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <ul class="list-group list-group-flush d-lg-block d-none">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a class="a-link text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='user') }}">用户</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a class="a-link text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='post') }}">帖子</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

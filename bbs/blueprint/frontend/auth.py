@@ -22,6 +22,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index_bp.index'))
+    next = request.args.get('next')
     form = LoginForm()
     if form.validate_on_submit():
         usr = form.usr_email.data
@@ -30,11 +31,13 @@ def login():
         if user is not None and user.status.name == '禁用':
             flash('您的账号处于封禁状态,禁止登陆！联系管理员解除封禁!', 'danger')
             return redirect(url_for('.login'))
-
         if user is not None and user.check_password(pwd):
             if login_user(user, form.remember_me.data):
                 flash('登录成功!', 'success')
-                return redirect(url_for('index_bp.index'))
+                if next:
+                    return redirect(next)
+                else:
+                    return redirect(url_for('index_bp.index'))
         elif user is None:
             flash('无效的邮箱或用户名.', 'danger')
         else:
