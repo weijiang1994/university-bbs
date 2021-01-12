@@ -1,20 +1,58 @@
 {% extends "frontend/base.html" %}
+{% from "macro.html" import  post_item, user_card_md, render_pagination with context %}
 {% block title %}
     搜索{{ keyword }}结果
 {% endblock %}
 {% block content %}
+    {{ moment.locale(auto_detect=True) }}
     <main>
         <div class="container mt-2">
             <div class="row">
                 <div class="col-md-3">
-                    <ul class="list-group list-group-flush d-lg-block d-none">
+                    <ul class="list-group list-group-flush d-lg-block d-none mb-2">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a class="a-link text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='user') }}">用户</a>
+                            <a class="{% if cate == 'user' %}a-link{% else %}li-fade{% endif %} text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='user') }}"><i class="fa fa-user mr-2"></i> 用户</a>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a class="a-link text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='post') }}">帖子</a>
+                            <a class="{% if cate == 'post' %}a-link{% else %}li-fade{% endif %} text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='post') }}"><i class="fa fa-file-text mr-2"></i> 帖子</a>
                         </li>
                     </ul>
+                    <div class="dropdown d-lg-none mb-2">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if cate == 'user' %}
+                                用户
+                            {% else %}
+                                帖子
+                            {% endif %}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='user') }}">用户</a>
+                            <a class="dropdown-item text-decoration-none" href="{{ url_for('normal.search', keyword=keyword, category='post') }}">帖子</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    {% if items|length %}
+                        <h5><span style="color: red; font-weight: bold">{{ keyword }}</span>的搜索结果如下</h5>
+                        {% if cate == 'post' %}
+                            {{ post_item(items) }}
+                        {% else %}
+                            <ul class="list-group">
+                                {% for item in items %}
+                                    {{ user_card_md(item) }}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if tag %}
+                            <div class="mt-2 float-right">
+                                {{ render_pagination(paginates) }}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center mt-5" style="height: 300px">
+                            <p class="text-muted"><b>暂无收录<span style="color:red;">{{ keyword }}</span>的相关内容!</b></p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

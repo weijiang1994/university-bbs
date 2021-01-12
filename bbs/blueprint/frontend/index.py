@@ -6,7 +6,7 @@ file: index.py
 @time: 2020/11/26 23:04
 @desc:
 """
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, current_app
 from bbs.models import Post, VisitStatistic
 from bbs.extensions import db
 from sqlalchemy.sql.expression import func
@@ -19,7 +19,8 @@ index_bp = Blueprint('index_bp', __name__)
 @statistic_traffic(db, VisitStatistic)
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = Post.query.filter_by(status_id=1).order_by(Post.update_time.desc()).paginate(page, per_page=10)
+    pagination = Post.query.filter_by(status_id=1).order_by(Post.update_time.desc()).\
+        paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     latest = pagination.items
     hots = Post.query.order_by(Post.read_times.desc()).all()[:20]
     rands = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)

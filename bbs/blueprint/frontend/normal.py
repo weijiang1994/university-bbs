@@ -10,7 +10,7 @@ import datetime
 import os
 
 from bleach import clean, linkify
-from flask import Blueprint, send_from_directory, request, jsonify
+from flask import Blueprint, send_from_directory, request, jsonify, flash
 from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort, render_template
@@ -28,11 +28,18 @@ normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 def search():
     keyword = request.args.get('keyword')
     cate = request.args.get('category', default='user')
+    page = request.args.get('page', default=1, type=int)
+    if keyword.strip() == '':
+        flash('搜索关键字都没有,这他妈绝对是来捣乱的!', 'info')
+        return redirect_back(request.referrer)
     if cate == 'user':
-        users = User.query.whooshee_search(keyword)
-        for user in users:
-            print(user.username, user.nickname)
-    return render_template('frontend/search-result.html', keyword=keyword)
+        paginates = User.query.whooshee_search(keyword).paginate(per_page=20, page=page)
+        items = paginates.items
+    else:
+        paginates = Post.query.whooshee_search(keyword).paginate(per_page=20, page=page)
+        items = paginates.items
+    return render_template('frontend/search-result.html', keyword=keyword, cate=cate, items=items,
+                           tag=paginates.total > 20, paginates=paginates)
 
 
 @normal_bp.route('/image/<string:path>/<string:filename>/', methods=['GET'])

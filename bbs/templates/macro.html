@@ -12,25 +12,35 @@
 {% macro post_item(posts) %}
     <ul class="list-group">
         {% for post in posts %}
-            <li class="list-group-item">
-                <a class="text-decoration-none" href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
-                <div class="row mt-2">
-                    <div class="col">
-                        <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>
-                            {% if post.is_anonymous == 1 %}
-                                <a class="text-decoration-none" href="{{ url_for('profile.index', user_id=post.author_id) }}">{{post.user.nickname}}</a>
-                            {% else %}
-                                匿名
-                            {% endif %}
-                            <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
+            <li class="list-group-item pl-1">
+                <div class="d-flex">
+                    {% if post.is_anonymous == 1 %}
+                        <img class="avatar-50 rounded mr-2" src="{{ post.user.avatar }}" alt="{{ post.user.nickname }}">
+                    {% else %}
+                        <img class="avatar-50 rounded mr-2" src="{{ url_for('static', filename='img/anonymous.jpeg') }}" alt="anonymous">
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <a class="text-decoration-none" href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>
+                                    {% if post.is_anonymous == 1 %}
+                                        <a class="text-decoration-none" href="{{ url_for('profile.index', user_id=post.author_id) }}">{{post.user.nickname}}</a>
+                                    {% else %}
+                                        匿名
+                                    {% endif %}
+                                    <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
                                         <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
                                     </a></span></p>
-                    </div>
-                    <div class="col text-right d-flex flex-row-reverse">
-                        <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>{{ post.comments|length }}</p>
-                        <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>{{post.read_times}}　</p>
+                            </div>
+                            <div class="col text-right d-flex flex-row-reverse">
+                                <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>{{ post.comments|length }}</p>
+                                <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>{{post.read_times}}　</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </li>
         {% endfor %}
     </ul>
@@ -283,7 +293,7 @@
 <!-- 显示帖子评论区域宏定义 -->
 {% macro commentDiv(comment, post, anonymous=False) %}
     {% if not anonymous %}
-        <img src="{{ comment.author.avatar }}" class="rounded avatar">
+        <img src="{{ comment.author.avatar }}" class="rounded avatar-50">
     {% else %}
         <img src="{{ url_for('static', filename='img/anonymous.jpeg') }}" class="rounded avatar">
     {% endif %}

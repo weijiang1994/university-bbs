@@ -153,3 +153,8 @@ header{
     font-size: 12px;
     display: none;
 }
+
+.avatar-50{
+    width: 50px;
+    height: 50px;
+}

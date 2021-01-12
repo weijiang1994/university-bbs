@@ -20,7 +20,7 @@ class BaseConfig(object):
     BBS_THEMES = {'Darkly': 'darkly', 'Sketchy': 'sketchy', 'Journal': 'journal', 'Flatly': 'flatly',
                   'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty'}
 
-    BBS_PER_PAGE = 10
+    BBS_PER_PAGE = 20
     BBS_PER_PAGE_SOCIAL = 40
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -51,6 +51,9 @@ class BaseConfig(object):
     CKEDITOR_ENABLE_CODESNIPPET = True
     CKEDITOR_HEIGHT = 400
     CKEDITOR_FILE_UPLOADER = 'normal.image_upload'
+
+    # whooshee config
+    WHOOSHEE_MIN_STRING_LEN = 1
 
 
 class DevelopmentConfig(BaseConfig):
