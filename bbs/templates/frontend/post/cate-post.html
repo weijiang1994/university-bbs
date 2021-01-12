@@ -1,0 +1,14 @@
+{% extends "frontend/base.html" %}
+{% from 'macro.html' import post_item with context %}
+{% block content %}
+    <main>
+        {{ moment.locale(auto_detect=True) }}
+        <div class="container mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">{{ cate.name }}</a></li>
+            </ol>
+            {{ post_item(posts) }}
+        </div>
+    </main>
+{% endblock %}

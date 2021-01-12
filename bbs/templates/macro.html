@@ -23,7 +23,9 @@
                         <a class="text-decoration-none" href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
                         <div class="row mt-2">
                             <div class="col">
-                                <p class="mb-0 text-muted f-12"><i class="fa fa-user-o mr-1"></i>
+                                <p class="mb-0 text-muted f-12">
+                                <a class="badge badge-secondary mr-2" href="{{ url_for('post.post_cate', cate_id=post.cats.id) }}">{{ post.cats.name }}</a>
+                                    <i class="fa fa-user-o mr-1"></i>
                                     {% if post.is_anonymous == 1 %}
                                         <a class="text-decoration-none" href="{{ url_for('profile.index', user_id=post.author_id) }}">{{post.user.nickname}}</a>
                                     {% else %}
@@ -33,7 +35,7 @@
                                         <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
                                     </a></span></p>
                             </div>
-                            <div class="col text-right d-flex flex-row-reverse">
+                            <div class="col text-right flex-row-reverse d-lg-flex d-none">
                                 <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>{{ post.comments|length }}</p>
                                 <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>{{post.read_times}}　</p>
                             </div>

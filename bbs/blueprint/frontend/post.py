@@ -11,7 +11,8 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 
 from bbs.blueprint.frontend.normal import to_html
-from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic
+from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
+    PostCategory
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -56,8 +57,19 @@ def read(post_id):
     comments = pagination.items
     post.read_times += 1
     db.session.commit()
-    return render_template('frontend/post/read-post.html', post=post, c_tag=c_tag, comments=comments, pagination=pagination,
+    return render_template('frontend/post/read-post.html', post=post, c_tag=c_tag, comments=comments,
+                           pagination=pagination,
                            emoji_urls=EMOJI_INFOS, per_page=per_page, page=page)
+
+
+@post_bp.route('/cate/<cate_id>/', methods=['GET'])
+def post_cate(cate_id):
+    page = request.args.get('page', default=1, type=int)
+    cate = PostCategory.query.get_or_404(cate_id)
+    paginations = Post.query.filter_by(cate_id=cate_id).order_by(Post.update_time.desc()).\
+        paginate(per_page=current_app.config['BBS_PER_PAGE'], page=page)
+    posts = paginations.items
+    return render_template('frontend/post/cate-post.html', posts=posts, cate=cate)
 
 
 @post_bp.route('/edit/<post_id>/', methods=['GET', 'POST'])

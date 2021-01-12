@@ -79,7 +79,7 @@ def unfollow_user(user_id):
     if request.method == 'POST':
         return jsonify({'tag': 1})
     flash('取关成功!', 'success')
-    return redirect(url_for('.index', user_id=user_id))
+    return redirect(request.referrer)
 
 
 @profile_bp.route('/collect/<user_id>/')

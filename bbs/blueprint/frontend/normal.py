@@ -25,6 +25,7 @@ normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
 
 @normal_bp.route('/search/')
+@login_required
 def search():
     keyword = request.args.get('keyword')
     cate = request.args.get('category', default='user')

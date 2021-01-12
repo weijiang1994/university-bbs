@@ -112,7 +112,7 @@
     {{ moment.locale(auto_detect=True) }}
     <body>
     <main>
-        <div class="container mt-4">
+        <div class="container mt-2">
             {% include "_flash.html" %}
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
@@ -131,7 +131,7 @@
 
                 <div class="d-flex">
                     {% if post.is_anonymous == 1 %}
-                        <img src="{{ post.user.avatar }}" class="rounded avatar">
+                        <img src="{{ post.user.avatar }}" class="rounded avatar-50">
                         <div class="d-flex">
                             <div>
                                 <a class="ml-2 text-decoration-none" href="{{ url_for('profile.index', user_id=post.user.id) }}">{{ post.user.nickname }}</a>

@@ -1,18 +1,5 @@
 {% extends "frontend/base.html" %}
 {% from "macro.html" import post_item, render_pagination with context%}
-{% block head %}
-    {{ super() }}
-    <!--suppress ALL -->
-    <style>
-        .f-12{
-            font-size: 12px;
-        }
-        .avatar{
-            width: 50px;
-            height: 50px;
-        }
-    </style>
-{% endblock %}
 {% block title %}
     主页
 {% endblock %}
@@ -63,7 +50,7 @@
                                 </div>
                             {% else %}
                                 <div class="d-flex">
-                                    <img src="{{ current_user.avatar }}" class="rounded avatar">
+                                    <img src="{{ current_user.avatar }}" class="rounded avatar-50">
                                     <div>
                                         <p class="mb-1 ml-1 text-success"><b>{{ current_user.nickname }}</b></p>
                                         <p class="mb-1 ml-1 text-muted"><small>@{{ current_user.username }}</small></p>
