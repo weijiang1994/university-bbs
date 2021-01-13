@@ -96,7 +96,7 @@ def register_cmd(app: Flask):
         click.echo('Initialized database.')
 
     @app.cli.command()
-    def admin():
+    def init():
         click.confirm('这个操作会清空整个数据库,要继续吗?', abort=True)
         db.drop_all()
         click.echo('清空数据库完成!')
@@ -122,6 +122,25 @@ def register_cmd(app: Flask):
 
         click.confirm('是否添加测试数据?', abort=True)
         generate_fake_data()
+
+    @app.cli.command()
+    def superuser():
+        import re
+        reg = '^[a-zA-Z0-9_]*$'
+        inp = True
+        while inp:
+            username = input('请输入超级管理员用户名(不能为中文):')
+            nickname = input('请输入超级管理员昵称:')
+            pwd = input('请输入超级管理员密码(大于8位):')
+            if re.match(reg, username) or len(pwd) > 8:
+                inp = False
+
+        u = User(username=username, nickname=nickname, role_id=1, email='admin@2dogzbbs.cn', status_id=1)
+        u.set_password(pwd=pwd)
+        u.generate_avatar()
+        db.session.add(u)
+        db.session.commit()
+        click.echo('超级管理员添加成功!')
 
 
 def init_status():

@@ -47,3 +47,6 @@
     margin-bottom: 3px;
 }
 
+.bg-nav, .bg-footer{
+    background-color: #303030!important;
+}
