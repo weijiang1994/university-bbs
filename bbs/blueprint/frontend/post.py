@@ -167,14 +167,14 @@ def post_collect(post_id):
     if c:
         post.collects -= 1
         db.session.delete(c)
-        db.session.commit()
         flash('取消收藏帖子成功!', 'success')
     else:
         post.collects += 1
         c = Collect(user_id=current_user.id, post_id=post_id)
         db.session.add(c)
-        db.session.commit()
         flash('收藏帖子成功!', 'success')
+
+    db.session.commit()
 
 
 @post_bp.route('/post-comment/', methods=['POST'])
