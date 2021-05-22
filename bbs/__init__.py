@@ -26,6 +26,7 @@ from bbs.blueprint.backend.index import be_index_bp
 from bbs.blueprint.backend.user_manage import be_user_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
 from bbs.utils import get_text_plain
+import os
 
 
 def create_app(config_name=None):
@@ -207,6 +208,8 @@ def generate_fake_data():
 def register_log(app: Flask):
     app.logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
     file_handler = RotatingFileHandler('logs/bbs.log', maxBytes=10 * 1024 * 1024, backupCount=10)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.DEBUG)
