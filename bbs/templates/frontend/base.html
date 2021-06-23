@@ -62,7 +62,7 @@
                 <form class="form-inline my-2 my-md-0" action="{{ url_for('normal.search') }}">
                     <input class="form-control" type="text" name="keyword" placeholder="请输入关键字" aria-label="Search" required>
                 </form>
-                {% if current_user.is_authenticated and request.endpoint !='index_bp.index' %}
+                {% if current_user.is_authenticated and request.endpoint not in ['index_bp.index', 'index_bp.hot', 'index_bp.rands'] %}
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="欢迎回来,{{ current_user.username }}~">
