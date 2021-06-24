@@ -384,3 +384,11 @@ class SearchTraffic(db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     search_word = db.Column(db.String(40), nullable=False, default='')
     day = db.Column(db.Date, default=datetime.date.today())
+
+
+class OneSentence(db.Model):
+    __tablename__ = 't_one_sentence'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    content = db.Column(db.String(512), default='', nullable=False)
+    day = db.Column(db.DATE, default=datetime.date.today())
