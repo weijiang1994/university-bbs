@@ -5,26 +5,26 @@
     {{ ckeditor.load_code_theme() }}
     <!--suppress ALL -->
     <style>
-        .post-title-h1{
+        .post-title-h1 {
             font-size: 22px;
             font-weight: bold;
         }
 
-        .post-div{
+        .post-div {
             color: white;
             background: #303030;
             padding: 5px 15px 8px 15px;
             border-radius: 5px;
         }
 
-        .post-content{
+        .post-content {
             color: white;
             background: #343434;
             padding: 8px;
             border-radius: 5px;
         }
 
-        article>h1 {
+        article > h1 {
             font-size: 20px;
             font-weight: bold;
             margin: 10px 0 10px 0;
@@ -33,7 +33,7 @@
             line-height: 2em;
         }
 
-        article>h2 {
+        article > h2 {
             font-size: 18px;
             margin-top: 5px;
             margin-bottom: 5px;
@@ -41,7 +41,7 @@
             border-bottom: 1px solid #28a745;
         }
 
-        article>h3 {
+        article > h3 {
             font-size: 18px;
             margin-top: 10px;
             margin-bottom: 10px;
@@ -49,23 +49,23 @@
             border-bottom: 1px solid #28a745;
         }
 
-        blockquote>p {
+        blockquote > p {
             font: 14px/22px normal helvetica, sans-serif;
             margin: 5px 0px 5px 0px;
-            font-style:italic;
+            font-style: italic;
         }
 
-        .report-textarea{
-            height: 100px!important;
+        .report-textarea {
+            height: 100px !important;
         }
 
-        .preview{
+        .preview {
             background: white;
             border-radius: 5px;
-            color: black!important;
+            color: black !important;
         }
 
-        .blockquote-comment{
+        .blockquote-comment {
             margin-top: 5px;
             border-left: 6px solid #6c6c6c;
             background: #6c757d;
@@ -73,39 +73,34 @@
             padding: 8px;
         }
 
-        .p-error-hint{
+        .p-error-hint {
             color: #f94b43;
             display: none;
             font-weight: bold;
         }
 
-        .p-reply{
+        .p-reply {
             color: #80bdff;
             margin-bottom: 0px;
         }
 
-        .div-comment-body{
+        .div-comment-body {
             border-bottom: 1px solid #828286;
             padding-bottom: 6px;
         }
 
-        .div-gutter20{
+        .div-gutter20 {
             height: 20px;
         }
 
-        @media screen and (max-width: 567px){
-            .div-gutter20{
+        @media screen and (max-width: 567px) {
+            .div-gutter20 {
                 height: 5px;
             }
         }
 
-        .hr-margin-5{
-            margin: 5px 0 5px 0!important;
-        }
-        .my-breadcrumb{
-            padding-bottom: 3px;
-            margin-bottom: 3px;
-            color: rgb(42, 159, 214);
+        .hr-margin-5 {
+            margin: 5px 0 5px 0 !important;
         }
     </style>
 {% endblock %}
@@ -120,13 +115,21 @@
         <div class="container mt-2">
             {% include "_flash.html" %}
             <!-- 帖子主要信息 -->
-            <div class="post-div">
-                <p class="my-breadcrumb"><a class="text-decoration-none" href="/"><i class="fa fa-home mr-1"></i>主页</a> > <a class="text-decoration-none" href="{{ url_for('post.post_cate',  cate_id=post.cats.id) }}">{{ post.cats.name }}</a></p>
+            <ol class="breadcrumb mb-0 rounded-0">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">杂谈</a></li>
+                <li class="breadcrumb-item active d-lg-block d-none">{{ post.title }}</li>
+            </ol>
+
+            <div class="post-div rounded-0">
                 <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
                 <div class="d-flex mb-0">
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i><span class="d-none d-lg-inline-block">点亮</span>({{ post.likes }}) </p>
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i><span class="d-none d-lg-inline-block">点灭</span>({{ -post.unlikes }}) </p>
-                    <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i><span class="d-none d-lg-inline-block">收藏</span>({{ post.collects }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i><span
+                            class="d-none d-lg-inline-block">点亮</span>({{ post.likes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i><span
+                            class="d-none d-lg-inline-block">点灭</span>({{ -post.unlikes }}) </p>
+                    <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i><span
+                            class="d-none d-lg-inline-block">收藏</span>({{ post.collects }}) </p>
                     <p class="text-muted mb-0"><i class="fa fa-calendar-minus-o mr-1"></i>{{ post.create_time }}</p>
                 </div>
 
@@ -135,10 +138,13 @@
                         <img src="{{ post.user.avatar }}" class="rounded avatar-50">
                         <div class="d-flex">
                             <div>
-                                <a class="ml-2 text-decoration-none" href="{{ url_for('profile.index', user_id=post.user.id) }}">{{ post.user.nickname }}</a>
+                                <a class="ml-2 text-decoration-none"
+                                   href="{{ url_for('profile.index', user_id=post.user.id) }}">{{ post.user.nickname }}</a>
                                 <div class="d-flex">
-                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
-                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span
+                                            class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span
+                                            class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
                                 </div>
                             </div>
                         </div>
@@ -148,8 +154,10 @@
                             <div>
                                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
                                 <div class="d-flex">
-                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
-                                    <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span
+                                            class="badge badge-pill badge-success">{{ post.user.college.name }}</span></a>
+                                    <a class="text-decoration-none ml-2"><span
+                                            class="badge badge-pill badge-info">{{ post.user.role.name }}</span></a>
                                 </div>
                             </div>
                         </div>
@@ -162,12 +170,15 @@
                 </div>
                 {% if current_user.is_authenticated and current_user.id == post.user.id %}
                     <div class="d-flex flex-row-reverse mt-1">
-                        <a class="text-decoration-none text-muted" href="/post/edit/{{ post.id }}/"><small>编辑</small></a>
-                        <a class="mr-2 text-decoration-none text-muted" href="/post/delete/{{ post.id }}/"><small>删除</small></a>
+                        <a class="text-decoration-none text-muted"
+                           href="/post/edit/{{ post.id }}/"><small>编辑</small></a>
+                        <a class="mr-2 text-decoration-none text-muted"
+                           href="/post/delete/{{ post.id }}/"><small>删除</small></a>
                     </div>
                 {% elif current_user.is_authenticated %}
                     <div class="d-flex flex-row-reverse mt-1">
-                        <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
+                        <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal"
+                           href="#"><small>举报</small></a>
                         <a class="text-decoration-none text-muted ml-2" href="/post/collect/{{ post.id }}/">
                             <small>
                                 {% if c_tag %}
@@ -177,8 +188,10 @@
                                 {% endif %}
                             </small>
                         </a>
-                        <a class="text-decoration-none text-muted ml-2" href="/post/unlike/{{ post.id }}/"><small>点灭</small></a>
-                        <a class="text-decoration-none text-muted ml-2" href="/post/like/{{ post.id }}/"><small>点亮</small></a>
+                        <a class="text-decoration-none text-muted ml-2"
+                           href="/post/unlike/{{ post.id }}/"><small>点灭</small></a>
+                        <a class="text-decoration-none text-muted ml-2"
+                           href="/post/like/{{ post.id }}/"><small>点亮</small></a>
                     </div>
                 {% endif %}
             </div>
@@ -212,10 +225,16 @@
                                     {% if comment.replied_id %}
                                         <div class="post-content">
                                             {% if not comment.replied.delete_flag %}
-                                                <p class="mb-1 ">引用<a href="/profile/user/{{ comment.replied.author.id }}/" class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复</p>
+                                                <p class="mb-1 ">引用<a
+                                                        href="/profile/user/{{ comment.replied.author.id }}/"
+                                                        class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复
+                                                </p>
                                                 {{ comment.replied.body|safe }}
                                             {% else %}
-                                                <p class="mb-1 ">引用<a href="/profile/user/{{ comment.replied.author.id }}/" class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复</p>
+                                                <p class="mb-1 ">引用<a
+                                                        href="/profile/user/{{ comment.replied.author.id }}/"
+                                                        class="p-reply text-decoration-none">@{{ comment.replied.author.nickname }}</a>回复
+                                                </p>
                                                 <p class="text-muted mt-0"><b>由于作者删除或该评论违规已被隐藏</b></p>
                                             {% endif %}
                                         </div>
@@ -224,20 +243,31 @@
                                 </div>
                                 <!-- 对于该评论的操作 -->
                                 <div class="d-flex flex-row-reverse mt-1">
-                                    {% if current_user.is_authenticated%}
+                                    {% if current_user.is_authenticated %}
                                         {% if current_user.id == comment.author.id %}
-                                            <a class="text-decoration-none text-muted ml-2" href="#" data-commid="{{ comment.id }}" data-toggle="modal" data-target="#confirm-delete" >
+                                            <a class="text-decoration-none text-muted ml-2" href="#"
+                                               data-commid="{{ comment.id }}" data-toggle="modal"
+                                               data-target="#confirm-delete">
                                                 <small>删除</small>
                                             </a>
                                         {% else %}
-                                            <a class="text-decoration-none text-muted ml-2" data-toggle="modal" data-target="#exampleModal" href="#"><small>举报</small></a>
-                                            <a class="text-decoration-none text-muted ml-2 span-hand" data-commid="{{ comment.id }}" onclick="reply($(this).data('commid'), $(this).data('user'), $(this).data('userid'))" data-userid="{{ comment.author.id }}" data-user="{{ comment.author.username }}"><small>回复</small></a>
+                                            <a class="text-decoration-none text-muted ml-2" data-toggle="modal"
+                                               data-target="#exampleModal" href="#"><small>举报</small></a>
+                                            <a class="text-decoration-none text-muted ml-2 span-hand"
+                                               data-commid="{{ comment.id }}"
+                                               onclick="reply($(this).data('commid'), $(this).data('user'), $(this).data('userid'))"
+                                               data-userid="{{ comment.author.id }}"
+                                               data-user="{{ comment.author.username }}"><small>回复</small></a>
                                         {% endif %}
                                     {% endif %}
-                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}"><small>{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</small></span>
+                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left">
+                                        <span data-toggle="tooltip" data-placement="right"
+                                              data-timestamp="{{ comment.timestamps }}" data-delay="500"
+                                              data-original-title=""
+                                              title="{{ comment.timestamps }}"><small>{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</small></span>
                                     </a>
-                                    <a class="text-decoration-none ml-2 text-muted text-left" href="#"><small><span>#{{ loop.index + (page-1)*per_page }}</span></small></a>
+                                    <a class="text-decoration-none ml-2 text-muted text-left"
+                                       href="#"><small><span>#{{ loop.index + (page-1)*per_page }}</span></small></a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -258,17 +288,22 @@
                     <div>
                         <ul class="nav nav-pills " role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="pill" href="#addComment"><i class="fa fa-commenting mr-2"></i>评论</a>
+                                <a class="nav-link active" data-toggle="pill" href="#addComment"><i
+                                        class="fa fa-commenting mr-2"></i>评论</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill" href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
+                                <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill"
+                                   href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
                             </li>
                         </ul>
                         <div class="tab-content">
                             <div id="addComment" class="tab-pane active">
-                                <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea" style="height: 150px!important;" id="commentContent" placeholder="请输入评论内容"></textarea>
+                                <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea"
+                                          style="height: 150px!important;" id="commentContent"
+                                          placeholder="请输入评论内容"></textarea>
                                 <div class="d-flex mt-1">
-                                    <a class="mb-1 text-decoration-none mr-2 a-link" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="mb-1 text-decoration-none mr-2 a-link" href="#" id="commentEmoji"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-smile-o mr-1"></i>表情
                                     </a>
                                     <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
@@ -286,16 +321,24 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand"><i class="fa fa-photo mr-1"></i>图片</a>
-                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png" hidden="hidden">
-                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal" data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
+                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand"><i
+                                            class="fa fa-photo mr-1"></i>图片</a>
+                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png"
+                                           hidden="hidden">
+                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal"
+                                       data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
                                     <button class="btn btn-info" id="commentBtn" onclick="postComment()">评论</button>
-                                    <button hidden="hidden" id="replyBtn" onclick="replyComment()" class="btn btn-success mt-2">回复</button>
-                                    <button hidden="hidden" id="cancleReplyBtn" onclick="cancleReply()" class="btn btn-danger mt-2 mr-2">取消</button>
-                                    <a id="replyUserP" hidden="hidden" class="p-reply flex-grow-1 text-decoration-none"></a>
+                                    <button hidden="hidden" id="replyBtn" onclick="replyComment()"
+                                            class="btn btn-success mt-2">回复
+                                    </button>
+                                    <button hidden="hidden" id="cancleReplyBtn" onclick="cancleReply()"
+                                            class="btn btn-danger mt-2 mr-2">取消
+                                    </button>
+                                    <a id="replyUserP" hidden="hidden"
+                                       class="p-reply flex-grow-1 text-decoration-none"></a>
                                 </div>
                             </div>
                             <!-- 评论预览界面 -->
@@ -339,7 +382,7 @@
 
             function replyComment() {
                 comment = isEmpty();
-                if (!comment){
+                if (!comment) {
                     return false;
                 }
                 commentId = sessionStorage.getItem('commentId');
@@ -348,7 +391,12 @@
                 $.ajax({
                     type: "post",
                     url: "/post/reply-comment/",
-                    data: {"post_id":postId, "comment_id": commentId, "comment_user_id": commentUserId, "comment": comment},
+                    data: {
+                        "post_id": postId,
+                        "comment_id": commentId,
+                        "comment_user_id": commentUserId,
+                        "comment": comment
+                    },
                     success: function (res) {
                         window.location.reload();
                     }
@@ -360,15 +408,15 @@
                 $("#replyBtn").removeAttr('hidden');
                 $("#cancleReplyBtn").removeAttr('hidden');
                 $("#replyUserP").removeAttr('hidden');
-                $("#replyUserP").html('@'+commentUser);
-                $("#replyUserP").attr('href', '/profile/user/'+commentUserId+'/');
+                $("#replyUserP").html('@' + commentUser);
+                $("#replyUserP").attr('href', '/profile/user/' + commentUserId + '/');
                 sessionStorage.setItem('commentId', commentId);
                 sessionStorage.setItem('commentUserId', commentUserId);
-                $('html,body').animate({ scrollTop: $("#commentPosition").offset().top - 100 }, 200)
+                $('html,body').animate({scrollTop: $("#commentPosition").offset().top - 100}, 200)
             }
 
             var emoji_tag = $("#emoji-list img");
-            emoji_tag.click(function() {
+            emoji_tag.click(function () {
                 var e = $(this).data('emoji');
                 $("#commentContent").val($("#commentContent").val() + e);
             });
@@ -380,20 +428,20 @@
             // 预览评论
             function getMarkDownData() {
                 let comment = $("#commentContent").val();
-                if (comment == ''){
+                if (comment == '') {
                     $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论,你预览NM呢?</b></p>')
                     return false;
                 }
                 let last = sessionStorage.getItem('md');
                 // 评论没有修改时,不发送预览请求
-                if (last){
-                    if (last == comment){
+                if (last) {
+                    if (last == comment) {
                         return false;
                     }
                 }
                 sessionStorage.setItem('md', comment);
                 $.ajax({
-                    type:"post",
+                    type: "post",
                     url: '/normal/comment/render-md/',
                     data: {'md': comment},
                     success: function (res) {
@@ -403,8 +451,8 @@
             }
 
             // 评论框按键监听事件
-            function tab(obj){
-                if (event.keyCode == 9){
+            function tab(obj) {
+                if (event.keyCode == 9) {
                     event.preventDefault();
                     var indent = '    ';
                     var start = obj.selectionStart;
@@ -421,12 +469,12 @@
             function isEmpty() {
                 let comment = $("#commentContent").val();
                 // 防止一直按回车键输入空白的评论内容
-                if (comment.replace(/<br>/g, '').replace(/\s*/g, '') == ''){
+                if (comment.replace(/<br>/g, '').replace(/\s*/g, '') == '') {
                     $(".p-error-hint").slideDown(500);
                     $(".p-error-hint").show().delay(2000).hide(500);
                     return false;
                 }
-                if (!comment){
+                if (!comment) {
                     $(".p-error-hint").slideDown(500);
                     $(".p-error-hint").show().delay(2000).hide(500);
                     return false;
@@ -437,12 +485,12 @@
             // 提交评论
             function postComment() {
                 comment = isEmpty();
-                if (!comment){
+                if (!comment) {
                     return false;
                 }
                 let postId = $("#postTitle").data("id");
                 $.ajax({
-                    type:"post",
+                    type: "post",
                     data: {"commentContent": comment, 'postId': postId},
                     url: "/post/post-comment/",
                     success: function (res) {
@@ -453,22 +501,23 @@
 
             function submitDelete(commId) {
                 $.ajax({
-                    url:'/post/delete-comment/',
+                    url: '/post/delete-comment/',
                     type: 'POST',
                     data: {'comm_id': commId},
-                    success: function (res){
-                        if (res.tag){
+                    success: function (res) {
+                        if (res.tag) {
                             window.location.reload();
-                        }else {
+                        } else {
                             alert("删除评论失败!");
                             return false;
                         }
                     },
-                    error: function (){}
+                    error: function () {
+                    }
                 })
             }
 
-            $("#confirm-delete").on("show.bs.modal", function (e){
+            $("#confirm-delete").on("show.bs.modal", function (e) {
                 let commID = $(e.relatedTarget).data('commid');
                 $("#deleteBtn").val(commID);
             })
@@ -482,7 +531,7 @@
                 let formdata = new FormData();
                 formdata.append('file', img);
                 $.ajax({
-                    url:"/normal/ajax-upload/",
+                    url: "/normal/ajax-upload/",
                     type: "post",
                     async: false,
                     data: formdata,
