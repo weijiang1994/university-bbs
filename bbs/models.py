@@ -294,7 +294,7 @@ class Notification(db.Model):
     target_name = db.Column(db.String(200))
     send_user = db.Column(db.String(40))
     receive_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
-    msg = db.Column(db.String(400))
+    msg = db.Column(db.TEXT)
     read = db.Column(db.INTEGER, default=0, comment='is read? 0 no 1 yes')
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
 
