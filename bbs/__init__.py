@@ -136,7 +136,7 @@ def register_cmd(app: Flask):
             if re.match(reg, username) or len(pwd) > 8:
                 inp = False
 
-        u = User(username=username, nickname=nickname, role_id=1, email='admin@2dogzbbs.cn', status_id=1)
+        u = User(username=username, nickname=nickname, role_id=1, email='admin@2dogzbbs.cn', status_id=1, college_id=1)
         u.set_password(pwd=pwd)
         u.generate_avatar()
         db.session.add(u)
