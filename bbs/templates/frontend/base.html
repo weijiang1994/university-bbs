@@ -5,9 +5,9 @@
 {% block head %}
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}{% endblock %}-二狗学院</title>
+        <title>{% block title %}{% endblock %}-University-BBS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="shortcut icon" href="{{url_for('static', filename='img/favorite.png')}}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favorite.png') }}" type="image/x-icon">
         <link rel="icon" href="{{ url_for('static', filename = 'img/favorite.png') }}" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
         <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
@@ -26,65 +26,57 @@
 {% endblock %}
 
 {% block nav %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-nav">
-        <div class="container align-self-end">
-            <a class="navbar-brand" href="/"><i class="fa fa-bbs"></i>狗子学院</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navHome" aria-controls="navHome" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg container">
+            <a class="navbar-brand navbar-text" href="/">
+                {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg'] %}
+                    <img style="height: 60px;width: 80px" src="{{ url_for('static', filename='img/logoko-light.png') }}" alt="">
+                {% else %}
+                    <img style="height: 60px;width: 80px" src="{{ url_for('static', filename='img/logoko.png') }}" alt="">
+                {% endif %}
+            </a>
+            <button class="navbar-toggler {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg'] %}navbar-dark bg-dark{% else %}navbar-light bg-light{% endif %}" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navHome">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown mr-5">
-                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fire mr-1"></i>大食堂</a>
-                        <div class="dropdown-menu" aria-labelledby="talk">
-                            <a class="dropdown-item" href="#">杂谈</a>
-                            <a class="dropdown-item" href="#">趣事</a>
-                            <a class="dropdown-item" href="#">表白</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown mr-5">
-                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-shopping-cart mr-1"></i>便利店</a>
-                        <div class="dropdown-menu" aria-labelledby="talk">
-                            <a class="dropdown-item" href="#">寻物</a>
-                            <a class="dropdown-item" href="#">咸鱼</a>
-                            <a class="dropdown-item" href="#">活动</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown mr-5">
-                        <a class="nav-link dropdown-toggle" href="#" id="talk" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-delicious mr-1"></i>组织</a>
-                        <div class="dropdown-menu" aria-labelledby="talk">
-                            <a class="dropdown-item" href="#">学院</a>
-                            <a class="dropdown-item" href="#">社团</a>
-                            <a class="dropdown-item" href="#">圈子</a>
-                        </div>
-                    </li>
-                </ul>
+            <div class="navbar-collapse collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav mr-auto">
+            </ul>
                 <form class="form-inline my-2 my-md-0" action="{{ url_for('normal.search') }}">
-                    <input class="form-control" type="text" name="keyword" placeholder="请输入关键字" aria-label="Search" required>
+                    <input class="form-control" type="text" name="keyword" placeholder="请输入关键字" aria-label="Search"
+                           required>
                 </form>
                 {% if current_user.is_authenticated and request.endpoint not in ['index_bp.index', 'index_bp.hot', 'index_bp.rands'] %}
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="欢迎回来,{{ current_user.username }}~">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                               title="欢迎回来,{{ current_user.username }}~">
                                 <img class="nav-avatar" src="{{ current_user.avatar }}" alt={{ current_user.nickname }}>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right mt-0 rounded-0 border-0" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item pl-3" href="{{ url_for('profile.index', user_id=current_user.id) }}"><i class="fa fa-fw fa-user mr-2"></i>个人中心</a>
-                                <a class="dropdown-item pl-3" href="{{ url_for('user.index', user_id=current_user.id) }}"><i class="fa fa-fw fa-cog mr-2"></i>设置</a>
+                            <div class="dropdown-menu dropdown-menu-right mt-0 rounded-0 border-0"
+                                 aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item pl-3"
+                                   href="{{ url_for('profile.index', user_id=current_user.id) }}"><i
+                                        class="fa fa-fw fa-user mr-2"></i>个人中心</a>
+                                <a class="dropdown-item pl-3"
+                                   href="{{ url_for('user.index', user_id=current_user.id) }}"><i
+                                        class="fa fa-fw fa-cog mr-2"></i>设置</a>
                                 {% if ntf_counts %}
-                                    <a href="/accounts/profile" class="dropdown-item pl-3"><i class="fa fa-fw fa-bell mr-2"></i>消息 <span class="badge badge-info">{{ ntf_counts }}</span>
+                                    <a href="/accounts/profile" class="dropdown-item pl-3">
+                                    <i class="fa fa-fw fa-bell mr-2"></i>消息
+                                    <span class="badge badge-info">{{ ntf_counts }}</span>
                                 {% endif %}
                                 {% if current_user.role_id == 1 %}
-                                    <a class="dropdown-item pl-3" href="/backend/admin/index/ "><i class="fa fa-fw fa-magnet mr-2"></i>后台管理</a>
+                                    <a class="dropdown-item pl-3" href="/backend/admin/index/ "><i
+                                            class="fa fa-fw fa-magnet mr-2"></i>后台管理</a>
                                 {% endif %}
                                 </a>
-                                <a class="dropdown-item pl-3" href="/auth/logout"><i class="fa fa-fw fa-sign-out mr-2"></i>退出</a>
+                                <a class="dropdown-item pl-3" href="/auth/logout"><i
+                                        class="fa fa-fw fa-sign-out mr-2"></i>退出</a>
                             </div>
                         </li>
                     </ul>
                 {% endif %}
             </div>
-        </div>
     </nav>
 {% endblock %}
 {% block content %}
