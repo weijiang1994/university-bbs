@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block nav %}
-    <nav class="navbar navbar-expand-lg container">
+    <nav class="navbar navbar-expand-lg container" style="flex: none">
         <a class="navbar-brand navbar-text" href="/">
             {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg'] %}
                 <img style="height: 60px;width: 80px" src="{{ url_for('static', filename='img/logoko-light.png') }}"
