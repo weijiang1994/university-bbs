@@ -1,52 +1,108 @@
 /*dark theme style*/
-.a-link{
+.a-link {
     color: white;
     text-decoration: none;
 }
 
-.a-link:hover{
-    color: rgba(126,126,126,0.85);
+.a-link:hover {
+    color: rgba(126, 126, 126, 0.85);
 }
 
-.li-fade{
+.li-fade {
     color: #aaaaaa;
 }
 
-.li-fade:hover{
+.li-fade:hover {
     color: #cccccc;
 }
 
-.user-home-title{
+.user-home-title {
     font-weight: bold;
     font-size: 22px;
 }
 
-.user-sub-title{
+.user-sub-title {
     font-weight: bold;
     font-size: 18px;
 }
 
-.span-border-bottom{
+.span-border-bottom {
     border-bottom: solid 5px #0b4961;
 }
 
-.div-user-page{
+.div-user-page {
     border-radius: 5px;
     padding: 10px;
     background: #292b2c;
 }
 
-.div-blockquote-comment{
+.div-blockquote-comment {
     border-radius: 5px;
     color: white;
     background: #353539;
     padding: 8px;
 }
 
-.div-blockquote-comment>p{
+.div-blockquote-comment > p {
     margin-bottom: 3px;
 }
 
-.bg-nav, .bg-footer{
-    background-color: #303030!important;
+.bg-nav .bg-footer {
+    background-color: #303030 !important;
+}
+
+.post-div {
+    color: white;
+    background: #303030;
+    padding: 5px 15px 8px 15px;
+    border-radius: 5px;
+}
+
+.post-content {
+    color: white;
+    background: #343434;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.div-left-person {
+    background-color: #444444;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.div-left-person .top {
+    height: 50px;
+    border-bottom: 1px solid #8f8f8f;
+    width: 100%;
+    margin-bottom: 3px;
+    alignment: left;
+}
+
+.top-right {
+    height: 50px;
+    border-bottom: 1px solid #8f8f8f;
+    width: 100%;
+    background-color: #49494b;
+    margin-bottom: 3px;
+    alignment: left;
+}
+
+/*私信页面样式*/
+.div-msg-content {
+    margin-left: 4px;
+    border-radius: 5px;
+    background-color: #585858;
+    color: #eff0f1;
+    padding: 3px;
+    width: 280px;
+    max-width: 280px;
+}
+
+.div-item:hover {
+    background-color: #666666;
+}
+
+.li-active {
+    background-color: #666666;
 }

@@ -1,17 +1,77 @@
 /*light theme style*/
-.a-link{
+.a-link {
     color: #0a0a0a;
     text-decoration: none;
 }
 
-.a-link:hover{
+.a-link:hover {
     color: #1b1e21;
 }
 
-.li-fade{
+.li-fade {
     color: #333333;
 }
 
-.li-fade:hover{
+.li-fade:hover {
     color: #222222;
+}
+
+.span-border-bottom {
+    border-bottom: solid 5px #68c684;
+}
+
+.post-div {
+    color: #101010;
+    background: #F5F6F3;
+    padding: 5px 15px 8px 15px;
+    border-radius: 5px;
+}
+
+.post-content {
+    color: #101010;
+    background: #F5F6F3;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+/*私信页面样式*/
+.div-left-person {
+    background-color: #F5F6F3;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.div-left-person .top {
+    height: 50px;
+    border-bottom: 1px solid #b1afaf;
+    width: 100%;
+    margin-bottom: 3px;
+    alignment: left;
+}
+
+.top-right {
+    height: 50px;
+    border-bottom: 1px solid #b1afaf;
+    width: 100%;
+    background-color: #F5F6F3;
+    margin-bottom: 3px;
+    alignment: left;
+}
+
+.div-msg-content {
+    margin-left: 4px;
+    border-radius: 5px;
+    background-color: #ececeb;
+    color: black;
+    padding: 3px;
+    width: 280px;
+    max-width: 280px;
+}
+
+.div-item:hover {
+    background-color: #d7d3d3;
+}
+
+.li-active {
+    background-color: #c1c1c1;
 }
