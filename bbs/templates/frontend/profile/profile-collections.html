@@ -74,7 +74,11 @@
                                 </div>
                                 <p>{{ collect.post.textplain|striptags|truncate(100) }}</p>
                                 <div class="d-flex">
-                                    <a class="text-muted text-decoration-none f-12-b" href="{{ url_for('profile.index', user_id=collect.post.author_id) }}"><i class="fa fa-user mr-1"></i>作者:{{ collect.post.user.nickname }}&nbsp;&nbsp;</a>
+                                    {% if collect.post.is_anonymous == 1 %}
+                                        <a class="text-muted text-decoration-none f-12-b" href="{{ url_for('profile.index', user_id=collect.post.author_id) }}"><i class="fa fa-user mr-1"></i>{{ collect.post.user.nickname }}&nbsp;&nbsp;</a>
+                                    {% else %}
+                                        <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-user mr-1"></i>匿名&nbsp;&nbsp;</a>
+                                    {% endif %}
                                     <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ collect.post.collects }})&nbsp;&nbsp;</a>
                                     <a class="text-muted text-decoration-none d-none d-sm-block  f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ collect.post.comments|length }})&nbsp;&nbsp;</a>
                                     <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
@@ -84,7 +88,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    {% if  tag > 1 %}
+                    {% if tag > 1 %}
                         <div class="float-right mt-1">
                             {{ render_pagination(pagination, size='sm') }}
                         </div>

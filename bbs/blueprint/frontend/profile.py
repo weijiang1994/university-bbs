@@ -89,8 +89,7 @@ def collect(user_id):
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
     if current_user.id == user.id:
-        pagination = Collect.query.filter(
-            Collect.timestamps > datetime.date.today() + datetime.timedelta(days=1)).with_parent(user).order_by(
+        pagination = Collect.query.with_parent(user).order_by(
             Collect.timestamps.desc()).paginate(page=page, per_page=per_page)
         collects = pagination.items
     else:
