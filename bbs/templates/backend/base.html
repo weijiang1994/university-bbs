@@ -65,11 +65,11 @@
                         <dd><a href="javascript:void(0);">角色管理</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:void(0);">内容管理</a>
+                <li class="layui-nav-item {% if 'post_manage' in request.endpoint %}layui-nav-itemed{% endif %}">
+                    <a href="javascript:void(0);">帖子管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:void(0);">帖子管理</a></dd>
-                        <dd><a href="javascript:void(0);">评论管理</a></dd>
+                        <dd><a href="{{ url_for('post_manage.post_audit') }}">帖子审核</a></dd>
+                        <dd><a href="javascript:void(0);">帖子屏蔽</a></dd>
                         <dd><a href="javascript:void(0);">分区管理</a></dd>
                     </dl>
                 </li>
