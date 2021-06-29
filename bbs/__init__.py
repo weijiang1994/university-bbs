@@ -24,6 +24,7 @@ from bbs.blueprint.frontend.user import user_bp
 # 后台蓝图
 from bbs.blueprint.backend.index import be_index_bp
 from bbs.blueprint.backend.user_manage import be_user_manage_bp
+from bbs.blueprint.backend.post_manage import be_post_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post
 from bbs.utils import get_text_plain
 import os
@@ -65,6 +66,7 @@ def register_bp(app: Flask):
     app.register_blueprint(user_bp)
     app.register_blueprint(be_index_bp)
     app.register_blueprint(be_user_manage_bp)
+    app.register_blueprint(be_post_manage_bp)
 
 
 def register_error_handlers(app: Flask):
@@ -145,10 +147,10 @@ def register_cmd(app: Flask):
 
 
 def init_status():
-    s1 = Status(name='正常')
-    db.session.add(s1)
-    s2 = Status(name='禁用')
-    db.session.add(s2)
+    status = ['正常', '禁用', '未审核', '审核失败']
+    for s in status:
+        s1 = Status(name=s)
+        db.session.add(s1)
     db.session.commit()
 
 
