@@ -1,0 +1,3 @@
+admin:
+  audit: true
+  register: true
