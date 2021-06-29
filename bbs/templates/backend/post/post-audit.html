@@ -1,10 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "backend/base.html" %}
+{% block content %}
+    <div style="padding: 15px">
+        <span class="layui-breadcrumb"><a href="/backend/index/">主页</a><a><cite>帖子管理</cite></a><a><cite>待审核帖子</cite></a></span>
+        <table id="postTable" lay-filter="postTable"></table>
+    </div>
+    <script type="text/html" id="audit-post">
+        <input type="button" value="审核帖子" data-id="{{ '{{d.id}}' }}" class="layui-btn layui-btn-normal layui-btn-sm"
+               lay-filter="auditBtn" onclick="openAudit($(this).data('id'))">
+    </script>
+{% endblock %}
+{% block script %}
+    {{ super() }}
+    <script>
+        layui.use('table', function () {
+            let layer = layui.layer
+            let table = layui.table, form = layui.form;
+            table.render(
+                {
+                    elem: '#postTable',
+                    toolbar: '#topToolbar',
+                    url: '/backend/post/post-audit/',
+                    height: 'full-250',
+                    limit: 20,
+                    method: 'post',
+                    skin: 'row|line',
+                    even: true,
+                    size: 'lg',
+                    cols: [[
+                        {field: 'id', title: '帖子ID', sort: true},
+                        {field: 'username', title: '发布用户', sort: true},
+                        {field: 'post-title', title: '帖子标题', sort: true},
+                        {field: 'c-time', title: '发布时间', sort: true},
+                        {field: 'audit', title: '审核帖子', templet: '#audit-post'}
+                    ]],
+                    page: true,
+                    id: 'postTable'
+                });
+
+
+            form.on('input[type=button](auditBtn)', function (obj) {
+                let postId = obj.data('id')
+                console.log(postId)
+                layer.open({
+                    type: 2,
+                    title: '添加用户',
+                    skin: 'layui-layer-molv',
+                    area: ['20%', '60%'],
+                    shadeClose: true,
+                    anim: 2,
+                    content: '/backend/post/post-audit/',
+                })
+            })
+        });
+
+        function openAudit(pid) {
+            layer.open({
+                type: 2,
+                title: '帖子审核',
+                skin: 'layui-layer-molv',
+                area: ['80%', '80%'],
+                shadeClose: true,
+                resize: true,
+                anim: 2,
+                content: '/backend/post/post-audit/'+pid,
+            })
+        }
+    </script>
+{% endblock %}
