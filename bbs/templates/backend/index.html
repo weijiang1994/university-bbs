@@ -11,106 +11,127 @@
     <script src="{{ url_for('static', filename='js/walden.js') }}"></script>
     <style>
         .layui-card {
-            border:1px solid #f2f2f2;
-            border-radius:5px;
+            border: 1px solid #f2f2f2;
+            border-radius: 5px;
         }
-        .mt-10{
+
+        .mt-10 {
             margin-top: 10px;
         }
+
         .layuimini-qiuck-module {
-            text-align:center;
+            text-align: center;
             margin-top: 10px
         }
+
         .layuimini-qiuck-module a i {
-            display:inline-block;
-            width:100%;
-            height:60px;
-            line-height:60px;
-            text-align:center;
-            border-radius:2px;
-            font-size:30px;
-            background-color:#F8F8F8;
-            color:#333;
-            transition:all .3s;
-            -webkit-transition:all .3s;
+            display: inline-block;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 2px;
+            font-size: 30px;
+            background-color: #F8F8F8;
+            color: #333;
+            transition: all .3s;
+            -webkit-transition: all .3s;
         }
+
         .layuimini-qiuck-module a cite {
-            position:relative;
-            top:2px;
-            display:block;
-            color:#666;
-            text-overflow:ellipsis;
-            overflow:hidden;
-            white-space:nowrap;
-            font-size:14px;
+            position: relative;
+            top: 2px;
+            display: block;
+            color: #666;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 14px;
         }
+
         .welcome-module {
-            width:100%;
-            height:210px;
+            width: 100%;
+            height: 210px;
         }
-        .mr-2{
+
+        .mr-2 {
             padding-right: .5rem;
         }
-        .icon{
-            color: rgba(49,181,14,0.7)
+
+        .icon {
+            color: rgba(49, 181, 14, 0.7)
         }
+
         .panel {
-            background-color:#fff;
-            border:1px solid transparent;
-            border-radius:3px;
-            -webkit-box-shadow:0 1px 1px rgba(0,0,0,.05);
-            box-shadow:0 1px 1px rgba(0,0,0,.05)
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
         }
+
         .panel-body {
-            padding:10px
+            padding: 10px
         }
+
         .panel-title {
-            margin-top:0;
-            margin-bottom:0;
-            font-size:12px;
-            color:inherit
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            color: inherit
         }
+
         .layui-bg-number {
-            background-color:#F8F8F8;
+            background-color: #F8F8F8;
         }
+
         .label {
-            display:inline;
-            padding:.2em .6em .3em;
-            font-size:75%;
-            font-weight:700;
-            line-height:1;
-            color:#fff;
-            text-align:center;
-            white-space:nowrap;
-            vertical-align:baseline;
-            border-radius:.25em;
+            display: inline;
+            padding: .2em .6em .3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
             margin-top: .3em;
         }
-        .text-muted{
-            color: rgba(126,126,126,0.72);
+
+        .text-muted {
+            color: rgba(126, 126, 126, 0.72);
         }
-        .pt-1{
+
+        .pt-1 {
             padding-bottom: .5rem;
         }
-        .flex-box{
+
+        .flex-box {
             display: flex;
         }
-        .flex-box-row-reverse{
+
+        .flex-box-row-reverse {
             flex-flow: row-reverse;
         }
-        .flex-grow-1{
+
+        .flex-grow-1 {
             flex-grow: 1;
         }
-        .mb-1{
+
+        .mb-1 {
             margin-bottom: .5rem;
         }
-        .color-deep-gray{
+
+        .color-deep-gray {
             color: #666666;
         }
-        .color-light-gray{
+
+        .color-light-gray {
             color: #999999;
         }
-        .div-monitor{
+
+        .div-monitor {
             margin: 10px 5px 10px 5px;
         }
     </style>
@@ -194,49 +215,57 @@
                                 <div class="welcome-module">
                                     <div class="layui-row layui-col-space10 layuimini-qiuck">
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="/backend/user/website-user/" data-title="网站用户" data-icon="fa fa-user-o">
+                                            <a href="/backend/user/website-user/" data-title="网站用户"
+                                               data-icon="fa fa-user-o">
                                                 <i class="fa fa-user-o"></i>
                                                 <cite>网站用户</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/setting.html" data-title="管理员" data-icon="fa fa-gears">
+                                            <a href="javascript:;" layuimini-content-href="page/setting.html"
+                                               data-title="管理员" data-icon="fa fa-gears">
                                                 <i class="fa fa-user-secret"></i>
                                                 <cite>管理员</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/table.html" data-title="表格示例" data-icon="fa fa-file-text">
+                                            <a href="javascript:;" layuimini-content-href="page/table.html"
+                                               data-title="表格示例" data-icon="fa fa-file-text">
                                                 <i class="fa fa-file-text"></i>
                                                 <cite>表格示例</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/icon.html" data-title="图标列表" data-icon="fa fa-dot-circle-o">
+                                            <a href="javascript:;" layuimini-content-href="page/icon.html"
+                                               data-title="图标列表" data-icon="fa fa-dot-circle-o">
                                                 <i class="fa fa-dot-circle-o"></i>
                                                 <cite>图标列表</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/form.html" data-title="表单示例" data-icon="fa fa-calendar">
+                                            <a href="javascript:;" layuimini-content-href="page/form.html"
+                                               data-title="表单示例" data-icon="fa fa-calendar">
                                                 <i class="fa fa-calendar"></i>
                                                 <cite>表单示例</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/404.html" data-title="404页面" data-icon="fa fa-hourglass-end">
+                                            <a href="javascript:;" layuimini-content-href="page/404.html"
+                                               data-title="404页面" data-icon="fa fa-hourglass-end">
                                                 <i class="fa fa-hourglass-end"></i>
                                                 <cite>404页面</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="page/button.html" data-title="按钮示例" data-icon="fa fa-snowflake-o">
+                                            <a href="javascript:;" layuimini-content-href="page/button.html"
+                                               data-title="按钮示例" data-icon="fa fa-snowflake-o">
                                                 <i class="fa fa-snowflake-o"></i>
                                                 <cite>按钮示例</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" layuimini-content-href="https://www.baidu.com" data-title="百度搜索" data-icon="fa fa-search">
+                                            <a href="javascript:;" layuimini-content-href="https://www.baidu.com"
+                                               data-title="百度搜索" data-icon="fa fa-search">
                                                 <i class="fa fa-search"></i>
                                                 <cite>百度搜索</cite>
                                             </a>
@@ -256,16 +285,19 @@
                             <div class="layui-carousel" id="echartCarousel" lay-filter="echartCarousel">
                                 <div carousel-item="">
                                     <div id="echarts-records" style="width: 100%;min-height:450px"></div>
-                                    <div><div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                                        <ul class="layui-tab-title">
-                                            <li class="layui-this">今日热搜</li>
-                                            <li>今日热帖</li>
-                                        </ul>
-                                        <div class="layui-tab-content">
-                                            <div class="layui-tab-item layui-show">内容不一样是要有，因为你可以监听tab事件(阅读下文档就是了)</div>
-                                            <div class="layui-tab-item">内容2</div>
+                                    <div>
+                                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                            <ul class="layui-tab-title">
+                                                <li class="layui-this">今日热搜</li>
+                                                <li>今日热帖</li>
+                                            </ul>
+                                            <div class="layui-tab-content">
+                                                <div class="layui-tab-item layui-show">内容不一样是要有，因为你可以监听tab事件(阅读下文档就是了)
+                                                </div>
+                                                <div class="layui-tab-item">内容2</div>
+                                            </div>
                                         </div>
-                                    </div> </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -353,11 +385,11 @@
         }
 
         // 获取服务器实时状态
-        function getMonitor(element){
+        function getMonitor(element) {
             $.ajax({
                 url: '/backend/get-monitor/',
                 type: 'post',
-                success: function (res){
+                success: function (res) {
                     renderBar(element, res);
                 }
             })
@@ -420,8 +452,8 @@
             return echartsRecords;
         }
 
-        layui.use(['element', 'carousel'], function(){
-            var element = layui.element, carousel=layui.carousel;
+        layui.use(['element', 'carousel'], function () {
+            var element = layui.element, carousel = layui.carousel;
             let chartCarousel = carousel.render({
                 elem: "#echartCarousel",
                 height: '450',
@@ -432,17 +464,17 @@
             $.ajax({
                 url: '/backend/init-data/',
                 type: 'post',
-                success: function (res){
+                success: function (res) {
                     echartsRecords = renderChart(res.statistics);
                     renderBar(element, res);
-                    setInterval(function (){
+                    setInterval(function () {
                         getMonitor(element);
                     }, 5000)
                 }
             })
 
             // echarts 窗口缩放自适应
-            window.onresize = function(){
+            window.onresize = function () {
                 echartsRecords.resize();
             }
         });
