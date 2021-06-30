@@ -9,15 +9,14 @@
 import datetime
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
-
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
     PostCategory
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, EMOJI_INFOS
-from bbs.decorators import statistic_traffic
+from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit
+from bbs.decorators import statistic_traffic, post_can_read
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -33,8 +32,12 @@ def new_post():
         anonymous = form.anonymous.data
         content = form.body.data
         textplain = get_text_plain(content)
-        post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
-                    textplain=textplain)
+        if get_audit():
+            post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
+                        textplain=textplain, status_id=3)
+        else:
+            post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
+                        textplain=textplain, status_id=1)
         db.session.add(post)
         db.session.commit()
         flash('帖子发布成功!', 'success')
@@ -43,6 +46,7 @@ def new_post():
 
 
 @post_bp.route('/read/<post_id>/', methods=['GET'])
+@post_can_read
 def read(post_id):
     page = request.args.get('page', default=1, type=int)
     post = Post.query.get_or_404(post_id)
