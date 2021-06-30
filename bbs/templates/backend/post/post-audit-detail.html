@@ -7,7 +7,41 @@
     <script type="text/javascript" src="{{ url_for('static', filename='/layui/layui.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/user-backend.js') }}"></script>
+    {{ ckeditor.load_code_theme() }}
     <style>
+        article > h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0 10px 0;
+            padding: 0 10px;
+            border-left: 5px solid #20c997;
+            line-height: 2em;
+        }
+        article>p{
+            padding-bottom: 5px;
+        }
+        article > h2 {
+            font-size: 18px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding: 5px 5px 5px 5px;
+            border-bottom: 1px solid #28a745;
+        }
+
+        article > h3 {
+            font-size: 18px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 5px 5px 5px 5px;
+            border-bottom: 1px solid #28a745;
+        }
+
+        blockquote > p {
+            font: 14px/22px normal helvetica, sans-serif;
+            margin: 5px 0px 5px 0px;
+            font-style: italic;
+        }
+
         .post {
             padding: 10px;
             border: 1px solid #aaaaaa;
@@ -26,7 +60,9 @@
 <body>
 <div class="post">
     <h2><b>{{ post.title }}</b></h2>
-    {{ post.content|safe }}
+    <article>
+        {{ post.content|safe }}
+    </article>
 </div>
 <div class="layui-form">
     <div class="layui-form-item layui-form-text">
@@ -36,30 +72,35 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button type="button" lay-filter="passAudit" lay-submit="passAudit" class="layui-btn layui-btn-sm layui-btn-normal">审核通过</button>
-            <button type="button" lay-filter="noPassAudit" lay-submit="noPassAudit" class="layui-btn layui-btn-sm layui-btn-warm">审核未通过</button>
+            <button type="button" lay-filter="passAudit" lay-submit="passAudit"
+                    class="layui-btn layui-btn-sm layui-btn-normal">审核通过
+            </button>
+            <button type="button" lay-filter="noPassAudit" lay-submit="noPassAudit"
+                    class="layui-btn layui-btn-sm layui-btn-warm">审核未通过
+            </button>
         </div>
     </div>
 </div>
 
 <script>
     let pid = {{ post.id }}
-    layui.use('form', function () {
-        let form = layui.form, layer = layui.layer
-        submitAuditPass(form, layer);
-        submitAuditNoPass(form, layer);
-    })
+        layui.use('form', function () {
+            let form = layui.form, layer = layui.layer
+            submitAuditPass(form, layer);
+            submitAuditNoPass(form, layer);
+        })
 
     function submitAuditPass(form, layer) {
         form.on('submit(passAudit)', function (obj) {
             $.ajax({
-                url:'/backend/post/post-audit/' + pid + '/',
+                url: '/backend/post/post-audit/' + pid + '/',
                 data: {tag: 1},
                 type: 'post',
-                success: function (res){
+                success: function (res) {
                     let index = parent.layer.getFrameIndex(window.name);
                     parent.layer.close(index);
                     parent.layer.msg(res.info);
+                    parent.$('#tag').val(1);
                 }
             })
         })
@@ -68,18 +109,20 @@
     function submitAuditNoPass(form, layer) {
         form.on('submit(noPassAudit)', function (obj) {
             let auditMsg = $("#reason").val()
-            if (auditMsg === ''){
-                layer.msg('审核未通过理由不能为空!')
+            if (auditMsg === '') {
+                parent.layer.msg('审核未通过理由不能为空!')
                 return false;
             }
             $.ajax({
-                url:'/backend/post/post-audit/' + pid + '/',
+                url: '/backend/post/post-audit/' + pid + '/',
                 type: 'post',
                 data: {tag: 0, reason: auditMsg},
-                success: function (res){
+                success: function (res) {
                     let index = parent.layer.getFrameIndex(window.name);
+                    console.log(parent)
                     parent.layer.close(index);
                     parent.layer.msg(res.info);
+                    parent.$('#tag').val(1);
                 }
             })
         })

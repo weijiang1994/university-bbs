@@ -3,10 +3,12 @@
     <div style="padding: 15px">
         <span class="layui-breadcrumb"><a href="/backend/index/">主页</a><a><cite>帖子管理</cite></a><a><cite>待审核帖子</cite></a></span>
         <table id="postTable" lay-filter="postTable"></table>
+        <input type="number" id="tag" value="0" hidden>
     </div>
     <script type="text/html" id="audit-post">
-        <input type="button" value="审核帖子" data-id="{{ '{{d.id}}' }}" class="layui-btn layui-btn-normal layui-btn-sm"
-               lay-filter="auditBtn" onclick="openAudit($(this).data('id'))">
+        <input type="button" value="审核帖子" data-id="{{ '{{d.id}}' }}" id="{{ '{{d.id}}' }}"
+               class="layui-btn layui-btn-normal layui-btn-sm"
+               lay-filter="auditBtn" lay-submit="auditBtn">
     </script>
 {% endblock %}
 {% block script %}
@@ -37,18 +39,30 @@
                     id: 'postTable'
                 });
 
-
-            form.on('input[type=button](auditBtn)', function (obj) {
-                let postId = obj.data('id')
-                console.log(postId)
+            form.on('submit(auditBtn)', function (obj) {
+                let pid = obj.elem.attributes.getNamedItem('data-id').value
                 layer.open({
                     type: 2,
                     title: '添加用户',
                     skin: 'layui-layer-molv',
-                    area: ['20%', '60%'],
+                    area: ['80%', '80%'],
                     shadeClose: true,
+                    resize: true,
                     anim: 2,
-                    content: '/backend/post/post-audit/',
+                    end: function () {
+                        console.log($("#tag").val())
+                        if ($("#tag").val() === '1') {
+                            table.reload('postTable', {
+                                page: {
+                                    curr: table.page,
+                                    limit: table.limit
+                                }
+                            })
+                            $("#tag").val(0);
+                        }
+
+                    },
+                    content: '/backend/post/post-audit/' + pid,
                 })
             })
         });
@@ -62,7 +76,10 @@
                 shadeClose: true,
                 resize: true,
                 anim: 2,
-                content: '/backend/post/post-audit/'+pid,
+                end: function () {
+                    table.reload('postTable', {})
+                },
+                content: '/backend/post/post-audit/' + pid,
             })
         }
     </script>
