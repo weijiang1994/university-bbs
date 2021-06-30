@@ -62,6 +62,9 @@ class BaseConfig(object):
     # whooshee config
     WHOOSHEE_MIN_STRING_LEN = 1
 
+    GITHUB_USERNAME = 'weijiang1994'
+    GITHUB_REPO = 'university-bbs'
+
 
 class DevelopmentConfig(BaseConfig):
     if BaseConfig.DATABASE_USER is not None:

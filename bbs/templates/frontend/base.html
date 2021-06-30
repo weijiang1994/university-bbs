@@ -7,6 +7,8 @@
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}-University-BBS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        {{ githubcard.init_css() }}
+        {{ githubcard.init_js() }}
         <link rel="shortcut icon" href="{{ url_for('static', filename='img/favorite.png') }}" type="image/x-icon">
         <link rel="icon" href="{{ url_for('static', filename = 'img/favorite.png') }}" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>

@@ -6,11 +6,12 @@ file: index.py
 @time: 2020/11/26 23:04
 @desc:
 """
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request, current_app, jsonify
 from bbs.models import Post, VisitStatistic
 from bbs.extensions import db
 from sqlalchemy.sql.expression import func
 from bbs.decorators import statistic_traffic
+import requests
 
 index_bp = Blueprint('index_bp', __name__)
 
@@ -42,3 +43,9 @@ def hot():
 def rands():
     rand = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)
     return render_template('frontend/index/rand-post.html', rands=rand)
+
+
+@index_bp.route('/load-one/')
+def load_one():
+    res = requests.post('https://2dogz.cn/load-one/')
+    return jsonify({'one': res.json().get('one')})
