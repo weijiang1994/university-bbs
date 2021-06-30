@@ -8,6 +8,13 @@ file: setting.py
 """
 import os
 from dotenv import load_dotenv
+import sys
+
+WIN = sys.platform.startswith('win')
+if WIN:
+    sqlite_pre = 'sqlite:///'
+else:
+    sqlite_pre = 'sqlite:////'
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 # 手动加载env文件,防止部署到服务器时不主动加载env获取不到服务器启动的关键参数
@@ -57,9 +64,12 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
-                                                                                    BaseConfig.DATABASE_PWD,
-                                                                                    BaseConfig.DATABASE_HOST)
+    if BaseConfig.DATABASE_USER is not None:
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
+                                                                                        BaseConfig.DATABASE_PWD,
+                                                                                        BaseConfig.DATABASE_HOST)
+    else:
+        SQLALCHEMY_DATABASE_URI = sqlite_pre + basedir + 'data.db'
     REDIS_URL = "redis://localhost:6379"
 
 
