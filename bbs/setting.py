@@ -69,7 +69,7 @@ class DevelopmentConfig(BaseConfig):
                                                                                         BaseConfig.DATABASE_PWD,
                                                                                         BaseConfig.DATABASE_HOST)
     else:
-        SQLALCHEMY_DATABASE_URI = sqlite_pre + basedir + 'data.db'
+        SQLALCHEMY_DATABASE_URI = sqlite_pre + os.path.join(basedir, 'data.db')
     REDIS_URL = "redis://localhost:6379"
 
 
