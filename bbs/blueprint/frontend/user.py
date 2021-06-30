@@ -16,7 +16,7 @@ from bbs.models import User, Notification, Post, Comments
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
-from bbs.utils import get_md5
+from bbs.utils import get_md5, get_upload_img_limit
 from bbs.decorators import user_permission_required
 user_bp = Blueprint('user', __name__, url_prefix='/user/')
 
@@ -152,6 +152,10 @@ def upload_avatar():
     filename = get_md5(str(datetime.datetime.now())) + '.' + filename.split(r'.')[-1]
     upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
     file.save(upload_path)
+    if os.path.getsize(upload_path) > 1024*get_upload_img_limit():
+        os.remove(upload_path)
+        flash('上传的文件不能大于1M!', 'warning')
+        return redirect(url_for('.edit_avatar', user_id=current_user.id))
     current_user.avatar_raw = filename
     db.session.commit()
     return redirect(url_for('.edit_avatar', user_id=current_user.id))

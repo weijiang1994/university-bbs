@@ -127,6 +127,11 @@ def get_audit():
     return yl.get('admin').get('audit')
 
 
+def get_upload_img_limit():
+    yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
+    return yl.get('admin').get('upload-img')
+
+
 def get_emoji_url():
     """
     获取所有表情的url连接
