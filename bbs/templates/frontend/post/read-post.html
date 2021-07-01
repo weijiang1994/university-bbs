@@ -10,6 +10,13 @@
             font-weight: bold;
         }
 
+        .hljs {
+            display: block;
+            padding: 0.5em;
+            background: #23241f;
+            overflow-y: hidden;
+        }
+
         article > h1 {
             font-size: 20px;
             font-weight: bold;
@@ -103,7 +110,9 @@
             <!-- 帖子主要信息 -->
             <ol class="breadcrumb mb-0 rounded-0">
                 <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ url_for('post.post_cate', cate_id=post.cats.id) }}">{{ post.cats.name }}</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none"
+                                               href="{{ url_for('post.post_cate', cate_id=post.cats.id) }}">{{ post.cats.name }}</a>
+                </li>
                 <li class="breadcrumb-item active d-lg-block d-none">{{ post.title }}</li>
             </ol>
 
