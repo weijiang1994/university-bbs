@@ -297,7 +297,7 @@
     {% if not anonymous %}
         <img src="{{ comment.author.avatar }}" class="rounded avatar-50">
     {% else %}
-        <img src="{{ url_for('static', filename='img/anonymous.jpeg') }}" class="rounded avatar">
+        <img src="{{ url_for('static', filename='img/anonymous.jpeg') }}" class="rounded avatar-50">
     {% endif %}
     <div class="d-flex">
         <div>
