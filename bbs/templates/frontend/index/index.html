@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import post_item, render_pagination with context%}
+{% from "macro.html" import post_item, render_pagination with context %}
 {% block title %}
     主页
 {% endblock %}
@@ -10,7 +10,7 @@
             {% include "_flash.html" %}
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('.index') }}">最新</a>
+                    <a class="nav-link" href="{{ url_for('.index') }}">最新</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ url_for('.hot') }}">热帖</a>
@@ -37,4 +37,13 @@
             </div>
         </div>
     </main>
+    <script>
+        $(document).ready(function () {
+            let cateId = window.location.href.split('=')[1]
+            $("#category" + cateId).addClass('nav-link active')
+            if (cateId === undefined) {
+                $("#categoryall").addClass('nav-link active')
+            }
+        })
+    </script>
 {% endblock %}

@@ -25,7 +25,8 @@ class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY')
 
     BBS_THEMES = {'Darkly': 'darkly', 'Sketchy': 'sketchy', 'Journal': 'journal', 'Flatly': 'flatly',
-                  'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty'}
+                  'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty',
+                  'Yeti': 'yeti', 'Slate': 'slate', 'Superhero': 'superhero'}
 
     BBS_PER_PAGE = 20
     BBS_PER_PAGE_SOCIAL = 40
