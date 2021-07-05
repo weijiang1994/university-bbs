@@ -7,11 +7,13 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request, current_app, jsonify
-from bbs.models import Post, VisitStatistic
+from bbs.models import Post, VisitStatistic, Notification
 from bbs.extensions import db
 from sqlalchemy.sql.expression import func
 from bbs.decorators import statistic_traffic
 import requests
+from flask_login import current_user
+
 
 index_bp = Blueprint('index_bp', __name__)
 
@@ -25,7 +27,15 @@ def index():
         paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     latest = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
-    return render_template('frontend/index/index.html', latest=latest, pagination=pagination, tag=tag)
+    if current_user.is_authenticated:
+        unread_count = Notification.query.filter_by(receive_id=current_user.id, read=0).count()
+    else:
+        unread_count = 0
+    return render_template('frontend/index/index.html',
+                           latest=latest,
+                           pagination=pagination,
+                           tag=tag,
+                           unread_count=unread_count)
 
 
 @index_bp.route('/hot-post/')
