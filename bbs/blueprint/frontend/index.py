@@ -49,14 +49,18 @@ def hot():
     pagination = Post.query.order_by(Post.read_times.desc()).paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     hots = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
-    return render_template('frontend/index/hot-post.html', hots=hots, pagination=pagination, tag=tag)
+    return render_template('frontend/index/hot-post.html',
+                           hots=hots,
+                           pagination=pagination,
+                           tag=tag,
+                           unread_count=get_notification_count())
 
 
 @index_bp.route('/rand-post/')
 @statistic_traffic(db, VisitStatistic)
 def rands():
     rand = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)
-    return render_template('frontend/index/rand-post.html', rands=rand)
+    return render_template('frontend/index/rand-post.html', rands=rand, unread_count=get_notification_count())
 
 
 @index_bp.route('/load-one/')
