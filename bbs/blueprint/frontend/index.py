@@ -27,15 +27,19 @@ def index():
         paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     latest = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
-    if current_user.is_authenticated:
-        unread_count = Notification.query.filter_by(receive_id=current_user.id, read=0).count()
-    else:
-        unread_count = 0
     return render_template('frontend/index/index.html',
                            latest=latest,
                            pagination=pagination,
                            tag=tag,
-                           unread_count=unread_count)
+                           unread_count=get_notification_count())
+
+
+def get_notification_count():
+    if current_user.is_authenticated:
+        unread_count = Notification.query.filter_by(receive_id=current_user.id, read=0).count()
+    else:
+        unread_count = 0
+    return unread_count
 
 
 @index_bp.route('/hot-post/')
