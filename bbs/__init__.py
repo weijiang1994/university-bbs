@@ -11,7 +11,7 @@ from logging.handlers import RotatingFileHandler
 
 import click
 from flask import Flask, render_template
-from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, gcard
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
 # 前台蓝图
@@ -55,6 +55,7 @@ def register_extensions(app: Flask):
     moment.init_app(app)
     mail.init_app(app)
     whooshee.init_app(app)
+    gcard.init_app(app)
 
 
 def register_bp(app: Flask):

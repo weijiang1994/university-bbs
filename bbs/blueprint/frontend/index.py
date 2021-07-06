@@ -8,7 +8,7 @@ file: index.py
 """
 from flask import Blueprint, render_template, request, current_app, jsonify
 from bbs.models import Post, VisitStatistic, Notification
-from bbs.extensions import db
+from bbs.extensions import db, gcard
 from sqlalchemy.sql.expression import func
 from bbs.decorators import statistic_traffic
 import requests
@@ -67,3 +67,9 @@ def rands():
 def load_one():
     res = requests.post('https://2dogz.cn/load-one/')
     return jsonify({'one': res.json().get('one')})
+
+
+@index_bp.route('/load-github/')
+def load_github():
+    theme = request.cookies.get('theme', 'darkly')
+    return jsonify(gcard.create(theme=theme).get_raw_data())
