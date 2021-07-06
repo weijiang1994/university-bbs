@@ -75,3 +75,7 @@
 .li-active {
     background-color: #c1c1c1;
 }
+
+.dropdown-toggle::after{
+    color: black;
+}

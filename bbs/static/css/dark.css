@@ -106,3 +106,7 @@
 .li-active {
     background-color: #666666;
 }
+
+.dropdown-toggle::after{
+    color: white;
+}
