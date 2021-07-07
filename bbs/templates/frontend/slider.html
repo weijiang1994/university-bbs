@@ -112,13 +112,13 @@
             url: '/load-github/',
             type: 'get',
             success: function (res) {
+                $(".f-hint").hide()
                 if (res.tag === 1) {
                     $("#shield-svg").append('<div class="mr-1">' + res.star + '</div>');
                     $("#shield-svg").append('<div class="mr-1">' + res.fork + '</div>');
                 }
 
                 if (res.tag === 0) {
-                    $(".f-hint").hide()
                     $("#shield-svg").text(res.info)
                 }
             }
