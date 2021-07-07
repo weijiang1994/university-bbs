@@ -16,7 +16,6 @@ import redis
 from flask_moment import Moment
 from flask_mail import Mail
 from flask_whooshee import Whooshee
-from flask_githubcard import GithubCard
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -29,7 +28,6 @@ rd = redis.Redis(connection_pool=pool)
 moment = Moment()
 mail = Mail()
 whooshee = Whooshee()
-gcard = GithubCard()
 
 
 @login_manager.user_loader

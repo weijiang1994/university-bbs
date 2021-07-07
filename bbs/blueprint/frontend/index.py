@@ -8,7 +8,7 @@ file: index.py
 """
 from flask import Blueprint, render_template, request, current_app, jsonify
 from bbs.models import Post, VisitStatistic, Notification
-from bbs.extensions import db, gcard
+from bbs.extensions import db
 from sqlalchemy.sql.expression import func
 from bbs.decorators import statistic_traffic
 import requests
@@ -71,5 +71,22 @@ def load_one():
 
 @index_bp.route('/load-github/')
 def load_github():
+
     theme = request.cookies.get('theme', 'darkly')
     return jsonify(gcard.create(theme=theme).get_raw_data())
+
+
+def get_ghinfo(theme='default'):
+    import requests
+    stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=social'
+    forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=social'
+    user_api = 'https://api.github.com/users/weijiang1994'
+    reop_api = 'https://api.github.com/repos/weijiang1994/university-bbs'
+    if theme == 'darkly':
+        stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=flat-square'
+        forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=flat-square'
+    try:
+        star = requests.get(stars).text
+        fork = requests.get(forks).text
+    except Exception as e:
+        pass
