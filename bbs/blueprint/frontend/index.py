@@ -71,22 +71,23 @@ def load_one():
 
 @index_bp.route('/load-github/')
 def load_github():
-
     theme = request.cookies.get('theme', 'darkly')
-    return jsonify(gcard.create(theme=theme).get_raw_data())
+    ret = get_ghinfo(theme=theme)
+    if not ret:
+        return jsonify({'tag': 0, 'info': 'Get shield failed!'})
+    return jsonify({'tag': 1, 'star': ret[0], 'fork': ret[1]})
 
 
 def get_ghinfo(theme='default'):
     import requests
     stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=social'
     forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=social'
-    user_api = 'https://api.github.com/users/weijiang1994'
-    reop_api = 'https://api.github.com/repos/weijiang1994/university-bbs'
     if theme == 'darkly':
         stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=flat-square'
         forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=flat-square'
     try:
         star = requests.get(stars).text
         fork = requests.get(forks).text
+        return star, fork
     except Exception as e:
-        pass
+        return False
