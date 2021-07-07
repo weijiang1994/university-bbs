@@ -7,7 +7,7 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request, current_app, jsonify
-from bbs.models import Post, VisitStatistic, Notification
+from bbs.models import Post, VisitStatistic, Notification, Comments
 from bbs.extensions import db
 from sqlalchemy.sql.expression import func
 from bbs.decorators import statistic_traffic
@@ -27,11 +27,14 @@ def index():
         paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     latest = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
+    hot_posts = get_td_hot_posts()
+    print(hot_posts)
     return render_template('frontend/index/index.html',
                            latest=latest,
                            pagination=pagination,
                            tag=tag,
-                           unread_count=get_notification_count())
+                           unread_count=get_notification_count(),
+                           hot_posts=hot_posts)
 
 
 def get_notification_count():
@@ -61,6 +64,20 @@ def hot():
 def rands():
     rand = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)
     return render_template('frontend/index/rand-post.html', rands=rand, unread_count=get_notification_count())
+
+
+def get_td_hot_posts():
+    import datetime
+    td = datetime.date.today()
+    td_coms = Comments.query.with_entities(Comments.post_id, func.count(Comments.post_id)). \
+        filter(Comments.timestamps.contains(str(td))). \
+        group_by(Comments.post_id). \
+        order_by((func.count(Comments.post_id)).desc()).limit(6)
+    hot_posts = []
+    for td in td_coms:
+        p = Post.query.filter_by(id=td[0]).first()
+        hot_posts.append(p)
+    return hot_posts
 
 
 @index_bp.route('/load-one/')
