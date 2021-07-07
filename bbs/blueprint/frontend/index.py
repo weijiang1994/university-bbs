@@ -80,11 +80,11 @@ def load_github():
 
 def get_ghinfo(theme='default'):
     import requests
-    stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=social'
-    forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=social'
+    stars = 'https://img.shields.io/github/stars/weijiang1994/university-bbs?style=social'
+    forks = 'https://img.shields.io/github/forks/weijiang1994/university-bbs?style=social'
     if theme == 'darkly':
-        stars = 'https://img.shields.io/github/stars/weijiang1994/Blogin?style=flat-square'
-        forks = 'https://img.shields.io/github/forks/weijiang1994/Blogin?style=flat-square'
+        stars = 'https://img.shields.io/github/stars/weijiang1994/university-bbs?style=flat-square'
+        forks = 'https://img.shields.io/github/forks/weijiang1994/university-bbs?style=flat-square'
     try:
         star = requests.get(stars).text
         fork = requests.get(forks).text
