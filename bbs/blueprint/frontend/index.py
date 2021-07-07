@@ -72,6 +72,8 @@ def load_one():
 @index_bp.route('/load-github/')
 def load_github():
     theme = request.cookies.get('bbs_themes', 'darkly')
+    if theme in ['darkly', 'cyborg', 'slate', 'superhero']:
+        theme = 'darkly'
     ret = get_ghinfo(theme=theme)
     if not ret:
         return jsonify({'tag': 0, 'info': 'Get shield failed!'})
