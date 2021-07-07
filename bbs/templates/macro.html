@@ -521,12 +521,12 @@
                     </a>
                     {% if request.endpoint == 'user.notifications' %}
                         <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
-                            <a class="dropdown-item">未读</a>
+                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}" class="dropdown-item">未读</a>
                             <a class="dropdown-item">删除</a>
                         </div>
                     {% else %}
                         <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
-                            <a class="dropdown-item">已读</a>
+                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}" class="dropdown-item">已读</a>
                             <a class="dropdown-item">删除</a>
                         </div>
                     {% endif %}

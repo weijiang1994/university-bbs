@@ -57,6 +57,20 @@ def get_notices_counts():
     return notices
 
 
+@user_bp.route('/mark-notifications/<notify_id>/')
+@login_required
+def mark_notification(notify_id):
+    notify = Notification.query.filter_by(id=notify_id).first()
+    if notify.read:
+        notify.read = 0
+        flash('消息标记为未读成功!', 'success')
+    else:
+        notify.read = 1
+        flash('消息标记为已读成功!', 'success')
+    db.session.commit()
+    return redirect(request.referrer)
+
+
 @user_bp.route('/notifications/<user_id>/')
 @login_required
 @user_permission_required

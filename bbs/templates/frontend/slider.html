@@ -24,8 +24,8 @@
                     </div>
                     {% if unread_count %}
                         <div>
-                            <a class="ml-3 f-12 text-decoration-none"
-                               href="{{ url_for('user.unread', user_id=current_user.id) }}"><b>你有{{ unread_count }}条未读消息</b></a>
+                            <a class="ml-3 f-16 text-decoration-none"
+                               href="{{ url_for('user.unread', user_id=current_user.id) }}"><label class="badge badge-info">{{ unread_count }}条未读</label></a>
                         </div>
                     {% endif %}
                 </div>
