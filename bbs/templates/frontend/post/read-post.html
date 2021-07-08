@@ -183,10 +183,19 @@
                                 {% endif %}
                             </small>
                         </a>
-                        <a class="text-decoration-none text-muted ml-2"
-                           href="/post/unlike/{{ post.id }}/"><small>点灭</small></a>
-                        <a class="text-decoration-none text-muted ml-2"
-                           href="/post/like/{{ post.id }}/"><small>点亮</small></a>
+                        {% if post.user_unliked() %}
+                            <a class="text-decoration-none text-muted ml-2"
+                               href="/post/unlike/{{ post.id }}/"><small>取消点灭</small></a>
+                        {% elif post.user_liked() %}
+                            <a class="text-decoration-none text-muted ml-2"
+                               href="/post/like/{{ post.id }}/"><small>取消点亮</small></a>
+                        {% else %}
+                            <a class="text-decoration-none text-muted ml-2"
+                               href="/post/unlike/{{ post.id }}/"><small>点灭</small></a>
+                            <a class="text-decoration-none text-muted ml-2"
+                               href="/post/like/{{ post.id }}/"><small>点亮</small></a>
+                        {% endif %}
+
                     </div>
                 {% endif %}
             </div>

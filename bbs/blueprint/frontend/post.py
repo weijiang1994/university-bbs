@@ -11,7 +11,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory
+    PostCategory, PostLike, PostDislike
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -146,7 +146,15 @@ def report():
 @login_required
 def like(post_id):
     post = Post.query.get_or_404(post_id)
-    post.likes += 1
+    epl = post.user_liked()
+    if epl:
+        db.session.delete(epl)
+        post.likes -= 1
+    else:
+        pl = PostLike(post_id=post_id, user_id=current_user.id)
+        db.session.add(pl)
+        post.likes += 1
+
     db.session.commit()
     return redirect(url_for('.read', post_id=post_id))
 
@@ -155,7 +163,14 @@ def like(post_id):
 @login_required
 def unlike(post_id):
     post = Post.query.get_or_404(post_id)
-    post.unlikes += 1
+    epdl = post.user_unliked()
+    if epdl:
+        db.session.delete(epdl)
+        post.unlikes -= 1
+    else:
+        pdl = PostDislike(post_id=post_id, user_id=current_user.id)
+        db.session.add(pdl)
+        post.unlikes += 1
     db.session.commit()
     return redirect(url_for('.read', post_id=post_id))
 

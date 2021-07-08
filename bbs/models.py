@@ -88,6 +88,9 @@ class User(db.Model, UserMixin):
     range_contact = db.relationship('Range', back_populates='user_contact', foreign_keys=[contact_range_id])
     receive_notify = db.relationship('Notification', back_populates='receive_user', cascade='all')
 
+    post_like = db.relationship('PostLike', back_populates='user')
+    post_dislike = db.relationship('PostDislike', back_populates='user')
+
     admin_log = db.relationship('AdminLog', back_populates='admin_user', foreign_keys=[AdminLog.admin_id])
     user_log = db.relationship('AdminLog', back_populates='target_user', foreign_keys=[AdminLog.target_id])
 
@@ -189,9 +192,44 @@ class Post(db.Model):
     collect = db.relationship('Collect', back_populates='post', cascade='all')
     post_report = db.relationship('PostReport', back_populates='post', cascade='all')
     comments = db.relationship('Comments', back_populates='post', cascade='all')
+    post_tag_ship = db.relationship('PostTagShip', back_populates='post')
+
+    post_like = db.relationship('PostLike', back_populates='post')
+    post_dislike = db.relationship('PostDislike', back_populates='post')
 
     def can_delete(self):
         return current_user.id == self.author_id
+
+    def user_liked(self):
+        return PostLike.query.filter_by(post_id=self.id, user_id=current_user.id).first()
+
+    def user_unliked(self):
+        return PostDislike.query.filter_by(post_id=self.id, user_id=current_user.id).first()
+
+
+class PostLike(db.Model):
+    __tablename__ = 't_post_like'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    post = db.relationship('Post', back_populates='post_like')
+    user = db.relationship('User', back_populates='post_like')
+
+    def is_liked(self):
+        return self.user_id == current_user.id
+
+
+class PostDislike(db.Model):
+    __tablename__ = 't_post_dislike'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    post = db.relationship('Post', back_populates='post_dislike')
+    user = db.relationship('User', back_populates='post_dislike')
 
 
 class Status(db.Model):
@@ -392,3 +430,24 @@ class OneSentence(db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     content = db.Column(db.String(512), default='', nullable=False)
     day = db.Column(db.DATE, default=datetime.date.today())
+
+
+# class Tag(db.Model):
+#     __tablename__ = 't_post_tag'
+#
+#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+#     name = db.Column(db.String(128), default='', nullable=False)
+#     c_time = db.Column(db.DateTime, default=datetime.datetime.now)
+#
+#     post_tag_ship = db.relationship('PostTagShip', back_populates='tag')
+#
+#
+# class PostTagShip(db.Model):
+#     __tablename__ = 't_post_tag_ship'
+#
+#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+#     post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+#     tag_id = db.Column(db.INTEGER, db.ForeignKey('t_post_tag.id'))
+#
+#     post = db.relationship('Post', back_populates='post_tag_ship')
+#     tag = db.relationship('Tag', back_populates='post_tag_ship')
