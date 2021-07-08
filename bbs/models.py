@@ -432,22 +432,22 @@ class OneSentence(db.Model):
     day = db.Column(db.DATE, default=datetime.date.today())
 
 
-# class Tag(db.Model):
-#     __tablename__ = 't_post_tag'
-#
-#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-#     name = db.Column(db.String(128), default='', nullable=False)
-#     c_time = db.Column(db.DateTime, default=datetime.datetime.now)
-#
-#     post_tag_ship = db.relationship('PostTagShip', back_populates='tag')
-#
-#
-# class PostTagShip(db.Model):
-#     __tablename__ = 't_post_tag_ship'
-#
-#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-#     post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
-#     tag_id = db.Column(db.INTEGER, db.ForeignKey('t_post_tag.id'))
-#
-#     post = db.relationship('Post', back_populates='post_tag_ship')
-#     tag = db.relationship('Tag', back_populates='post_tag_ship')
+class Tag(db.Model):
+    __tablename__ = 't_post_tag'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128), default='', nullable=False)
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    post_tag_ship = db.relationship('PostTagShip', back_populates='tag')
+
+
+class PostTagShip(db.Model):
+    __tablename__ = 't_post_tag_ship'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    tag_id = db.Column(db.INTEGER, db.ForeignKey('t_post_tag.id'))
+
+    post = db.relationship('Post', back_populates='post_tag_ship')
+    tag = db.relationship('Tag', back_populates='post_tag_ship')
