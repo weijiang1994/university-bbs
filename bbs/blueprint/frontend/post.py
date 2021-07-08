@@ -128,8 +128,10 @@ def report():
     report_reason = request.form.get('reportReason')
     rep_cate = request.form.get('reportCate')
     cate = ReportCate.query.filter_by(name=rep_cate).first()
-    epr = PostReport.query.filter(PostReport.post_id == post_id, PostReport.user_id == current_user.id,
-                                  PostReport.flag == 0).first()
+    epr = PostReport.query.filter(PostReport.post_id == post_id,
+                                  PostReport.user_id == current_user.id,
+                                  PostReport.flag == 0
+                                  ).first()
     if epr:
         flash('你已经举报过他了,不要再举报啦,人家也是要面子的啦!', 'info')
         return redirect(url_for('.read', post_id=post_id))
