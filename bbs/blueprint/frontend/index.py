@@ -28,7 +28,6 @@ def index():
     latest = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     hot_posts = get_td_hot_posts()
-    print(hot_posts)
     return render_template('frontend/index/index.html',
                            latest=latest,
                            pagination=pagination,
