@@ -79,3 +79,14 @@
 .dropdown-toggle::after{
     color: black;
 }
+
+.div-blockquote-comment {
+    border-radius: 5px;
+    color: black;
+    background: #E4E4E4;
+    padding: 8px;
+}
+
+.div-blockquote-comment > p {
+    margin-bottom: 3px;
+}
