@@ -14,7 +14,6 @@ from bbs.decorators import statistic_traffic
 import requests
 from flask_login import current_user
 
-
 index_bp = Blueprint('index_bp', __name__)
 
 
@@ -48,7 +47,7 @@ def get_notification_count():
 @statistic_traffic(db, VisitStatistic)
 def hot():
     page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.read_times.desc()).paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
+    pagination = Post.query.filter_by(status_id=1).order_by(Post.read_times.desc()).paginate(page, per_page=current_app.config['BBS_PER_PAGE'])
     hots = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     return render_template('frontend/index/hot-post.html',
@@ -74,7 +73,7 @@ def get_td_hot_posts():
         order_by((func.count(Comments.post_id)).desc()).limit(6)
     hot_posts = []
     for td in td_coms:
-        p = Post.query.filter_by(id=td[0]).first()
+        p = Post.query.filter(Post.id == td[0], Post.status_id == 1).first()
         hot_posts.append(p)
     return hot_posts
 
