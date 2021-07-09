@@ -95,6 +95,8 @@
         .hr-margin-5 {
             margin: 5px 0 5px 0 !important;
         }
+
+
     </style>
 {% endblock %}
 {% block title %}
@@ -162,6 +164,9 @@
                     <article>
                         {{ post.content|safe }}
                     </article>
+                    {% for tag in p_tags %}
+                        <label class="post-tag">#{{ tag.tag.name }}</label>
+                    {% endfor %}
                 </div>
                 {% if current_user.is_authenticated and current_user.id == post.user.id %}
                     <div class="d-flex flex-row-reverse mt-1">

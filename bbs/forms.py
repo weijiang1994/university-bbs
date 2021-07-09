@@ -136,6 +136,7 @@ class BasePostForm(FlaskForm):
                            default=0,
                            coerce=int)
     anonymous = SelectField(label=u'是否匿名', default=1, choices=[(1, '实名'), (2, '匿名')], coerce=int)
+    tags = StringField(u'帖子标签', render_kw={'placeholder': '请输入帖子标签，多个用空格分开'})
     body = CKEditorField('帖子内容', validators=[DataRequired(message='请输入帖子内容')])
     submit = SubmitField(u'发布', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2 text-right'})
 

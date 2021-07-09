@@ -441,6 +441,10 @@ class Tag(db.Model):
 
     post_tag_ship = db.relationship('PostTagShip', back_populates='tag')
 
+    @staticmethod
+    def tag_exist(tag_name):
+        return Tag.query.filter_by(name=tag_name).first()
+
 
 class PostTagShip(db.Model):
     __tablename__ = 't_post_tag_ship'
@@ -451,3 +455,12 @@ class PostTagShip(db.Model):
 
     post = db.relationship('Post', back_populates='post_tag_ship')
     tag = db.relationship('Tag', back_populates='post_tag_ship')
+
+    @staticmethod
+    def post_in_tag(post_id, tag_id):
+        return PostTagShip.query.filter(PostTagShip.post_id == post_id,
+                                        PostTagShip.tag_id == tag_id).first()
+
+    @staticmethod
+    def find_post_tag(post_id):
+        return PostTagShip.query.filter(post_id == post_id)

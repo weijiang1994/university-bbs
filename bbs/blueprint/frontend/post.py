@@ -11,7 +11,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike
+    PostCategory, PostLike, PostDislike, Tag, PostTagShip
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -31,6 +31,7 @@ def new_post():
         cate = form.category.data
         anonymous = form.anonymous.data
         content = form.body.data
+        tags = form.tags.data.split() if form.tags.data else []
         textplain = get_text_plain(content)
         if get_audit():
             post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
@@ -39,6 +40,17 @@ def new_post():
             post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
                         textplain=textplain, status_id=1)
         db.session.add(post)
+
+        for tag in tags:
+            if not Tag.tag_exist(tag):
+                t = Tag(name=tag)
+                db.session.add(t)
+            else:
+                t = Tag.tag_exist(tag)
+
+            if not PostTagShip.post_in_tag(post.id, t.id):
+                db.session.add(PostTagShip(post_id=post.id, tag_id=t.id))
+
         db.session.commit()
         flash('帖子发布成功!', 'success')
         return redirect(url_for('post.read', post_id=post.id))
@@ -52,18 +64,24 @@ def read(post_id):
     post = Post.query.get_or_404(post_id)
     per_page = current_app.config['BBS_PER_PAGE']
     if current_user.is_authenticated:
-        c_tag = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
+        is_collect = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
     else:
-        c_tag = None
+        is_collect = None
     pagination = Comments.query.filter(Comments.post_id == post_id, Comments.delete_flag == 0).order_by(
         Comments.timestamps.asc()).paginate(page, per_page=per_page)
-
+    p_tags = PostTagShip.find_post_tag(post_id)
     comments = pagination.items
     post.read_times += 1
     db.session.commit()
-    return render_template('frontend/post/read-post.html', post=post, c_tag=c_tag, comments=comments,
+    return render_template('frontend/post/read-post.html',
+                           post=post,
+                           c_tag=is_collect,
+                           comments=comments,
                            pagination=pagination,
-                           emoji_urls=EMOJI_INFOS, per_page=per_page, page=page)
+                           emoji_urls=EMOJI_INFOS,
+                           per_page=per_page,
+                           page=page,
+                           p_tags=p_tags)
 
 
 @post_bp.route('/cate/<cate_id>/', methods=['GET'])

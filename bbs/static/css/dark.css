@@ -107,6 +107,19 @@
     background-color: #666666;
 }
 
-.dropdown-toggle::after{
+.dropdown-toggle::after {
     color: white;
+}
+
+/*post tag style*/
+.post-tag {
+    border-radius: 18%;
+    background: #aaaaaa;
+    cursor: pointer;
+    padding: 1px;
+    margin-bottom: 4px;
+}
+
+.post-tag:hover {
+    background: #999999;
 }

@@ -90,3 +90,16 @@
 .div-blockquote-comment > p {
     margin-bottom: 3px;
 }
+
+/*post tag style*/
+.post-tag {
+    border-radius: 18%;
+    background: #deded8;
+    cursor: pointer;
+    padding: 1px;
+    margin-bottom: 4px;
+}
+
+.post-tag:hover {
+    background: #E4E4E4;
+}
