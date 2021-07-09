@@ -120,6 +120,8 @@ def register_cmd(app: Flask):
         click.echo('初始化性别表成功!')
         OperatorCate.init_cate()
         click.echo('初始化操作类别表成功!')
+        init_report_cate()
+        click.echo('初始化举报类别表成功!')
         db.session.commit()
         click.echo('数据库初始化完成!')
 
@@ -194,7 +196,7 @@ def init_report_cate():
                           '色情淫秽、血腥暴恐',
                           '未经许可的广告行为',
                           '低俗谩骂、攻击引战',
-                          '造谣谩骂',
+                          '造谣毁谤',
                           '其他违法版规的内容']
     for cate in reports_categories:
         rc = ReportCate(name=cate)
