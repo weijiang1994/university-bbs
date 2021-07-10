@@ -438,7 +438,7 @@
             function getMarkDownData() {
                 let comment = $("#commentContent").val();
                 if (comment == '') {
-                    $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论,你预览NM呢?</b></p>')
+                    $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论!</b></p>')
                     return false;
                 }
                 let last = sessionStorage.getItem('md');
