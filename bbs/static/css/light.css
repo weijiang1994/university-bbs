@@ -93,11 +93,12 @@
 
 /*post tag style*/
 .post-tag {
-    border-radius: 18%;
+    border-radius: 15px;
     background: #deded8;
     cursor: pointer;
-    padding: 1px;
+    padding: 3px 8px 3px 8px;
     margin-bottom: 4px;
+    font-size: 12px;
 }
 
 .post-tag:hover {
