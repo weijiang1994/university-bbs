@@ -288,3 +288,14 @@ def set_anonymous(post_id):
         flash('帖子设置匿名成功!', 'success')
     db.session.commit()
     return redirect(url_for('profile.index', user_id=current_user.id))
+
+
+@post_bp.route('/post-tag/<tag_id>/')
+def post_tag(tag_id):
+    page = request.form.get('page')
+    tag = Tag.query.filter_by(id=tag_id).first()
+    all_post = PostTagShip.find_all_post(tag_id, page=page, per_page=current_app.config['BBS_PER_PAGE'])
+    posts = all_post.items
+    return render_template('frontend/post/tag-post.html',
+                           posts=posts,
+                           tag=tag)

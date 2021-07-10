@@ -165,7 +165,7 @@
                         {{ post.content|safe }}
                     </article>
                     {% for tag in p_tags %}
-                        <label class="post-tag">#{{ tag.tag.name }}</label>
+                        <label class="post-tag"><a style="color: inherit" class="text-decoration-none" href="{{ url_for('post.post_tag', tag_id=tag.id) }}">#{{ tag.tag.name }}</a></label>
                     {% endfor %}
                 </div>
                 {% if current_user.is_authenticated and current_user.id == post.user.id %}

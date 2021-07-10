@@ -1,0 +1,18 @@
+{% extends "frontend/base.html" %}
+{% from 'macro.html' import post_item with context %}
+{% block title %}
+    {{ tag.name }}
+{% endblock %}
+{% block content %}
+    <main>
+        {{ moment.locale(auto_detect=True) }}
+        <div class="container mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="/" title="返回主页">主页</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="/" title="查看所有标签">标签</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ url_for('post.post_tag', tag_id=tag.id) }}">{{ tag.name }}</a></li>
+            </ol>
+            {{ post_item(posts) }}
+        </div>
+    </main>
+{% endblock %}

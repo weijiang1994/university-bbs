@@ -464,3 +464,14 @@ class PostTagShip(db.Model):
     @staticmethod
     def find_post_tag(post_id):
         return PostTagShip.query.filter_by(post_id=post_id)
+
+    @staticmethod
+    def find_all_post(tag_id, page=1, per_page=10):
+        """
+        find all post bellow the tag
+        :param per_page: per page count
+        :param page: current page number
+        :param tag_id: query condition
+        :return: post id list for this tag
+        """
+        return Post.query.join(Post.post_tag_ship).filter_by(tag_id=tag_id).paginate(page=page, per_page=per_page)
