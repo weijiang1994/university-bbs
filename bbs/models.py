@@ -463,4 +463,4 @@ class PostTagShip(db.Model):
 
     @staticmethod
     def find_post_tag(post_id):
-        return PostTagShip.query.filter(post_id == post_id)
+        return PostTagShip.query.filter_by(post_id=post_id)
