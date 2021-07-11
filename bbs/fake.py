@@ -10,10 +10,16 @@ import os
 import random
 
 from faker import Faker
-from bbs.models import User, Post
+from bbs.models import User, Post, Tag
 from bbs.extensions import db
 from bbs.setting import basedir
 from bbs.utils import get_text_plain
+
+
+def generate_post_tag():
+    fa = Faker(locale='zh-CN')
+    for i in range(1, 30):
+        db.session.add(Tag(name=fa.word()))
 
 
 # noinspection PyArgumentList
@@ -41,6 +47,7 @@ def generate_post():
         content = ''
         for text in fa.texts():
             content += text
+
         p = Post(title=fa.sentence(),
                  cate_id=random.randint(1, 6),
                  is_anonymous=random.randint(1, 2),
