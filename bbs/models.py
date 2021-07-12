@@ -95,7 +95,7 @@ class User(db.Model, UserMixin):
     admin_log = db.relationship('AdminLog', back_populates='admin_user', foreign_keys=[AdminLog.admin_id])
     user_log = db.relationship('AdminLog', back_populates='target_user', foreign_keys=[AdminLog.target_id])
 
-    # user_interest = db.relationship('UserInterest', back_populates='user')
+    user_interest = db.relationship('UserInterest', back_populates='user')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -170,7 +170,7 @@ class PostCategory(db.Model):
     cate_img = db.Column(db.String(512), default='', comment='The sample image path for this category')
 
     post = db.relationship('Post', back_populates='cats', cascade='all')
-    # user_interest = db.relationship('UserInterest', back_populates='cate')
+    user_interest = db.relationship('UserInterest', back_populates='cate')
     p_topic = db.relationship('PostTopic', back_populates='post_cate')
 
     def get_sample_img(self):
@@ -499,21 +499,21 @@ class PostTagShip(db.Model):
             db.session.delete(record)
 
 
-# class UserInterest(db.Model):
-#     __tablename__ = 't_user_profile'
-#
-#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-#     cate_id = db.Column(db.INTEGER, db.ForeignKey('t_cate.id'))
-#     user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
-#     visit_times = db.Column(db.INTEGER, default=0)
-#     c_time = db.Column(db.DateTime, default=datetime.datetime.now())
-#
-#     user = db.relationship('User', back_populates='user_interest')
-#     cate = db.relationship('PostCategory', back_populates='user_interest')
-#
-#     @staticmethod
-#     def exist_user_cate(user_id, cate_id):
-#         return UserInterest.query.filter(user_id=user_id, cate_id=cate_id).first()
+class UserInterest(db.Model):
+    __tablename__ = 't_user_profile'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    cate_id = db.Column(db.INTEGER, db.ForeignKey('t_postcate.id'))
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    visit_times = db.Column(db.INTEGER, default=0)
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now())
+
+    user = db.relationship('User', back_populates='user_interest')
+    cate = db.relationship('PostCategory', back_populates='user_interest')
+
+    @staticmethod
+    def exist_user_cate(user_id, cate_id):
+        return UserInterest.query.filter(user_id=user_id, cate_id=cate_id).first()
 
 
 class PostTopic(db.Model):
