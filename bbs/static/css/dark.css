@@ -124,3 +124,17 @@
 .post-tag:hover {
     background: #999999;
 }
+
+.post-tag-header {
+    color: white;
+    background: #343434;
+    padding: 8px;
+    border-radius: 5px 5px 0 0;
+}
+
+.post-tag-root{
+    color: white;
+    background: #303030;
+    padding: 8px;
+    border-radius: 0 0 5px 5px;
+}

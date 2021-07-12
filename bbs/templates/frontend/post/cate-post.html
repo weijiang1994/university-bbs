@@ -7,11 +7,29 @@
     <main>
         {{ moment.locale(auto_detect=True) }}
         <div class="container mt-2">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ url_for('post.post_cate', cate_id=cate.id) }}">{{ cate.name }}</a></li>
-            </ol>
-            {{ post_item(posts) }}
+            {% include "_flash.html" %}
+            <div class="d-flex post-tag-header">
+                <img src="{{ cate.get_sample_img() }}" alt="{{ cate.name }}" class="avatar-50">
+                <div class="ml-2 flex-grow-1">
+                    <p class="mb-0"><a href="/" class="text-decoration-none">university-bbs</a> > {{ cate.name }}</p>
+                    <p class="mb-0"><small>{{ cate.desc }}</small></p>
+                </div>
+                <p class="mb-0"><small>帖子总数{{ posts|length }}</small></p>
+            </div>
+            <div class="d-flex post-tag-root">
+                <p class="mb-0 flex-grow-1"><a href="{{ url_for('post.new_post') }}"
+                                               class="btn btn-light btn-sm">发布新的帖子</a></p>
+                {% if not cate.user_collected() %}
+                    <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
+                       onclick="if(confirm('加入收藏主页会优先显示该主题，确定收藏该主题吗？')===false)return false;"><small>加入收藏</small></a>
+                {% else %}
+                    <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
+                       onclick="if(confirm('取消收藏会删除你与该主题相关的所有信息，确定操作吗？')===false)return false;"><small>取消收藏</small></a>
+                {% endif %}
+            </div>
+            <div class="mt-2">
+                {{ post_item(posts) }}
+            </div>
         </div>
     </main>
 {% endblock %}
