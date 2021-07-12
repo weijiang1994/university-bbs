@@ -11,6 +11,7 @@ from flask_avatars import Identicon
 from bbs.extensions import db, whooshee
 import datetime
 from flask_login import UserMixin, current_user
+import os
 
 
 class AdminLog(db.Model):
@@ -94,6 +95,8 @@ class User(db.Model, UserMixin):
     admin_log = db.relationship('AdminLog', back_populates='admin_user', foreign_keys=[AdminLog.admin_id])
     user_log = db.relationship('AdminLog', back_populates='target_user', foreign_keys=[AdminLog.target_id])
 
+    # user_interest = db.relationship('UserInterest', back_populates='user')
+
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
 
@@ -161,9 +164,19 @@ class PostCategory(db.Model):
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     name = db.Column(db.String(40), nullable=False)
+    topic_id = db.Column(db.INTEGER, db.ForeignKey('t_post_topic.id'), comment="Which topic does this category belong to.")
     create_time = db.Column(db.Date, default=datetime.date.today)
+    desc = db.Column(db.TEXT, default='', comment='The description text for this category.')
+    cate_img = db.Column(db.String(512), default='', comment='The sample image path for this category')
 
     post = db.relationship('Post', back_populates='cats', cascade='all')
+    # user_interest = db.relationship('UserInterest', back_populates='cate')
+    p_topic = db.relationship('PostTopic', back_populates='post_cate')
+
+    def get_sample_img(self):
+        if os.path.isdir(str(self.cate_img)):
+            return self.cate_img
+        return '/static/img/no-sample.jpeg'
 
 
 @whooshee.register_model('title', 'content')
@@ -484,3 +497,30 @@ class PostTagShip(db.Model):
     def delete_all_tag(post_id):
         for record in PostTagShip.query.filter_by(post_id=post_id).all():
             db.session.delete(record)
+
+
+# class UserInterest(db.Model):
+#     __tablename__ = 't_user_profile'
+#
+#     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+#     cate_id = db.Column(db.INTEGER, db.ForeignKey('t_cate.id'))
+#     user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+#     visit_times = db.Column(db.INTEGER, default=0)
+#     c_time = db.Column(db.DateTime, default=datetime.datetime.now())
+#
+#     user = db.relationship('User', back_populates='user_interest')
+#     cate = db.relationship('PostCategory', back_populates='user_interest')
+#
+#     @staticmethod
+#     def exist_user_cate(user_id, cate_id):
+#         return UserInterest.query.filter(user_id=user_id, cate_id=cate_id).first()
+
+
+class PostTopic(db.Model):
+    __tablename__ = 't_post_topic'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128), nullable=False, default='')
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now(), nullable=False)
+
+    post_cate = db.relationship('PostCategory', back_populates='p_topic')
