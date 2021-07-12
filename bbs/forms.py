@@ -134,7 +134,8 @@ class BasePostForm(FlaskForm):
                         render_kw={'class': '', 'rows': 50, 'placeholder': '输入您的帖子标题'})
     category = SelectField(label=u'分区',
                            default=0,
-                           coerce=int)
+                           coerce=int,
+                           render_kw={'id': 'category' , 'data-live-search': 'true'})
     anonymous = SelectField(label=u'是否匿名', default=1, choices=[(1, '实名'), (2, '匿名')], coerce=int)
     tags = StringField(u'帖子标签', render_kw={'placeholder': '请输入帖子标签', 'id': 'post-tags'})
     body = CKEditorField('帖子内容', validators=[DataRequired(message='请输入帖子内容')])
