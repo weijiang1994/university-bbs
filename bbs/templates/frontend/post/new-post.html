@@ -1,5 +1,10 @@
 {% extends "frontend/base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/selectize.bootstrap4.css') }}">
+    <script rel="script" src="{{ url_for('static', filename='js/selectize.js') }}"></script>
+{% endblock %}
 {% block title %}
     发布新的帖子
 {% endblock %}
@@ -32,23 +37,29 @@
     {{ ckeditor.load() }}
     {{ ckeditor.config(name='body') }}
     <script>
-        CKEDITOR.on( 'instanceReady', function( evt ) {
-            evt.editor.dataProcessor.htmlFilter.addRules( {
+        CKEDITOR.on('instanceReady', function (evt) {
+            evt.editor.dataProcessor.htmlFilter.addRules({
                 elements: {
-                    img: function(el) {
+                    img: function (el) {
                         el.addClass('img-fluid d-block mx-auto');
                     },
-                    table: function (el){
+                    table: function (el) {
                         el.addClass('table table-responsive');
                     },
-                    thead: function (el){
+                    thead: function (el) {
                         el.addClass('thead-light');
                     },
-                    blockquote: function (el){
+                    blockquote: function (el) {
                         el.addClass('m-blockquote');
                     }
                 }
             });
+        });
+        $('#post-tags').selectize({
+            persist: false,
+            createOnBlur: true,
+            create: true,
+            maxItems: 5
         });
     </script>
 {% endblock %}
