@@ -101,13 +101,13 @@
         <div class="card-header"><i class="fa fa-fire mr-2"></i>今日热议</div>
         <div id="hot-posts" class="card-body p-2 f-15">
             {% if hot_posts|length %}
-                <ol>
+                <ol class="mb-0 pl-4">
                     {% for hp in hot_posts %}
                         <li><a href="{{ url_for('post.read', post_id=hp.id) }}" class="text-decoration-none">{{ hp.title }}</a></li>
                     {% endfor %}
                 </ol>
             {% else %}
-                <p><b>今日暂无热帖!</b></p>
+                <p class="mb-0"><b>今日暂无热帖!</b></p>
             {% endif %}
         </div>
     </div>
