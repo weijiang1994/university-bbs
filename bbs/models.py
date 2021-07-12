@@ -475,3 +475,12 @@ class PostTagShip(db.Model):
         :return: post id list for this tag
         """
         return Post.query.join(Post.post_tag_ship).filter_by(tag_id=tag_id).paginate(page=page, per_page=per_page)
+
+    @staticmethod
+    def find_all_tag(post_id):
+        return Tag.query.join(Tag.post_tag_ship).filter_by(post_id=post_id).all()
+
+    @staticmethod
+    def delete_all_tag(post_id):
+        for record in PostTagShip.query.filter_by(post_id=post_id).all():
+            db.session.delete(record)

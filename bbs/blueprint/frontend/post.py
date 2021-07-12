@@ -41,20 +41,24 @@ def new_post():
                         textplain=textplain, status_id=1)
         db.session.add(post)
 
-        for tag in tags:
-            if not Tag.tag_exist(tag):
-                t = Tag(name=tag)
-                db.session.add(t)
-            else:
-                t = Tag.tag_exist(tag)
-
-            if not PostTagShip.post_in_tag(post.id, t.id):
-                db.session.add(PostTagShip(post_id=post.id, tag_id=t.id))
+        insert_post_tag(post, tags)
 
         db.session.commit()
         flash('帖子发布成功!', 'success')
         return redirect(url_for('post.read', post_id=post.id))
     return render_template('frontend/post/new-post.html', form=form)
+
+
+def insert_post_tag(post, tags):
+    for tag in tags:
+        if not Tag.tag_exist(tag):
+            t = Tag(name=tag)
+            db.session.add(t)
+        else:
+            t = Tag.tag_exist(tag)
+
+        if not PostTagShip.post_in_tag(post.id, t.id):
+            db.session.add(PostTagShip(post_id=post.id, tag_id=t.id))
 
 
 @post_bp.route('/read/<post_id>/', methods=['GET'])
@@ -115,6 +119,13 @@ def edit(post_id):
         post.cate_id = cate
         post.is_anonymous = anonymous
         post.content = content
+        if form.tags.data == ' '.join([tag.name for tag in PostTagShip.find_all_tag(post_id)]):
+            pass
+        else:
+            PostTagShip.delete_all_tag(post_id)
+            tags = form.tags.data.split() if form.tags.data else []
+            insert_post_tag(post, tags)
+
         db.session.commit()
         flash('帖子编辑成功!', 'success')
         return redirect(url_for('.read', post_id=post_id))
@@ -123,6 +134,7 @@ def edit(post_id):
     form.body.data = post.content
     form.category.data = post.cate_id
     form.anonymous.data = post.is_anonymous
+    form.tags.data = ' '.join([tag.name for tag in PostTagShip.find_all_tag(post_id)])
     return render_template('frontend/post/edit-post.html', post=post, form=form)
 
 
