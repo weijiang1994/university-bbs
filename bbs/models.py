@@ -164,7 +164,8 @@ class PostCategory(db.Model):
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     name = db.Column(db.String(40), nullable=False)
-    topic_id = db.Column(db.INTEGER, db.ForeignKey('t_post_topic.id'), comment="Which topic does this category belong to.")
+    topic_id = db.Column(db.INTEGER, db.ForeignKey('t_post_topic.id'),
+                         comment="Which topic does this category belong to.")
     create_time = db.Column(db.Date, default=datetime.date.today)
     desc = db.Column(db.TEXT, default='', comment='The description text for this category.')
     cate_img = db.Column(db.String(512), default='', comment='The sample image path for this category')
@@ -177,6 +178,9 @@ class PostCategory(db.Model):
         if os.path.isdir(str(self.cate_img)):
             return self.cate_img
         return '/static/img/no-sample.jpeg'
+
+    def user_collected(self):
+        return UserInterest.query.filter(UserInterest.user_id == current_user.id, UserInterest.cate_id == self.id).first()
 
 
 @whooshee.register_model('title', 'content')
@@ -513,7 +517,7 @@ class UserInterest(db.Model):
 
     @staticmethod
     def exist_user_cate(user_id, cate_id):
-        return UserInterest.query.filter(user_id=user_id, cate_id=cate_id).first()
+        return UserInterest.query.filter(UserInterest.user_id == user_id, UserInterest.cate_id == cate_id).first()
 
 
 class PostTopic(db.Model):

@@ -11,7 +11,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike, Tag, PostTagShip
+    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -309,3 +309,17 @@ def post_tag(tag_id):
     return render_template('frontend/post/tag-post.html',
                            posts=posts,
                            tag=tag)
+
+
+@post_bp.route('/collect-cate/<cate_id>/')
+def collect_cate(cate_id):
+    tag = Tag.query.get_or_404(cate_id)
+    if UserInterest.exist_user_cate(current_user.id, tag.id):
+        uit = UserInterest.exist_user_cate(current_user.id, tag.id)
+        db.session.delete(uit)
+        flash('取消收藏该主题成功!', 'success')
+    else:
+        db.session.add(UserInterest(user_id=current_user.id, cate_id=tag.id))
+        flash('收藏该主题成功!', 'success')
+    db.session.commit()
+    return redirect(request.referrer)
