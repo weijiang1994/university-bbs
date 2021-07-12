@@ -170,3 +170,7 @@ header{
 .f-16{
     font-size: 16px;
 }
+
+.nav-link{
+    padding: .4rem .4rem;
+}
