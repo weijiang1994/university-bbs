@@ -25,7 +25,7 @@ from bbs.blueprint.frontend.user import user_bp
 from bbs.blueprint.backend.index import be_index_bp
 from bbs.blueprint.backend.user_manage import be_user_manage_bp
 from bbs.blueprint.backend.post_manage import be_post_manage_bp
-from bbs.fake import generate_user, generate_post, generate_real_post
+from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
 from bbs.utils import get_text_plain
 import os
 
@@ -104,6 +104,8 @@ def register_cmd(app: Flask):
         db.drop_all()
         click.echo('清空数据库完成!')
         db.create_all()
+        generate_post_tag()
+        click.echo('初始化帖子标签表完成!')
         init_status()
         click.echo('初始化状态表完成!')
         init_cate()

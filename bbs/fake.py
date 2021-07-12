@@ -10,23 +10,23 @@ import os
 import random
 
 from faker import Faker
-from bbs.models import User, Post, Tag
+from bbs.models import User, Post, Tag, PostTagShip
 from bbs.extensions import db
 from bbs.setting import basedir
 from bbs.utils import get_text_plain
 
+fa = Faker(locale='zh-CN')
+
 
 def generate_post_tag():
-    fa = Faker(locale='zh-CN')
-    for i in range(1, 30):
+    for i in range(1, 31):
         db.session.add(Tag(name=fa.word()))
+    db.session.commit()
 
 
-# noinspection PyArgumentList
 def generate_user():
-    fa = Faker()
     for i in range(30):
-        user = User(username=fa.name().replace(' ', '').lower(),
+        user = User(username=fa.user_name().strip().lower() + str(random.randint(1, 9)),
                     college_id=random.randint(1, 7),
                     email=fa.email(),
                     nickname=fa.name(),
@@ -42,7 +42,6 @@ def generate_user():
 
 
 def generate_post():
-    fa = Faker()
     for i in range(56):
         content = ''
         for text in fa.texts():
@@ -55,6 +54,10 @@ def generate_post():
                  textplain=get_text_plain(content),
                  author_id=random.randint(1, 30))
         db.session.add(p)
+        db.session.flush()
+        for j in range(random.randint(1, 4)):
+            tag_id = random.randint(1, 30)
+            db.session.add(PostTagShip(post_id=p.id, tag_id=tag_id))
     db.session.commit()
 
 
