@@ -36,7 +36,7 @@ def create_app(config_name=None):
         app.config.from_object(DevelopmentConfig)
     else:
         app.config.from_object(ProductionConfig)
-
+    app.jinja_env.filters['empty'] = translate_empty
     register_extensions(app)
     register_cmd(app)
     register_bp(app)
@@ -221,3 +221,9 @@ def register_log(app: Flask):
     file_handler.setLevel(logging.DEBUG)
     # if not app.debug:
     app.logger.addHandler(file_handler)
+
+
+def translate_empty(msg):
+    if msg is None or msg == '':
+        return '暂无描述信息'
+    return msg

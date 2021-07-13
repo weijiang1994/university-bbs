@@ -12,7 +12,7 @@
                 <img src="{{ cate.get_sample_img() }}" alt="{{ cate.name }}" class="avatar-50">
                 <div class="ml-2 flex-grow-1">
                     <p class="mb-0"><a href="/" class="text-decoration-none">university-bbs</a> > {{ cate.name }}</p>
-                    <p class="mb-0"><small>{{ cate.desc }}</small></p>
+                    <p class="mb-0"><small>{{ cate.desc|empty }}</small></p>
                 </div>
                 <p class="mb-0"><small>帖子总数{{ posts|length }}</small></p>
             </div>
