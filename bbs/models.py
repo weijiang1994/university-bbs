@@ -180,7 +180,8 @@ class PostCategory(db.Model):
         return '/static/img/no-sample.png'
 
     def user_collected(self):
-        return UserInterest.query.filter(UserInterest.user_id == current_user.id, UserInterest.cate_id == self.id).first()
+        return UserInterest.query.filter(UserInterest.user_id == current_user.id,
+                                         UserInterest.cate_id == self.id).first()
 
 
 @whooshee.register_model('title', 'content')

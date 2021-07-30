@@ -16,7 +16,7 @@ from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
 from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit
-from bbs.decorators import statistic_traffic, post_can_read
+from bbs.decorators import statistic_traffic, post_can_read, record_read
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -61,6 +61,7 @@ def insert_post_tag(post, tags):
 
 @post_bp.route('/read/<post_id>/', methods=['GET'])
 @post_can_read
+@record_read
 def read(post_id):
     page = request.args.get('page', default=1, type=int)
     post = Post.query.get_or_404(post_id)

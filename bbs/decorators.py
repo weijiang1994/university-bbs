@@ -11,7 +11,8 @@ from functools import wraps
 from flask import abort, flash, request, redirect, url_for
 from flask_login import current_user
 import datetime
-from bbs.models import PostStatistic, Post
+from bbs.models import PostStatistic, Post, UserInterest
+from bbs.extensions import db
 
 
 def admin_permission_required(func):
@@ -82,3 +83,17 @@ def post_can_read(func):
             return redirect(url_for('index_bp.index'))
         return func(post_id, *args, **kwargs)
     return decorator
+
+
+def record_read(func):
+    @wraps(func)
+    def wrapper(post_id, *args, **kwargs):
+        if current_user.is_authenticated:
+            pt = Post.query.filter_by(id=post_id).first()
+            if UserInterest.exist_user_cate(current_user.id, pt.cate_id):
+                uit = UserInterest.exist_user_cate(current_user.id, pt.cate_id)
+                uit.visit_times += 1
+                db.session.commit()
+        return func(post_id, *args, **kwargs)
+    return wrapper
+
