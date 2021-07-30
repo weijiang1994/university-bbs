@@ -96,6 +96,7 @@ class User(db.Model, UserMixin):
     user_log = db.relationship('AdminLog', back_populates='target_user', foreign_keys=[AdminLog.target_id])
 
     user_interest = db.relationship('UserInterest', back_populates='user')
+    ur_ship = db.relationship('UserRoleShip', back_populates='user')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -529,3 +530,46 @@ class PostTopic(db.Model):
     c_time = db.Column(db.DateTime, default=datetime.datetime.now(), nullable=False)
 
     post_cate = db.relationship('PostCategory', back_populates='p_topic')
+
+
+class UserRole(db.Model):
+    __tablename__ = 't_user_role'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    role = db.Column(db.String(128), nullable=False, default='')
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    ur_ship = db.relationship('UserRoleShip', back_populates='role')
+    rp_ship = db.relationship('RolePermissionShip', back_populates='role')
+
+
+class UserRoleShip(db.Model):
+    __tablename__ = 't_user_role_ship'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    rid = db.Column(db.INTEGER, db.ForeignKey('t_user_role.id'))
+
+    user = db.relationship('User', back_populates='ur_ship')
+    role = db.relationship('UserRole', back_populates='ur_ship')
+
+
+class UserPermission(db.Model):
+    __tablename__ = 't_user_permission'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    permission = db.Column(db.String(128), nullable=False, default='')
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    rp_ship = db.relationship('RolePermissionShip', back_populates='user_permission')
+
+
+class RolePermissionShip(db.Model):
+    __tablename__ = 't_role_permission_ship'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    rid = db.Column(db.INTEGER, db.ForeignKey('t_user_role.id'))
+    pid = db.Column(db.INTEGER, db.ForeignKey('t_user_permission.id'))
+
+    role = db.relationship('UserRole', back_populates='rp_ship')
+    user_permission = db.relationship('UserPermission', back_populates='rp_ship')

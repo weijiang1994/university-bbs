@@ -112,6 +112,12 @@ def register_cmd(app: Flask):
         click.echo('初始化帖子类别表完成!')
         init_colleges()
         click.echo('初始化学院表完成!')
+        init_user_permission()
+        click.echo('初始化角色表完成!')
+        init_user_permission()
+        click.echo('初始化权限表完成!')
+        init_role_permission_ship()
+        click.echo('初始化角色权限关系表完成!')
         init_permission()
         click.echo('初始化权限表完成!')
         init_role()
@@ -191,6 +197,41 @@ def init_role():
     db.session.add(r2)
     db.session.add(r3)
     db.session.commit()
+
+
+def init_user_role():
+    roles = ['sys-admin', 'post-auditor', 'teacher', 'student']
+    for role in roles:
+        db.session.add(UserRole(role=role))
+
+
+def init_user_permission():
+    permissions = ['sys-admin', 'post-audit', 'post-block', 'comment-block', 'normal']
+    for permission in permissions:
+        db.session.add(UserPermission(permission=permission))
+
+
+def init_role_permission_ship():
+    roles = UserRole.query.all()
+    audit_pid = UserPermission.query.filter_by(permission='post-audit').first().id
+    post_block_pid = UserPermission.query.filter_by(permission='post-block').first().id
+    comment_block_pid = UserPermission.query.filter_by(permission='comment-block').first().id
+    normal_pid = UserPermission.query.filter_by(permission='normal').first().id
+    for role in roles:
+        if role.role == 'sys-admin':
+            for permission in UserPermission.query.all():
+                db.session.add(RolePermissionShip(rid=role.id, pid=permission))
+        elif role.role == 'post-auditor':
+            db.session.add(RolePermissionShip(rid=role.id, pid=audit_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=post_block_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=comment_block_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=normal_pid))
+        elif role.role == 'teacher':
+            db.session.add(RolePermissionShip(rid=role.id, pid=post_blocker_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=comment_block_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=normal_pid))
+        else:
+            db.session.add(RolePermissionShip(rid=role.id, pid=normal_pid))
 
 
 def init_report_cate():
