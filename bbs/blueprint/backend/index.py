@@ -2,7 +2,6 @@
 # coding:utf-8
 @Time    : 2021/01/04
 @Author  : jiangwei
-@mail    : jiangwei1@kylinos.cn
 @File    : index.py
 @Desc    : index
 @Software: PyCharm

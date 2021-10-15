@@ -2,7 +2,6 @@
 # coding:utf-8
 @Time    : 2020/12/29
 @Author  : jiangwei
-@mail    : jiangwei1@kylinos.cn
 @File    : email.py
 @Desc    : email
 @Software: PyCharm
