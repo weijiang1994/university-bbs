@@ -2,7 +2,6 @@
 # coding:utf-8
 @Time    : 2020/12/11
 @Author  : jiangwei
-@mail    : jiangwei1@kylinos.cn
 @File    : get-emojis.py
 @Desc    : 爬虫脚本,爬取www.emojidaquan.com的emoji表情
 @Software: PyCharm

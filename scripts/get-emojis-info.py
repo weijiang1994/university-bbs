@@ -2,7 +2,6 @@
 # coding:utf-8
 @Time    : 2020/12/11
 @Author  : jiangwei
-@mail    : jiangwei1@kylinos.cn
 @File    : get-emojis-info.py
 @Desc    : 获取爬取的emojis文件名,生成对应的元组信息
 @Software: PyCharm
