@@ -1,6 +1,6 @@
 <h3 style="font-weight: bold;font-size: 18px">Hello Admin,</h3>
 <p>You have a new post need to audit, please click this <a href="{{ url_for('post_manage.post_audit', _external=True) }}">link</a></p>
-<h1>Post title:<strong>{{ post.title }}</strong></h1>
+<p>Post title:<strong>{{ post.title }}</strong></p>
 <article>
     {{ post.content|safe }}
 </article>
