@@ -46,7 +46,7 @@ def new_post():
         send_email(
             to_mail=get_admin_email(),
             subject='Post Audit',
-            template='mail/postAudit',
+            template='email/postAudit',
             post=post,
         )
         return redirect(url_for('post.read', post_id=post.id))
