@@ -1,5 +1,5 @@
-Hello Admin
-You have a new post need to audit, please click this link"></a></p>
+Hello Admin,
+You have a new post to review, please click the link below to review.
 Post title:{{ post.title }}
 
     {{ post.content|safe }}
