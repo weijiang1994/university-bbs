@@ -10,7 +10,7 @@ from flask import Blueprint, render_template, request, jsonify
 from bbs.models import Post
 from flask_login import current_user
 from bbs.extensions import db
-
+from bbs.decorators import admin_permission_required
 
 be_post_manage_bp = Blueprint('post_manage', __name__, url_prefix='/backend/post')
 
