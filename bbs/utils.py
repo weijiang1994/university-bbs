@@ -126,6 +126,11 @@ def get_audit():
     return yl.get('admin').get('audit')
 
 
+def get_admin_email():
+    yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
+    return yl.get('admin').get('mail')
+
+
 def get_upload_img_limit():
     yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
     return yl.get('admin').get('upload-img')
