@@ -2,3 +2,4 @@ admin:
   audit: true
   register: true
   upload-img: 1024
+  mail: 804022023@qq.com
