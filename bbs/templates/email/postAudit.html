@@ -1,0 +1,8 @@
+<h3 style="font-weight: bold;font-size: 18px">Hello Admin,</h3>
+<p>You have a new post need to audit, please click this <a href="{{ url_for('post_manage.post_audit', _external=True) }}">link</a></p>
+<h1>Post title:<strong>{{ post.title }}</strong></h1>
+<article>
+    {{ post.content|safe }}
+</article>
+<p style="color: red; font-style: italic"> If this operate is not by yourself, please change your password right now!Maybe your account was cracked.</p>
+<small>(Please do not reply to this notification, this inbox is not monitored.)</small>

@@ -1,0 +1,8 @@
+Hello Admin
+You have a new post need to audit, please click this link"></a></p>
+Post title:{{ post.title }}
+
+    {{ post.content|safe }}
+
+If this operate is not by yourself, please change your password right now!Maybe your account was cracked.
+(Please do not reply to this notification, this inbox is not monitored.)

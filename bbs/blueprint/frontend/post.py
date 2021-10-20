@@ -14,8 +14,9 @@ from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notifica
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit
+from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email
 from bbs.decorators import statistic_traffic, post_can_read, record_read
+from bbs.email import send_email
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -42,6 +43,12 @@ def new_post():
         insert_post_tag(post, tags)
         db.session.commit()
         flash('帖子发布成功!', 'success')
+        send_email(
+            to_mail=get_admin_email(),
+            subject='Post Audit',
+            template='mail/postAudit',
+            post=post,
+        )
         return redirect(url_for('post.read', post_id=post.id))
     return render_template('frontend/post/new-post.html', form=form)
 
