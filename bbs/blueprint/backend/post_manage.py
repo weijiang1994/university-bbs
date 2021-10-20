@@ -17,6 +17,7 @@ be_post_manage_bp = Blueprint('post_manage', __name__, url_prefix='/backend/post
 
 @be_post_manage_bp.route('/post-audit/', methods=['GET', 'POST'])
 @be_post_manage_bp.route('/post-audit/<post_id>/', methods=['GET', 'POST'])
+@admin_permission_required
 def post_audit(post_id=None):
     if post_id is None:
         if request.method == 'POST':
