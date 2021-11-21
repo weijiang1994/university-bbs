@@ -267,10 +267,18 @@ def get_user_info():
 def send_message():
     message = request.form.get('message')
     sender_id = request.form.get('senderID')
+    send_user = User.query.get_or_404(sender_id)
     receiver_id = request.form.get('receiverID')
     pm = PrivateMessage(sender_id=sender_id,
                         receiver_id=receiver_id,
                         content=message)
     db.session.add(pm)
+    ntf = Notification(type=1,
+                       target_id=pm.id,
+                       target_name='用户私信',
+                       send_user=send_user.username,
+                       receive_id=receiver_id,
+                       msg=message)
+    db.session.add(ntf)
     db.session.commit()
     return {'code': 200, 'msg': '私信发送成功!'}

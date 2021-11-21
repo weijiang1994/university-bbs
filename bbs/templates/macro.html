@@ -515,7 +515,11 @@
         {% for notice in notices %}
             <li class="list-group-item">
                 <div class="d-flex">
+                {% if notice.type == 0 %}
                     <p class="flex-grow-1 p-mt-1"><span class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 回复你:</span></p>
+                {% elif notice.type == 1 %}
+                    <p class="flex-grow-1 p-mt-1"><span class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 私信你:</span></p>
+                {% endif %}
                     <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-ellipsis-h"></i>
                     </a>
@@ -532,7 +536,11 @@
                     {% endif %}
                 </div>
                 {{ notice.msg|safe }}
-                <p class="p-mt-1">来自:<a href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
+            {% if notice.type == 1 %}
+                <p class="p-mt-1">来自: <b>用户私信</b></p>
+            {% else %}
+                <p class="p-mt-1">来自: <a href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
+            {% endif %}
             </li>
         {% endfor %}
     </ul>
