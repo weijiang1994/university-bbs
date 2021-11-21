@@ -48,13 +48,20 @@ def index(user_id):
     form.slogan.data = user.slogan
     form.location.data = user.location
     notices = get_notices_counts()
-    return render_template('frontend/user/user-index.html', user=user, form=form, notices=notices)
+    contacts = get_contact_counts()
+    return render_template('frontend/user/user-index.html', user=user, form=form, notices=notices, contacts=contacts)
 
 
 def get_notices_counts():
     notices = Notification.query.filter(Notification.read == 0, Notification.receive_id == current_user.id). \
         order_by(Notification.timestamp.desc()).all()
     return notices
+
+
+def get_contact_counts():
+    contacts = PrivateMessage.query.filter(PrivateMessage.receiver_id == current_user.id,
+                                           PrivateMessage.receiver_status == 0).all()
+    return contacts
 
 
 @user_bp.route('/mark-notifications/<notify_id>/')
@@ -77,6 +84,7 @@ def mark_notification(notify_id):
 def notifications(user_id):
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
+    contacts = get_contact_counts()
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
     pagination = Notification.query.filter(Notification.receive_id == user_id, Notification.read == 1).paginate(
@@ -84,7 +92,7 @@ def notifications(user_id):
         per_page=per_page)
     read_notices = pagination.items
     return render_template('frontend/user/user-notification-read.html', user=user, notices=notices,
-                           read_notices=read_notices, tag=pagination.total > per_page)
+                           read_notices=read_notices, tag=pagination.total > per_page, contacts=contacts)
 
 
 @user_bp.route('notification-unread/<user_id>/')
@@ -92,6 +100,7 @@ def notifications(user_id):
 def unread(user_id):
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
+    contacts = get_contact_counts()
     page = request.args.get('page', default=1, type=int)
     per_page = current_app.config['BBS_PER_PAGE']
     pagination = Notification.query.filter(Notification.receive_id == user_id, Notification.read == 0).paginate(
@@ -99,7 +108,7 @@ def unread(user_id):
         per_page=per_page)
     unread_notices = pagination.items
     return render_template('frontend/user/user-notification-unread.html', user=user, notices=notices,
-                           unread_notices=unread_notices, tag=pagination.total > per_page)
+                           unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts)
 
 
 @user_bp.route('/contacts/<user_id>/')
@@ -108,7 +117,8 @@ def unread(user_id):
 def contact(user_id):
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
-    return render_template('frontend/user/user-contact.html', user=user, notices=notices)
+    contacts = get_contact_counts()
+    return render_template('frontend/user/user-contact.html', user=user, notices=notices, contacts=contacts)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
@@ -119,8 +129,9 @@ def edit_avatar(user_id):
     pwd_form = ChangePasswordForm()
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
+    contacts = get_contact_counts()
     return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form,
-                           notices=notices)
+                           notices=notices, contacts=contacts)
 
 
 @user_bp.route('/change-password/<user_id>/', methods=['GET', 'POST'])
@@ -135,7 +146,8 @@ def change_password(user_id):
         flash('密码修改成功！', 'success')
     user = User.query.get_or_404(current_user.id)
     notices = get_notices_counts()
-    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user, notices=notices)
+    contacts = get_contact_counts()
+    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user, notices=notices, contacts=contacts)
 
 
 @user_bp.route('/user-privacy-setting/<user_id>/', methods=['GET', 'POST'])
@@ -155,7 +167,8 @@ def privacy_setting(user_id):
         db.session.commit()
         flash('数据更新成功!', 'success')
     notices = get_notices_counts()
-    return render_template('frontend/user/user-privacy-setting.html', user=user, notices=notices)
+    contacts = get_contact_counts()
+    return render_template('frontend/user/user-privacy-setting.html', user=user, notices=notices, contacts=contacts)
 
 
 @user_bp.route('/upload-avatar/', methods=['POST'])
@@ -203,8 +216,9 @@ def trash_station_post(user_id):
     posts = pagination.items
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
+    contacts = get_contact_counts()
     return render_template('frontend/user/user-trash-post.html', posts=posts, tag=pagination.total > per_page,
-                           user=user, pagination=pagination, notices=notices)
+                           user=user, pagination=pagination, notices=notices, contacts=contacts)
 
 
 @user_bp.route('/trash-station-comment/<user_id>/')
@@ -218,8 +232,9 @@ def trash_station_comment(user_id):
     comments = pagination.items
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
+    contacts = get_contact_counts()
     return render_template('frontend/user/user-trash-comment.html', comments=comments, pagination=pagination,
-                           tag=pagination.total > per_page, user=user, notices=notices)
+                           tag=pagination.total > per_page, user=user, notices=notices, contacts=contacts)
 
 
 @user_bp.route('/post-recover/<post_id>/')

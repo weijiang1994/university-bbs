@@ -391,7 +391,11 @@
             <a class="{% if title == '私信' %}
                 a-link{% else %} li-fade
             {% endif %}  text-decoration-none" href="{{ url_for('user.contact', user_id=user.id) }}">私信</a>
+            {% if not contacts %}
             <span class="badge badge-primary badge-pill">0</span>
+            {% else %}
+            <span class="badge badge-danger badge-pill">{{ contacts|length }}</span>
+            {% endif %}
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a class="{% if title == '修改头像' %}
