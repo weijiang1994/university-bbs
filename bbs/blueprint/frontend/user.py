@@ -9,6 +9,7 @@
 import datetime
 import os
 
+from sqlalchemy import or_, and_
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from bbs.models import User, Notification, Post, Comments, PrivateMessage
@@ -116,9 +117,19 @@ def unread(user_id):
 @user_permission_required
 def contact(user_id):
     user = User.query.get_or_404(user_id)
+    person_messages = []
+    contact_persons = PrivateMessage.query.filter(PrivateMessage.receiver_id == current_user.id).group_by(
+        PrivateMessage.sender_id).order_by(PrivateMessage.c_time.desc()).all()
+    for cp in contact_persons:
+        person_messages.append(PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == cp.sender_id,
+                                                                    PrivateMessage.receiver_id == current_user.id),
+                                                               and_(PrivateMessage.sender_id == current_user.id,
+                                                                    PrivateMessage.receiver_id == cp.sender_id))).
+                               order_by(PrivateMessage.c_time).all())
     notices = get_notices_counts()
     contacts = get_contact_counts()
-    return render_template('frontend/user/user-contact.html', user=user, notices=notices, contacts=contacts)
+    return render_template('frontend/user/user-contact.html', user=user, notices=notices, contacts=contacts,
+                           person_messages=person_messages, contact_persons=contact_persons)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
@@ -147,7 +158,8 @@ def change_password(user_id):
     user = User.query.get_or_404(current_user.id)
     notices = get_notices_counts()
     contacts = get_contact_counts()
-    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user, notices=notices, contacts=contacts)
+    return render_template('frontend/user/user-password.html', pwd_form=pwd_form, user=user, notices=notices,
+                           contacts=contacts)
 
 
 @user_bp.route('/user-privacy-setting/<user_id>/', methods=['GET', 'POST'])
