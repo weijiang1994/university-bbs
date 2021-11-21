@@ -36,6 +36,7 @@ def create_app(config_name=None):
     else:
         app.config.from_object(ProductionConfig)
     app.jinja_env.filters['empty'] = translate_empty
+    app.jinja_env.filters['my_truncate'] = my_truncate
     register_extensions(app)
     register_cmd(app)
     register_bp(app)
@@ -266,4 +267,10 @@ def register_log(app: Flask):
 def translate_empty(msg):
     if msg is None or msg == '':
         return '暂无描述信息'
+    return msg
+
+
+def my_truncate(msg, length=10):
+    if len(msg) > length:
+        return msg[:length] + '...'
     return msg
