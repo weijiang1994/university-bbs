@@ -14,6 +14,22 @@ from flask_login import UserMixin, current_user
 import os
 
 
+class PrivateMessage(db.Model):
+    __tablename__ = 't_private_message'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    sender_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    receiver_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    content = db.Column(db.TEXT, default='', nullable=False)
+    sender_status = db.Column(db.INTEGER, default=1)
+    receiver_status = db.Column(db.INTEGER, default=0)
+    c_time = db.Column(db.DateTime, default=datetime.datetime.now)
+    status = db.Column(db.INTEGER, default=0, comment='admin can ban message 0: normal 1:banned')
+
+    send_user = db.relationship('User', foreign_keys=[sender_id], back_populates='sender', lazy='joined')
+    receive_user = db.relationship('User', foreign_keys=[receiver_id], back_populates='receiver', lazy='joined')
+
+
 class AdminLog(db.Model):
     __tablename__ = 't_admin_log'
 
@@ -97,6 +113,9 @@ class User(db.Model, UserMixin):
 
     user_interest = db.relationship('UserInterest', back_populates='user')
     ur_ship = db.relationship('UserRoleShip', back_populates='user')
+
+    sender = db.relationship('PrivateMessage', back_populates='send_user', foreign_keys=[PrivateMessage.sender_id])
+    receiver = db.relationship('PrivateMessage', back_populates='receive_user', foreign_keys=[PrivateMessage.receiver_id])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)

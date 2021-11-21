@@ -11,12 +11,13 @@ import os
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification, Post, Comments
+from bbs.models import User, Notification, Post, Comments, PrivateMessage
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
 from bbs.utils import get_md5, get_upload_img_limit
 from bbs.decorators import user_permission_required
+
 user_bp = Blueprint('user', __name__, url_prefix='/user/')
 
 
@@ -165,7 +166,7 @@ def upload_avatar():
     filename = get_md5(str(datetime.datetime.now())) + '.' + filename.split(r'.')[-1]
     upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
     file.save(upload_path)
-    if os.path.getsize(upload_path) > 1024*get_upload_img_limit():
+    if os.path.getsize(upload_path) > 1024 * get_upload_img_limit():
         os.remove(upload_path)
         flash('上传的文件不能大于1M!', 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
@@ -251,3 +252,25 @@ def comment_operator(comment_id):
     db.session.commit()
     flash('评论状态操作成功！', 'success')
     return redirect(request.referrer)
+
+
+@user_bp.route('/user-info', methods=['POST'])
+@login_required
+def get_user_info():
+    user_id = request.form.get('userId')
+    user = User.query.get_or_404(user_id)
+    return {'code': 200, 'username': user.username, 'nickname': user.nickname, 'sender': current_user.id}
+
+
+@user_bp.route('/send-message', methods=['POST'])
+@login_required
+def send_message():
+    message = request.form.get('message')
+    sender_id = request.form.get('senderID')
+    receiver_id = request.form.get('receiverID')
+    pm = PrivateMessage(sender_id=sender_id,
+                        receiver_id=receiver_id,
+                        content=message)
+    db.session.add(pm)
+    db.session.commit()
+    return {'code': 200, 'msg': '私信发送成功!'}

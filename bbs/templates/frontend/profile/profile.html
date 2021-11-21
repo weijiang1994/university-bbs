@@ -4,22 +4,22 @@
     {{ super() }}
     <style>
 
-        .a-title{
+        .a-title {
             font-size: 22px;
             font-weight: bold;
         }
 
-        .a-title-sm{
+        .a-title-sm {
             font-size: 16px;
             font-weight: bold;
         }
 
-        .f-12-b{
+        .f-12-b {
             font-weight: bold;
             font-size: 12px;
         }
 
-        .span-hand{
+        .span-hand {
             cursor: pointer;
         }
 
@@ -69,4 +69,78 @@
         </div>
     </main>
     </body>
+
+    <!-- Modal -->
+    <div class="modal fade" id="privacyChat" tabindex="-1" aria-labelledby="privacyChat" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="privacyChatTitle"></p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <p id="noContent" class="p-hint-error">请输入私信内容!</p>
+                        <p id="sendSuccess" class="p-hint">私信发送成功!</p>
+                    </div>
+                    <textarea name="messageContent" class="form-control" id="messageContent" cols="30" rows="10"
+                              placeholder="请输入私信内容"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="sendPrivacyLetter()" id="sendPrivateMessage">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let flag = false
+        let senderID = null
+        let receiverID = null
+        $("#privacyChat").on("show.bs.modal", function (event) {
+            let button = $(event.relatedTarget)
+            let userId = button.data('userid')
+            if (flag){
+                return
+            }
+            $.ajax({
+                url: "{{ url_for('user.get_user_info') }}",
+                type: 'post',
+                data: {userId: userId},
+                success: function (res) {
+                    if (res.code === 200) {
+                        $("#privacyChatTitle").html(`给<b>${res.nickname}</b>发送私信`)
+                        flag = true
+                        receiverID = userId
+                        senderID = res.sender
+                    }
+                }
+            })
+        })
+
+        function sendPrivacyLetter() {
+            let message = $("#messageContent").val().trim()
+            if (message === ''){
+                $("#noContent").slideDown(500).delay(2000).hide(500)
+                return
+            }
+            let $btn = $("#sendPrivateMessage")
+            $btn.attr('disabled', true)
+            $btn.html('正在发送<i class="fa fa-spin fa-spinner"></i>')
+            $.ajax({
+                url: "{{ url_for('user.send_message') }}",
+                type: "post",
+                data: {"message": message, senderID: senderID, receiverID: receiverID},
+                success: function (res){
+                    if (res.code === 200){
+                        $("#sendSuccess").slideDown(500).delay(2000).hide(500)
+                        $("#messageContent").val('')
+                    }
+                    $btn.attr('disabled', false)
+                    $btn.text('发送')
+                }
+            })
+        }
+    </script>
 {% endblock %}

@@ -266,7 +266,7 @@
                     <a class="btn btn-outline-danger" href="/profile/follow/{{ user.id }}/">关注TA</a>
                 {% endif %}
                 <!-- 弹出私信窗口 -->
-                <a class="btn btn-outline-primary">私信</a>
+                <a class="btn btn-outline-primary" data-toggle="modal" data-userid="{{ user.id }}" data-target="#privacyChat">私信</a>
             {% endif %}
 
         </div>
