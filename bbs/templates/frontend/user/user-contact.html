@@ -144,7 +144,7 @@
                             <!-- 左边列表栏 -->
                             <div class="col-md-4 div-left-person">
                                 <div class="top"><p>私信</p></div>
-                                <ul class="ul-list-person">
+                                <ul class="ul-list-person border-right">
                                     {% for cp in right_senders %}
                                         <li class="span-hand" data-chat="person{{ cp.id }}">
                                             <div class="d-flex div-item">
@@ -180,17 +180,16 @@
                                                              alt="{{ current_user.nickname }}">
                                                         <div class="div-msg-content">
                                                             <small><b>{{ pm.c_time }}</b></small>
-                                                            <p style="font-size: 16px">{{ pm.content }}</p>
+                                                            <p style="font-size: 14px">{{ pm.content }}</p>
                                                         </div>
                                                     </div>
-
                                                 {% else %}
                                                     <div class="d-flex mb-2 ml-1">
                                                         <img class="img-profile-bg-50" src="{{ pm.send_user.avatar }}"
                                                              alt="{{ pm.send_user.nickname }}">
                                                         <div class="div-msg-content">
                                                             <small><b>{{ pm.c_time }}</b></small>
-                                                            <p style="font-size: 16px">{{ pm.content }}</p>
+                                                            <p style="font-size: 14px">{{ pm.content }}</p>
                                                         </div>
                                                     </div>
                                                 {% endif %}
@@ -198,8 +197,14 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <div class="write">
-                                    <textarea class="form-control h-100" placeholder="请输入需要发送的消息,按Enter键发送"></textarea>
+                                <div class="write border-top">
+                                    <div class="text-center">
+                                        <p class="p-hint-error">请输入消息内容！</p>
+                                    </div>
+                                    <textarea class="form-control h-100" id="messageBox" placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
+                                    <div class="mt-1 text-right">
+                                        <button class="btn btn-primary">发送</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -209,8 +214,57 @@
         </div>
     </main>
     </body>
-    <script>
+    <script rel="script">
+        let currentPerson = "person{{ right_senders[0].id  }}"
+        let currentUserAvatar = "{{ current_user.avatar }}"
+        let currentUserNickname = "{{ current_user.nickname }}"
+        let currentID = "{{ current_user.id }}"
 
+        // 消息输入框按键监听
+        $("#messageBox").on('keyup', function (event){
+            let alt = event.altKey
+            if (alt && event.keyCode === 13){
+                sendMessage()
+            }
+        })
+        function createMessageField(){
+
+        }
+        // 给对方回复消息
+        function sendMessage(){
+            let messageContent = $("#messageBox").val().trim()
+
+            if (messageContent === ''){
+                $(".p-hint-error").slideDown(500).delay(2000).hide(500)
+                return false
+            }
+            $(`.div-chat-content[data-chat=${currentPerson}]`).append(
+                `<div class="d-flex flex-row-reverse mb-2 mr-1">
+                <img class="img-profile-bg-50 ml-1" src="${currentUserAvatar}" alt="${currentUserNickname}">
+                <div class="div-msg-content">
+                <small><b>2021-11-22 16:01:56</b></small>
+                <p style="font-size: 14px">${messageContent}</p>
+                <small id="sendHint" class="text-primary"><b>正在发送</b><i class="fa fa-spin fa-spinner"></i></small>
+                </div>
+                </div>`
+            )
+            $.ajax({
+                url: "{{ url_for('user.send_message') }}",
+                type: "post",
+                data: {'message': messageContent, 'receiverID': currentPerson.split('person').pop(), 'senderID': currentID},
+                success: function (res){
+                    if (res.code === 200){
+                        $("#sendHint").text(res.msg)
+                        setTimeout(function (){
+                            $("#sendHint").remove()
+                        }, 2000)
+                    }
+                    else {
+                        $("#sendHint").text(res.msg)
+                    }
+                }
+            })
+        }
         function scrollToBottom() {
             let $messages = $('.div-chat-content');
             $messages.scrollTop($messages[0].scrollHeight);
@@ -251,6 +305,7 @@
                 friends.name = f.querySelector('.friend-name').innerText;
                 chat.name.innerHTML = friends.name;
                 chat.container.querySelector('.msg-active').scrollTop = chat.container.querySelector('.msg-active').scrollHeight;
+                currentPerson = chat.person
                 // 更新当前person的消息为已读状态
                 readMessage(chat.person)
             }

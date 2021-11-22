@@ -132,6 +132,24 @@ def read_private_message(user_id):
     return {'code': 200, 'msg': '读取消息成功！', 'unread': unread_count}
 
 
+# @user_bp.route('/send-message')
+# @login_required
+# def send_message():
+#     receiver_id = request.form.get('receiverID', None)
+#     message_content = request.form.get('message')
+#
+#     if not receiver_id:
+#         return {'code': 500, 'msg': '消息发送失败!'}
+#     else:
+#         receiver_id = receiver_id.split('person')[-1]
+#     pm = PrivateMessage(sender_id=current_user.id,
+#                         receiver_id=receiver_id,
+#                         content=message_content)
+#     db.session.add(pm)
+#     db.session.commit()
+#     return {'code': 200, 'msg': '发送成功！'}
+
+
 @user_bp.route('/contacts/<user_id>/')
 @login_required
 @user_permission_required
