@@ -65,6 +65,17 @@ def get_contact_counts():
     return contacts
 
 
+@user_bp.route('/mark-all-notify/<user_id>')
+@login_required
+@user_permission_required
+def mark_all_notify(user_id):
+    Notification.query.filter(Notification.receive_id == user_id,
+                              Notification.read == 0).update({Notification.read: 1})
+    db.session.commit()
+    flash('操作成功！', 'success')
+    return redirect(url_for('.notifications', user_id=user_id))
+
+
 @user_bp.route('/mark-notifications/<notify_id>/')
 @login_required
 def mark_notification(notify_id):

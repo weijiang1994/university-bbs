@@ -27,6 +27,7 @@
                             </a>
                         </li>
                     </ul>
+                    <a href="{{ url_for('user.mark_all_notify', user_id=current_user.id) }}" class="btn btn-sm btn-danger mt-2">全部标记为已读</a>
                     {{ notifications(unread_notices) }}
                 </div>
             </div>
