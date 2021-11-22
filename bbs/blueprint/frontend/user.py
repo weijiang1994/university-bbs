@@ -10,6 +10,8 @@ import datetime
 import os
 
 from sqlalchemy import or_, and_
+from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from bbs.models import User, Notification, Post, Comments, PrivateMessage
@@ -153,9 +155,15 @@ def contact(user_id):
     unread_counts = []
 
     # 查询所有给用户发送过消息的id
-    contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id). \
-        filter(PrivateMessage.receiver_id == current_user.id). \
-        group_by(PrivateMessage.sender_id).all()
+    try:
+        # MySQL5.7以后group by必须要指定列所以这里加一个异常捕获
+        contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id). \
+            filter(PrivateMessage.receiver_id == current_user.id).order_by(PrivateMessage.c_time.desc()). \
+            group_by(PrivateMessage.sender_id).all()
+    except Exception as e:
+        contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id). \
+            filter(PrivateMessage.receiver_id == current_user.id).order_by(func.ANY_VALUE(PrivateMessage.c_time)). \
+            group_by(PrivateMessage.sender_id).all()
 
     for idx, sender_id in enumerate(contact_persons):
         contact_persons[idx] = sender_id[0]
