@@ -144,7 +144,7 @@
                             <!-- 左边列表栏 -->
                             <div class="col-md-4 div-left-person">
                                 <div class="top"><p>私信</p></div>
-                                <ul class="ul-list-person border-right">
+                                <ul class="ul-list-person">
                                     {% for cp in right_senders %}
                                         <li class="span-hand" data-chat="person{{ cp.id }}">
                                             <div class="d-flex div-item">
@@ -197,7 +197,7 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <div class="write border-top">
+                                <div class="write">
                                     <div class="text-center">
                                         <p class="p-hint-error">请输入消息内容！</p>
                                     </div>
