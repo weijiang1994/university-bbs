@@ -135,7 +135,7 @@
                 </div>
                 <div class="col-md-8">
                     {% include "_flash.html" %}
-                    {% if not contact_persons %}
+                    {% if not right_senders %}
                         <div class="mt-5 text-center">
                             <h5>您暂时还没有收到过私信!</h5>
                         </div>
@@ -145,14 +145,14 @@
                             <div class="col-md-4 div-left-person">
                                 <div class="top"><p>私信</p></div>
                                 <ul class="ul-list-person">
-                                    {% for cp in contact_persons %}
-                                        <li class="span-hand" data-chat="person{{ cp.sender_id }}">
+                                    {% for cp in right_senders %}
+                                        <li class="span-hand" data-chat="person{{ cp.id }}">
                                             <div class="d-flex div-item">
                                                 <img class="img-profile-bg-50 align-items-center"
-                                                     src="{{ cp.send_user.avatar }}"
-                                                     alt="{{ cp.send_user.nickname }}">
+                                                     src="{{ cp.avatar }}"
+                                                     alt="{{ cp.nickname }}">
                                                 <div class="ml-2">
-                                                    <p class="p-contact-person friend-name">{{ cp.send_user.nickname }}</p>
+                                                    <p class="p-contact-person friend-name">{{ cp.nickname }}</p>
                                                     <p class="p-contact-person">
                                                         <small>{{ person_messages[loop.index0][-1].content|my_truncate(5) }}</small>
                                                     </p>
@@ -163,10 +163,10 @@
                                 </ul>
                             </div>
                             <div class="col-md-8 div-left-person right">
-                                <div class="top-right"><p>{{ contact_persons[0].send_user.nickname }}</p></div>
+                                <div class="top-right"><p>{{ right_senders[0].nickname }}</p></div>
                                 <div class="div-chat-outer">
                                     {% for pms in person_messages %}
-                                        <div class="div-chat-content" data-chat="person{{ contact_persons[loop.index0].sender_id }}">
+                                        <div class="div-chat-content" data-chat="person{{ right_senders[loop.index0].id }}">
                                             {% for pm in pms %}
                                                 {% if pm.sender_id == current_user.id %}
                                                     <div class="d-flex flex-row-reverse mb-2 mr-1">
@@ -388,9 +388,10 @@
             let $messages = $('.div-chat-content');
             $messages.scrollTop($messages[0].scrollHeight);
         }
-        {% if contact_persons %}
-            document.querySelector('.span-hand[data-chat="person{{ contact_persons[0].sender_id }}"]').classList.add('li-active');
-            document.querySelector('.div-chat-content[data-chat="person{{ contact_persons[0].sender_id }}"]').classList.add('msg-active');
+
+        {% if right_senders %}
+            document.querySelector('.span-hand[data-chat="person{{ right_senders[0].id }}"]').classList.add('li-active');
+            document.querySelector('.div-chat-content[data-chat="person{{ right_senders[0].id }}"]').classList.add('msg-active');
 
             let friends = {
                 list: document.querySelector('ul.ul-list-person'),

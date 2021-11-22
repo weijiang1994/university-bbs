@@ -117,19 +117,44 @@ def unread(user_id):
 @user_permission_required
 def contact(user_id):
     user = User.query.get_or_404(user_id)
+    right_senders = []
     person_messages = []
-    contact_persons = PrivateMessage.query.filter(PrivateMessage.receiver_id == current_user.id).group_by(
-        PrivateMessage.sender_id).order_by(PrivateMessage.c_time.desc()).all()
+
+    # 查询所有给用户发送过消息的id
+    contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id).\
+        filter(PrivateMessage.receiver_id == current_user.id). \
+        group_by(PrivateMessage.sender_id).all()
+
+    for idx, sender_id in enumerate(contact_persons):
+        contact_persons[idx] = sender_id[0]
+
+    # 查询用户主动发送的但是对方没有回复的消息
+    to_users = PrivateMessage.query.\
+        with_entities(PrivateMessage.receiver_id).\
+        filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id.notin_(contact_persons)).\
+        group_by(PrivateMessage.receiver_id).all()
+
+    for idx, receiver_id in enumerate(to_users):
+        to_users[idx] = receiver_id[0]
+
     for cp in contact_persons:
-        person_messages.append(PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == cp.sender_id,
+        person_messages.append(PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == cp,
                                                                     PrivateMessage.receiver_id == current_user.id),
                                                                and_(PrivateMessage.sender_id == current_user.id,
-                                                                    PrivateMessage.receiver_id == cp.sender_id))).
+                                                                    PrivateMessage.receiver_id == cp))).
                                order_by(PrivateMessage.c_time).all())
+        right_senders.append(User.query.get_or_404(cp))
+
+    for tu in to_users:
+        person_messages.append(PrivateMessage.query.
+                               filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id == tu).
+                               order_by(PrivateMessage.c_time).all())
+        right_senders.append(User.query.get_or_404(tu))
+
     notices = get_notices_counts()
     contacts = get_contact_counts()
     return render_template('frontend/user/user-contact.html', user=user, notices=notices, contacts=contacts,
-                           person_messages=person_messages, contact_persons=contact_persons)
+                           person_messages=person_messages, right_senders=right_senders)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
