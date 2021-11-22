@@ -203,7 +203,7 @@
                                     </div>
                                     <textarea class="form-control h-100" id="messageBox" placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
                                     <div class="mt-1 text-right">
-                                        <button class="btn btn-primary">发送</button>
+                                        <button class="btn btn-primary" onclick="sendMessage()">发送</button>
                                     </div>
                                 </div>
                             </div>
@@ -227,9 +227,7 @@
                 sendMessage()
             }
         })
-        function createMessageField(){
 
-        }
         // 给对方回复消息
         function sendMessage(){
             let messageContent = $("#messageBox").val().trim()
@@ -255,6 +253,7 @@
                 success: function (res){
                     if (res.code === 200){
                         $("#sendHint").text(res.msg)
+                        $("#messageBox").val('')
                         setTimeout(function (){
                             $("#sendHint").remove()
                         }, 2000)
