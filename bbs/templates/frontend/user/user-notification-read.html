@@ -20,7 +20,12 @@
                             <a class="nav-link active" href="/user/notifications/{{ user.id }}/">已读</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="/user/notification-unread/{{ user.id }}/">未读</a>
+                            <a class="nav-link" href="/user/notification-unread/{{ user.id }}/">
+                                未读
+                                {% if notices|length %}
+                                    <span class="badge badge-secondary">{{ notices|length }}</span>
+                                {% endif %}
+                            </a>
                         </li>
                     </ul>
                     {{ notifications(read_notices) }}
