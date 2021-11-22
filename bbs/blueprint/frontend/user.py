@@ -111,6 +111,7 @@ def notifications(user_id):
 
 @user_bp.route('notification-unread/<user_id>/')
 @login_required
+@user_permission_required
 def unread(user_id):
     user = User.query.get_or_404(user_id)
     notices = get_notices_counts()
