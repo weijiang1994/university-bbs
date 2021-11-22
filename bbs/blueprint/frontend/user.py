@@ -112,6 +112,19 @@ def unread(user_id):
                            unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts)
 
 
+@user_bp.route('/contacts/read-message/<user_id>', methods=['POST'])
+@login_required
+@user_permission_required
+def read_private_message(user_id):
+    sender_id = request.form.get('senderID').split('person')[-1] if request.form.get("senderID") else None
+    PrivateMessage.query.filter(
+        PrivateMessage.sender_id == sender_id,
+        PrivateMessage.receiver_status == 0).update(
+        {PrivateMessage.receiver_status: 1})
+    db.session.commit()
+    return {'code': 200, 'msg': '读取消息成功！'}
+
+
 @user_bp.route('/contacts/<user_id>/')
 @login_required
 @user_permission_required
@@ -122,7 +135,7 @@ def contact(user_id):
     unread_counts = []
 
     # 查询所有给用户发送过消息的id
-    contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id).\
+    contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id). \
         filter(PrivateMessage.receiver_id == current_user.id). \
         group_by(PrivateMessage.sender_id).all()
 
@@ -130,9 +143,9 @@ def contact(user_id):
         contact_persons[idx] = sender_id[0]
 
     # 查询用户主动发送的但是对方没有回复的消息
-    to_users = PrivateMessage.query.\
-        with_entities(PrivateMessage.receiver_id).\
-        filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id.notin_(contact_persons)).\
+    to_users = PrivateMessage.query. \
+        with_entities(PrivateMessage.receiver_id). \
+        filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id.notin_(contact_persons)). \
         group_by(PrivateMessage.receiver_id).all()
 
     for idx, receiver_id in enumerate(to_users):
