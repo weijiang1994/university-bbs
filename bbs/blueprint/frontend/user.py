@@ -119,7 +119,9 @@ def read_private_message(user_id):
     sender_id = request.form.get('senderID').split('person')[-1] if request.form.get("senderID") else None
     PrivateMessage.query.filter(
         PrivateMessage.sender_id == sender_id,
-        PrivateMessage.receiver_status == 0).update(
+        PrivateMessage.receiver_status == 0,
+        PrivateMessage.receiver_id == user_id
+    ).update(
         {PrivateMessage.receiver_status: 1})
     db.session.commit()
     return {'code': 200, 'msg': '读取消息成功！'}
