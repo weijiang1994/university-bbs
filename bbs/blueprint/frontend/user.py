@@ -162,7 +162,7 @@ def contact(user_id):
             group_by(PrivateMessage.sender_id).all()
     except Exception as e:
         contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id). \
-            filter(PrivateMessage.receiver_id == current_user.id).order_by(func.ANY_VALUE(PrivateMessage.c_time.desc())). \
+            filter(PrivateMessage.receiver_id == current_user.id).order_by(func.ANY_VALUE(PrivateMessage.c_time).desc()). \
             group_by(PrivateMessage.sender_id).all()
 
     for idx, sender_id in enumerate(contact_persons):
