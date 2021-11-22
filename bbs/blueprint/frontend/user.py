@@ -106,7 +106,7 @@ def notifications(user_id):
         per_page=per_page)
     read_notices = pagination.items
     return render_template('frontend/user/user-notification-read.html', user=user, notices=notices,
-                           read_notices=read_notices, tag=pagination.total > per_page, contacts=contacts)
+                           read_notices=read_notices, tag=pagination.total > per_page, contacts=contacts, pagination=pagination)
 
 
 @user_bp.route('notification-unread/<user_id>/')
@@ -122,7 +122,7 @@ def unread(user_id):
         per_page=per_page)
     unread_notices = pagination.items
     return render_template('frontend/user/user-notification-unread.html', user=user, notices=notices,
-                           unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts)
+                           unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts, pagination=pagination)
 
 
 @user_bp.route('/contacts/read-message/<user_id>', methods=['POST'])
