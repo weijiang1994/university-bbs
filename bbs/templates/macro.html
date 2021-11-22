@@ -307,7 +307,7 @@
                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
             {% endif %}
             <div class="d-flex">
-                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
+                <a class="text-decoration-none ml-2 d-lg-block d-none"><span class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
                 <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-secondary">{{ comment.author.role.name }}</span></a>
                 {% if post.author_id == comment.author_id %}
                     <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">楼主</span></a>
