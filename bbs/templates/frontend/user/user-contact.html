@@ -157,6 +157,11 @@
                                                         <small>{{ person_messages[loop.index0][-1].content|my_truncate(5) }}</small>
                                                     </p>
                                                 </div>
+                                                {% if unread_counts[loop.index0] > 0 %}
+                                                <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span class="badge badge-danger">{{ unread_counts[loop.index0] }}</span></div>
+                                                {% else %}
+                                                <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span class="badge badge-success"></span></div>
+                                                {% endif %}
                                             </div>
                                         </li>
                                     {% endfor %}

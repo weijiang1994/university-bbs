@@ -119,6 +119,7 @@ def contact(user_id):
     user = User.query.get_or_404(user_id)
     right_senders = []
     person_messages = []
+    unread_counts = []
 
     # 查询所有给用户发送过消息的id
     contact_persons = PrivateMessage.query.with_entities(PrivateMessage.sender_id).\
@@ -143,18 +144,28 @@ def contact(user_id):
                                                                and_(PrivateMessage.sender_id == current_user.id,
                                                                     PrivateMessage.receiver_id == cp))).
                                order_by(PrivateMessage.c_time).all())
+
+        unread_counts.append(PrivateMessage.query.filter(PrivateMessage.sender_id == cp,
+                                                         PrivateMessage.receiver_id == current_user.id,
+                                                         PrivateMessage.receiver_status == 0).count())
         right_senders.append(User.query.get_or_404(cp))
 
     for tu in to_users:
         person_messages.append(PrivateMessage.query.
                                filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id == tu).
                                order_by(PrivateMessage.c_time).all())
+        unread_counts.append(0)
         right_senders.append(User.query.get_or_404(tu))
 
     notices = get_notices_counts()
     contacts = get_contact_counts()
-    return render_template('frontend/user/user-contact.html', user=user, notices=notices, contacts=contacts,
-                           person_messages=person_messages, right_senders=right_senders)
+    return render_template('frontend/user/user-contact.html',
+                           user=user,
+                           notices=notices,
+                           contacts=contacts,
+                           person_messages=person_messages,
+                           right_senders=right_senders,
+                           unread_counts=unread_counts)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
