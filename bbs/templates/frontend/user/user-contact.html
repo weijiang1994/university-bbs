@@ -220,6 +220,8 @@
             document.querySelector('.span-hand[data-chat="person{{ right_senders[0].id }}"]').classList.add('li-active');
             document.querySelector('.div-chat-content[data-chat="person{{ right_senders[0].id }}"]').classList.add('msg-active');
 
+            readMessage("person{{ right_senders[0].id }}")
+
             let friends = {
                 list: document.querySelector('ul.ul-list-person'),
                 all: document.querySelectorAll('.div-left-person .span-hand'),
@@ -249,14 +251,29 @@
                 friends.name = f.querySelector('.friend-name').innerText;
                 chat.name.innerHTML = friends.name;
                 chat.container.querySelector('.msg-active').scrollTop = chat.container.querySelector('.msg-active').scrollHeight;
-                console.log(chat.person)
-                $.ajax({
+                readMessage(chat.person)
+                /*$.ajax({
                     url: "{{ url_for('user.read_private_message', user_id=current_user.id) }}",
                     type: "post",
                     data: {'senderID': chat.person},
                     success: function (res){
                         if (res.code === 200){
                             $("#"+chat.person).hide()
+                            $("#unreadMessage").text(res.unread)
+                        }
+                    }
+                })*/
+            }
+
+            function readMessage(sender){
+                $.ajax({
+                    url: "{{ url_for('user.read_private_message', user_id=current_user.id) }}",
+                    type: "post",
+                    data: {'senderID': sender},
+                    success: function (res){
+                        if (res.code === 200){
+                            $("#"+sender).hide()
+                            $("#unreadMessage").text(res.unread)
                         }
                     }
                 })

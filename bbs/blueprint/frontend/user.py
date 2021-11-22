@@ -123,8 +123,13 @@ def read_private_message(user_id):
         PrivateMessage.receiver_id == user_id
     ).update(
         {PrivateMessage.receiver_status: 1})
+
+    # 获取当前未读消息数量,更新侧边栏
+    unread_count = PrivateMessage.query.filter(
+        PrivateMessage.receiver_id == user_id,
+        PrivateMessage.receiver_status == 0).count()
     db.session.commit()
-    return {'code': 200, 'msg': '读取消息成功！'}
+    return {'code': 200, 'msg': '读取消息成功！', 'unread': unread_count}
 
 
 @user_bp.route('/contacts/<user_id>/')
