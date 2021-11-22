@@ -251,20 +251,11 @@
                 friends.name = f.querySelector('.friend-name').innerText;
                 chat.name.innerHTML = friends.name;
                 chat.container.querySelector('.msg-active').scrollTop = chat.container.querySelector('.msg-active').scrollHeight;
+                // 更新当前person的消息为已读状态
                 readMessage(chat.person)
-                /*$.ajax({
-                    url: "{{ url_for('user.read_private_message', user_id=current_user.id) }}",
-                    type: "post",
-                    data: {'senderID': chat.person},
-                    success: function (res){
-                        if (res.code === 200){
-                            $("#"+chat.person).hide()
-                            $("#unreadMessage").text(res.unread)
-                        }
-                    }
-                })*/
             }
 
+            // 标记当前person的消息为已读状态
             function readMessage(sender){
                 $.ajax({
                     url: "{{ url_for('user.read_private_message', user_id=current_user.id) }}",
