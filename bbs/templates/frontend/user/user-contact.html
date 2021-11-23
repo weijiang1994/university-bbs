@@ -257,6 +257,7 @@
         let currentUserAvatar = "{{ current_user.avatar }}"
         let currentUserNickname = "{{ current_user.nickname }}"
         let currentID = "{{ current_user.id }}"
+        scrollToBottom()
 
         // 消息输入框按键监听
         $("#messageBox").on('keyup', function (event) {
@@ -307,8 +308,8 @@
         }
 
         function scrollToBottom() {
-            let $messages = $('.div-chat-content');
-            $messages.scrollTop($messages[0].scrollHeight);
+            let div = document.getElementsByClassName('div-chat-outer')[0]
+            div.scrollTop = div.scrollHeight
         }
 
         {% if right_senders %}
@@ -349,6 +350,7 @@
                 currentPerson = chat.person
                 // 更新当前person的消息为已读状态
                 readMessage(chat.person)
+                scrollToBottom()
             }
 
             // 标记当前person的消息为已读状态

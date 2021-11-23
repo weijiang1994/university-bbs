@@ -108,7 +108,7 @@
         .div-chat-outer {
             height: 350px;
             max-height: 500px;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .div-chat-content {
@@ -181,6 +181,9 @@
     </main>
     </body>
     <script>
+        $(document).ready(function (){
+            scrollToBottom()
+        })
         let receiverID = "{{ receiver_id }}"
 
         function sendMessage() {
@@ -212,14 +215,20 @@
                     if (res.code === 200) {
                         $("#sendHint").text(res.msg)
                         $("#messageBox").val('')
+                        scrollToBottom()
                         setTimeout(function () {
                             $("#sendHint").remove()
                         }, 2000)
+
                     } else {
                         $("#sendHint").text(res.msg)
                     }
                 }
             })
+        }
+        function scrollToBottom() {
+            let div = document.getElementsByClassName('div-chat-outer')[0]
+            div.scrollTop = div.scrollHeight
         }
     </script>
 {% endblock %}
