@@ -158,9 +158,12 @@
                                                     </p>
                                                 </div>
                                                 {% if unread_counts[loop.index0] > 0 %}
-                                                <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span class="badge badge-danger">{{ unread_counts[loop.index0] }}</span></div>
+                                                    <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
+                                                            class="badge badge-danger">{{ unread_counts[loop.index0] }}</span>
+                                                    </div>
                                                 {% else %}
-                                                <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span class="badge badge-success"></span></div>
+                                                    <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
+                                                            class="badge badge-success"></span></div>
                                                 {% endif %}
                                             </div>
                                         </li>
@@ -171,7 +174,8 @@
                                 <div class="top-right"><p>{{ right_senders[0].nickname }}</p></div>
                                 <div class="div-chat-outer">
                                     {% for pms in person_messages %}
-                                        <div class="div-chat-content" data-chat="person{{ right_senders[loop.index0].id }}">
+                                        <div class="div-chat-content"
+                                             data-chat="person{{ right_senders[loop.index0].id }}">
                                             {% for pm in pms %}
                                                 {% if pm.sender_id == current_user.id %}
                                                     <div class="d-flex flex-row-reverse mb-2 mr-1">
@@ -201,7 +205,8 @@
                                     <div class="text-center">
                                         <p class="p-hint-error">请输入消息内容！</p>
                                     </div>
-                                    <textarea class="form-control h-100" id="messageBox" placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
+                                    <textarea class="form-control h-100" id="messageBox"
+                                              placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
                                     <div class="mt-1 text-right">
                                         <button class="btn btn-primary" onclick="sendMessage()">发送</button>
                                     </div>
@@ -221,18 +226,18 @@
         let currentID = "{{ current_user.id }}"
 
         // 消息输入框按键监听
-        $("#messageBox").on('keyup', function (event){
+        $("#messageBox").on('keyup', function (event) {
             let alt = event.altKey
-            if (alt && event.keyCode === 13){
+            if (alt && event.keyCode === 13) {
                 sendMessage()
             }
         })
 
         // 给对方回复消息
-        function sendMessage(){
+        function sendMessage() {
             let messageContent = $("#messageBox").val().trim()
 
-            if (messageContent === ''){
+            if (messageContent === '') {
                 $(".p-hint-error").slideDown(500).delay(2000).hide(500)
                 return false
             }
@@ -249,21 +254,25 @@
             $.ajax({
                 url: "{{ url_for('user.send_message') }}",
                 type: "post",
-                data: {'message': messageContent, 'receiverID': currentPerson.split('person').pop(), 'senderID': currentID},
-                success: function (res){
-                    if (res.code === 200){
+                data: {
+                    'message': messageContent,
+                    'receiverID': currentPerson.split('person').pop(),
+                    'senderID': currentID
+                },
+                success: function (res) {
+                    if (res.code === 200) {
                         $("#sendHint").text(res.msg)
                         $("#messageBox").val('')
-                        setTimeout(function (){
+                        setTimeout(function () {
                             $("#sendHint").remove()
                         }, 2000)
-                    }
-                    else {
+                    } else {
                         $("#sendHint").text(res.msg)
                     }
                 }
             })
         }
+
         function scrollToBottom() {
             let $messages = $('.div-chat-content');
             $messages.scrollTop($messages[0].scrollHeight);
@@ -310,14 +319,14 @@
             }
 
             // 标记当前person的消息为已读状态
-            function readMessage(sender){
+            function readMessage(sender) {
                 $.ajax({
                     url: "{{ url_for('user.read_private_message', user_id=current_user.id) }}",
                     type: "post",
                     data: {'senderID': sender},
-                    success: function (res){
-                        if (res.code === 200){
-                            $("#"+sender).hide()
+                    success: function (res) {
+                        if (res.code === 200) {
+                            $("#" + sender).hide()
                             $("#unreadMessage").text(res.unread)
                         }
                     }
