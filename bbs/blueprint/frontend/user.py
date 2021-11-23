@@ -208,6 +208,18 @@ def contact(user_id):
                            unread_counts=unread_counts)
 
 
+@user_bp.route('/look-message/<person_id>')
+@login_required
+def look_message(person_id):
+    pms = PrivateMessage.query.\
+        filter(or_(and_(PrivateMessage.sender_id == person_id,
+               PrivateMessage.receiver_id == current_user.id),
+                   and_(PrivateMessage.sender_id == current_user.id,
+                        PrivateMessage.receiver_id == person_id))).\
+        order_by(PrivateMessage.c_time).all()
+    return render_template('frontend/user/user-contact-phone.html', pms=pms, user=current_user)
+
+
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])
 @login_required
 @user_permission_required

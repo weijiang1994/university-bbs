@@ -1,0 +1,182 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul, chat_content with context %}
+{% block title %}
+    {{ current_user.nickname }}的个人主页
+{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+        /*.div-left-person{
+            background-color: #444444;
+            margin: 0!important;
+            padding: 0!important;
+        }
+
+        .div-left-person .top{
+            height: 50px;
+            border-bottom: 1px solid #8f8f8f;
+            width: 100%;
+            margin-bottom: 3px;
+            alignment: left;
+        }
+
+        .top-right{
+            height: 50px;
+            border-bottom: 1px solid #8f8f8f;
+            width: 100%;
+            background-color: #49494b;
+            margin-bottom: 3px;
+            alignment: left;
+        }*/
+        .top-right > p {
+            font-weight: bold;
+            font-size: 16px;
+            padding-left: 5px;
+            position: absolute;
+            top: 15px
+        }
+
+        .top > p {
+            position: absolute;
+            top: 15px;
+            left: 94px;
+        }
+
+        /*.li-active{
+            background-color: #666666;
+        }*/
+
+        .ul-list-person {
+            padding: 0;
+            height: 500px;
+            list-style: none;
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        .div-item {
+            padding: 3px 15px 3px 15px;
+            margin-top: 5px;
+        }
+
+        /*.div-item:hover{
+            background-color: #666666;
+        }*/
+
+        .p-contact-person {
+            margin-bottom: 2px;
+        }
+
+        /*.div-msg-content{
+            margin-left: 4px;
+            border-radius: 5px;
+            background-color: #585858;
+            color: #eff0f1;
+            padding: 3px;
+            width: 280px;
+            max-width: 280px;
+        }*/
+
+        .div-msg-content > p {
+            margin-bottom: 2px;
+        }
+
+        .div-chat {
+            display: none;
+        }
+
+        /*滚动条样式*/
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, .1);
+            border-radius: 0;
+        }
+
+        ::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            cursor: pointer;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, .25);
+            transition: color .2s ease;
+        }
+
+        .div-chat-outer {
+            height: 500px;
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        .div-chat-content {
+        }
+
+        .msg-active {
+            display: block;
+        }
+
+        .write {
+            padding: 10px;
+            top: 500px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-md-3">
+                    {{ user_page_header_ul('私信') }}
+                    {{ user_page_header('私信') }}
+                </div>
+                <div class="col-md-8 mt-2">
+                    {% include "_flash.html" %}
+                    <div class="div-left-person right ">
+                        <div class="top-right"><p>{{ pms[0].send_user.nickname }}</p></div>
+                        <div class="div-chat-outer">
+                            {% for pm in pms %}
+                                <div>
+                                    {% if pm.sender_id == current_user.id %}
+                                        <div class="d-flex flex-row-reverse mb-2 mr-1">
+                                            <img class="img-profile-bg-50 ml-1"
+                                                 src="{{ current_user.avatar }}"
+                                                 alt="{{ current_user.nickname }}">
+                                            <div class="div-msg-content">
+                                                <small><b>{{ pm.c_time }}</b></small>
+                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="d-flex mb-2 ml-1">
+                                            <img class="img-profile-bg-50"
+                                                 src="{{ pm.send_user.avatar }}"
+                                                 alt="{{ pm.send_user.nickname }}">
+                                            <div class="div-msg-content">
+                                                <small><b>{{ pm.c_time }}</b></small>
+                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="write">
+                            <div class="text-center">
+                                <p class="p-hint-error">请输入消息内容！</p>
+                            </div>
+                            <textarea class="form-control h-100" id="messageBox"
+                                      placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
+                            <div class="mt-1 text-right">
+                                <button class="btn btn-primary" onclick="sendMessage()">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}

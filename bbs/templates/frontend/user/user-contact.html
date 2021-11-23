@@ -140,78 +140,110 @@
                             <h5>您暂时还没有收到过私信!</h5>
                         </div>
                     {% else %}
-                        <div class="row">
-                            <!-- 左边列表栏 -->
-                            <div class="col-md-4 div-left-person">
-                                <div class="top"><p>私信</p></div>
-                                <ul class="ul-list-person">
-                                    {% for cp in right_senders %}
-                                        <li class="span-hand" data-chat="person{{ cp.id }}">
-                                            <div class="d-flex div-item">
-                                                <img class="img-profile-bg-50 align-items-center"
-                                                     src="{{ cp.avatar }}"
-                                                     alt="{{ cp.nickname }}">
-                                                <div class="ml-2">
-                                                    <p class="p-contact-person friend-name">{{ cp.nickname }}</p>
-                                                    <p class="p-contact-person">
-                                                        <small>{{ person_messages[loop.index0][-1].content|my_truncate(5) }}</small>
-                                                    </p>
+                        <div class="d-md-block d-none">
+                            <div class="row">
+                                <!-- 左边列表栏 -->
+                                <div class="col-md-4 div-left-person">
+                                    <div class="top"><p>私信</p></div>
+                                    <ul class="ul-list-person">
+                                        {% for cp in right_senders %}
+                                            <li class="span-hand" data-chat="person{{ cp.id }}">
+                                                <div class="d-flex div-item">
+                                                    <img class="img-profile-bg-50 align-items-center"
+                                                         src="{{ cp.avatar }}"
+                                                         alt="{{ cp.nickname }}">
+                                                    <div class="ml-2">
+                                                        <p class="p-contact-person friend-name">{{ cp.nickname }}</p>
+                                                        <p class="p-contact-person">
+                                                            <small>{{ person_messages[loop.index0][-1].content|my_truncate(5) }}</small>
+                                                        </p>
+                                                    </div>
+                                                    {% if unread_counts[loop.index0] > 0 %}
+                                                        <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
+                                                                class="badge badge-danger">{{ unread_counts[loop.index0] }}</span>
+                                                        </div>
+                                                    {% else %}
+                                                        <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
+                                                                class="badge badge-success"></span></div>
+                                                    {% endif %}
                                                 </div>
-                                                {% if unread_counts[loop.index0] > 0 %}
-                                                    <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
-                                                            class="badge badge-danger">{{ unread_counts[loop.index0] }}</span>
-                                                    </div>
-                                                {% else %}
-                                                    <div id="person{{ cp.id }}" class="flex-grow-1 text-right"><span
-                                                            class="badge badge-success"></span></div>
-                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-md-8 div-left-person right">
+                                    <div class="top-right"><p>{{ right_senders[0].nickname }}</p></div>
+                                    <div class="div-chat-outer">
+                                        {% for pms in person_messages %}
+                                            <div class="div-chat-content"
+                                                 data-chat="person{{ right_senders[loop.index0].id }}">
+                                                {% for pm in pms %}
+                                                    {% if pm.sender_id == current_user.id %}
+                                                        <div class="d-flex flex-row-reverse mb-2 mr-1">
+                                                            <img class="img-profile-bg-50 ml-1"
+                                                                 src="{{ current_user.avatar }}"
+                                                                 alt="{{ current_user.nickname }}">
+                                                            <div class="div-msg-content">
+                                                                <small><b>{{ pm.c_time }}</b></small>
+                                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="d-flex mb-2 ml-1">
+                                                            <img class="img-profile-bg-50"
+                                                                 src="{{ pm.send_user.avatar }}"
+                                                                 alt="{{ pm.send_user.nickname }}">
+                                                            <div class="div-msg-content">
+                                                                <small><b>{{ pm.c_time }}</b></small>
+                                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
                                             </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="col-md-8 div-left-person right">
-                                <div class="top-right"><p>{{ right_senders[0].nickname }}</p></div>
-                                <div class="div-chat-outer">
-                                    {% for pms in person_messages %}
-                                        <div class="div-chat-content"
-                                             data-chat="person{{ right_senders[loop.index0].id }}">
-                                            {% for pm in pms %}
-                                                {% if pm.sender_id == current_user.id %}
-                                                    <div class="d-flex flex-row-reverse mb-2 mr-1">
-                                                        <img class="img-profile-bg-50 ml-1"
-                                                             src="{{ current_user.avatar }}"
-                                                             alt="{{ current_user.nickname }}">
-                                                        <div class="div-msg-content">
-                                                            <small><b>{{ pm.c_time }}</b></small>
-                                                            <p style="font-size: 14px">{{ pm.content }}</p>
-                                                        </div>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="d-flex mb-2 ml-1">
-                                                        <img class="img-profile-bg-50" src="{{ pm.send_user.avatar }}"
-                                                             alt="{{ pm.send_user.nickname }}">
-                                                        <div class="div-msg-content">
-                                                            <small><b>{{ pm.c_time }}</b></small>
-                                                            <p style="font-size: 14px">{{ pm.content }}</p>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="write">
+                                        <div class="text-center">
+                                            <p class="p-hint-error">请输入消息内容！</p>
                                         </div>
-                                    {% endfor %}
-                                </div>
-                                <div class="write">
-                                    <div class="text-center">
-                                        <p class="p-hint-error">请输入消息内容！</p>
-                                    </div>
-                                    <textarea class="form-control h-100" id="messageBox"
-                                              placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
-                                    <div class="mt-1 text-right">
-                                        <button class="btn btn-primary" onclick="sendMessage()">发送</button>
+                                        <textarea class="form-control h-100" id="messageBox"
+                                                  placeholder="请输入需要发送的消息,按Alt+Enter键发送"></textarea>
+                                        <div class="mt-1 text-right">
+                                            <button class="btn btn-primary" onclick="sendMessage()">发送</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="d-sm-block d-lg-none">
+                            <ul class="list-group mt-3">
+                                {% for rs in right_senders %}
+                                    <li class="list-group-item">
+                                        <div class="d-flex">
+                                            <div class="d-flex align-items-center">
+                                                <img class="avatar-50" src="{{ rs.avatar }}" alt="{{ rs.nickname }}">
+                                            </div>
+                                            <div class="d-block ml-2 w-100">
+                                                <div class="d-flex">
+                                                    <p class="mb-0 ">{{ rs.nickname }}</p>
+                                                    {% if unread_counts[loop.index0] > 0 %}
+                                                        <p class="text-right flex-grow-1"><span
+                                                                class="badge badge-danger">{{ unread_counts[loop.index0] }}条未读</span>
+                                                        </p>
+                                                    {% else %}
+                                                        <p class="text-right flex-grow-1">{{ person_messages[loop.index0][-1].c_time }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="d-flex">
+                                                <p class="mb-0 flex-grow-1">{{ person_messages[loop.index0][-1].content|my_truncate(10) }}</p>
+                                                    <a href="{{ url_for('user.look_message', person_id=rs.id) }}" class="text-decoration-none"><small>查看消息</small></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     {% endif %}
                 </div>
