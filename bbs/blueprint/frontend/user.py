@@ -217,7 +217,10 @@ def look_message(person_id):
                    and_(PrivateMessage.sender_id == current_user.id,
                         PrivateMessage.receiver_id == person_id))).\
         order_by(PrivateMessage.c_time).all()
-    return render_template('frontend/user/user-contact-phone.html', pms=pms, user=current_user)
+    return render_template('frontend/user/user-contact-phone.html',
+                           pms=pms,
+                           user=current_user,
+                           receiver_id=person_id)
 
 
 @user_bp.route('/user-edit/<user_id>/', methods=['GET', 'POST'])

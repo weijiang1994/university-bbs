@@ -137,8 +137,8 @@
                     <div class="div-left-person right ">
                         <div class="top-right"><p>{{ pms[0].send_user.nickname }}</p></div>
                         <div class="div-chat-outer">
-                            {% for pm in pms %}
-                                <div>
+                            <div class="div-chat-content">
+                                {% for pm in pms %}
                                     {% if pm.sender_id == current_user.id %}
                                         <div class="d-flex flex-row-reverse mb-2 mr-1">
                                             <img class="img-profile-bg-50 ml-1"
@@ -160,8 +160,8 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                         <div class="write">
                             <div class="text-center">
@@ -179,4 +179,46 @@
         </div>
     </main>
     </body>
+    <script>
+        let receiverID = "{{ receiver_id }}"
+
+        function sendMessage() {
+            let messageContent = $("#messageBox").val().trim()
+
+            if (messageContent === '') {
+                $(".p-hint-error").slideDown(500).delay(2000).hide(500)
+                return false
+            }
+            $(".div-chat-content").append(
+                `<div class="d-flex flex-row-reverse mb-2 mr-1">
+                <img class="img-profile-bg-50 ml-1" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
+                <div class="div-msg-content">
+                <small><b>2021-11-22 16:01:56</b></small>
+                <p style="font-size: 14px">${messageContent}</p>
+                <small id="sendHint" class="text-primary"><b>正在发送</b><i class="fa fa-spin fa-spinner"></i></small>
+                </div>
+                </div>`
+            )
+            $.ajax({
+                url: "{{ url_for('user.send_message') }}",
+                type: "post",
+                data: {
+                    'message': messageContent,
+                    'receiverID': receiverID,
+                    'senderID': "{{ current_user.id }}"
+                },
+                success: function (res) {
+                    if (res.code === 200) {
+                        $("#sendHint").text(res.msg)
+                        $("#messageBox").val('')
+                        setTimeout(function () {
+                            $("#sendHint").remove()
+                        }, 2000)
+                    } else {
+                        $("#sendHint").text(res.msg)
+                    }
+                }
+            })
+        }
+    </script>
 {% endblock %}
