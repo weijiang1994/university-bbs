@@ -5,6 +5,7 @@
 {% endblock %}
 {% block head %}
     {{ super() }}
+    {{ moment.locale(auto_detect=True) }}
     <style>
         /*.div-left-person{
             background-color: #444444;
@@ -193,7 +194,7 @@
                 `<div class="d-flex flex-row-reverse mb-2 mr-1">
                 <img class="img-profile-bg-50 ml-1" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
                 <div class="div-msg-content">
-                <small><b>2021-11-22 16:01:56</b></small>
+                <small><b>${moment().format("YYYY-MM-DD HH:mm:ss")}</b></small>
                 <p style="font-size: 14px">${messageContent}</p>
                 <small id="sendHint" class="text-primary"><b>正在发送</b><i class="fa fa-spin fa-spinner"></i></small>
                 </div>
