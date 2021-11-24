@@ -7,6 +7,32 @@
     {{ super() }}
     {{ moment.locale(auto_detect=True) }}
     <style>
+        /*context menu */
+        .context-menu {
+            padding: 8px 0;
+            background: #fff;
+            -webkit-box-shadow: 0 0 10px 2px rgb(0 0 0 / 10%);
+            box-shadow: 0 0 10px 2px rgb(0 0 0 / 10%);
+            border-radius: 4px;
+            z-index: 987;
+            display: none;
+        }
+
+        .context-item {
+            color: #555666;
+            line-height: 32px;
+            font-size: 14px;
+            -webkit-transition: all .2 ease;
+            transition: all .2 ease;
+            cursor: pointer;
+            background: #fff;
+            padding: 0 12px;
+        }
+
+        .context-item:hover {
+            background: #d9d9d9;
+        }
+
         /*.div-left-person{
             background-color: #444444;
             margin: 0!important;
@@ -127,6 +153,13 @@
 {% endblock %}
 {% block content %}
     <body>
+    <div class="context-menu">
+        <div class="context-item" id="goHomePage" data-person="">
+            进入个人主页
+        </div>
+        <div class="context-item" id="deleteRecord" data-person="">删除记录
+        </div>
+    </div>
     <main>
         <div class="container mt-2">
             <div class="row">
@@ -180,25 +213,31 @@
                                                  data-chat="person{{ right_senders[loop.index0].id }}">
                                                 {% for pm in pms %}
                                                     {% if pm.sender_id == current_user.id %}
-                                                        <div class="d-flex flex-row-reverse mb-2 mr-1">
-                                                            <img class="img-profile-bg-50 ml-1"
-                                                                 src="{{ current_user.avatar }}"
-                                                                 alt="{{ current_user.nickname }}">
-                                                            <div class="div-msg-content">
-                                                                <small><b>{{ pm.c_time }}</b></small>
-                                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                                        <!-- 过滤用户发送的已删除消息 -->
+                                                        {% if pm.sender_status != 2 %}
+                                                            <div class="d-flex flex-row-reverse mb-2 mr-1">
+                                                                <img class="img-profile-bg-50 ml-1"
+                                                                     src="{{ current_user.avatar }}"
+                                                                     alt="{{ current_user.nickname }}">
+                                                                <div class="div-msg-content">
+                                                                    <small><b>{{ pm.c_time }}</b></small>
+                                                                    <p style="font-size: 14px">{{ pm.content }}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        {% endif %}
                                                     {% else %}
-                                                        <div class="d-flex mb-2 ml-1">
-                                                            <img class="img-profile-bg-50"
-                                                                 src="{{ pm.send_user.avatar }}"
-                                                                 alt="{{ pm.send_user.nickname }}">
-                                                            <div class="div-msg-content">
-                                                                <small><b>{{ pm.c_time }}</b></small>
-                                                                <p style="font-size: 14px">{{ pm.content }}</p>
+                                                        <!-- 过滤用户接收的已删除消息 -->
+                                                        {% if pm.receiver_status != 2 %}
+                                                            <div class="d-flex mb-2 ml-1">
+                                                                <img class="img-profile-bg-50"
+                                                                     src="{{ pm.send_user.avatar }}"
+                                                                     alt="{{ pm.send_user.nickname }}">
+                                                                <div class="div-msg-content">
+                                                                    <small><b>{{ pm.c_time }}</b></small>
+                                                                    <p style="font-size: 14px">{{ pm.content }}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        {% endif %}
                                                     {% endif %}
                                                 {% endfor %}
                                             </div>
@@ -237,8 +276,9 @@
                                                     {% endif %}
                                                 </div>
                                                 <div class="d-flex">
-                                                <p class="mb-0 flex-grow-1">{{ person_messages[loop.index0][-1].content|my_truncate(10) }}</p>
-                                                    <a href="{{ url_for('user.look_message', person_id=rs.id) }}" class="text-decoration-none"><small>查看消息</small></a>
+                                                    <p class="mb-0 flex-grow-1">{{ person_messages[loop.index0][-1].content|my_truncate(10) }}</p>
+                                                    <a href="{{ url_for('user.look_message', person_id=rs.id) }}"
+                                                       class="text-decoration-none"><small>查看消息</small></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,11 +294,58 @@
     </body>
     <script rel="script">
 
+        // 进入用户主页
+        $("#goHomePage").on('click', function () {
+            let userId = document.getElementById('goHomePage').dataset.person.split('person').pop()
+            console.log(userId)
+            window.open("{{ url_for('profile.index', user_id='') }}" + `${userId}`)
+        })
+
+        // 删除与当前用户的所有聊天记录
+        $("#deleteRecord").on('click', function () {
+            let person = document.getElementById('deleteRecord').dataset.person
+            $(`.span-hand[data-chat=${person}]`).remove()
+            $(`.msg-active[data-chat=${person}]`).remove()
+            if ($(".span-hand").length > 0) {
+                $(".span-hand:first").addClass('li-active')
+                $('.div-chat-content:first').addClass('msg-active')
+            }
+
+        })
+
+
+        let a = null
         let currentUserAvatar = "{{ current_user.avatar }}"
         let currentUserNickname = "{{ current_user.nickname }}"
         let currentID = "{{ current_user.id }}"
         scrollToBottom()
 
+        // 鼠标按下是隐藏弹出菜单
+        document.onmousedown = function (event) {
+            if (event.target.className === 'context-item') {
+                event.target.click()
+            }
+            $('.context-menu').css('display', 'none')
+        }
+
+        // 弹出右键菜单
+        $(".span-hand").bind('contextmenu', function (event) {
+            let person = event.currentTarget.attributes[1].value
+            let homePage = $("#goHomePage")
+            let delRecord = $("#deleteRecord")
+            let x = event.clientX
+            let y = event.clientY
+            let contextMenu = $('.context-menu')
+            contextMenu.css('visibility', 'visible')
+            contextMenu.css('display', 'block')
+            contextMenu.css('position', 'fixed')
+            contextMenu.css('top', y)
+            contextMenu.css('left', x)
+            homePage.attr('data-person', person)
+            delRecord.attr('data-person', person)
+            event.preventDefault();
+            return false
+        })
         // 消息输入框按键监听
         $("#messageBox").on('keyup', function (event) {
             let alt = event.altKey
