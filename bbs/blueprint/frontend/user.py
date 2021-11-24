@@ -198,23 +198,29 @@ def contact(user_id):
         to_users[idx] = receiver_id[0]
 
     for cp in contact_persons:
-        person_messages.append(PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == cp,
-                                                                    PrivateMessage.receiver_id == current_user.id),
-                                                               and_(PrivateMessage.sender_id == current_user.id,
-                                                                    PrivateMessage.receiver_id == cp))).
-                               order_by(PrivateMessage.c_time).all())
+        pms = PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == cp,
+                                                   PrivateMessage.receiver_id == current_user.id,
+                                                   PrivateMessage.receiver_status != 2),
+                                              and_(PrivateMessage.sender_id == current_user.id,
+                                                   PrivateMessage.receiver_id == cp,
+                                                   PrivateMessage.sender_status != 2))).order_by(
+            PrivateMessage.c_time).all()
 
-        unread_counts.append(PrivateMessage.query.filter(PrivateMessage.sender_id == cp,
-                                                         PrivateMessage.receiver_id == current_user.id,
-                                                         PrivateMessage.receiver_status == 0).count())
-        right_senders.append(User.query.get_or_404(cp))
+        if pms:
+            person_messages.append(pms)
+            unread_counts.append(PrivateMessage.query.filter(PrivateMessage.sender_id == cp,
+                                                             PrivateMessage.receiver_id == current_user.id,
+                                                             PrivateMessage.receiver_status == 0).count())
+            right_senders.append(User.query.get_or_404(cp))
 
     for tu in to_users:
-        person_messages.append(PrivateMessage.query.
-                               filter(PrivateMessage.sender_id == current_user.id, PrivateMessage.receiver_id == tu).
-                               order_by(PrivateMessage.c_time).all())
-        unread_counts.append(0)
-        right_senders.append(User.query.get_or_404(tu))
+        tos = PrivateMessage.query.filter(PrivateMessage.sender_id == current_user.id,
+                                          PrivateMessage.receiver_id == tu,
+                                          PrivateMessage.sender_status != 2).order_by(PrivateMessage.c_time).all()
+        if tos:
+            person_messages.append(tos)
+            unread_counts.append(0)
+            right_senders.append(User.query.get_or_404(tu))
 
     notices = get_notices_counts()
     contacts = get_contact_counts()

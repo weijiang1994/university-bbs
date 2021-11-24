@@ -215,30 +215,26 @@
                                                 {% for pm in pms %}
                                                     {% if pm.sender_id == current_user.id %}
                                                         <!-- 过滤用户发送的已删除消息 -->
-                                                        {% if pm.sender_status != 2 %}
-                                                            <div class="d-flex flex-row-reverse mb-2 mr-1">
-                                                                <img class="img-profile-bg-50 ml-1"
-                                                                     src="{{ current_user.avatar }}"
-                                                                     alt="{{ current_user.nickname }}">
-                                                                <div class="div-msg-content msg-right">
-                                                                    <small><b>{{ pm.c_time }}</b></small>
-                                                                    <p style="font-size: 14px">{{ pm.content }}</p>
-                                                                </div>
+                                                        <div class="d-flex flex-row-reverse mb-2 mr-1">
+                                                            <img class="img-profile-bg-50 ml-1"
+                                                                 src="{{ current_user.avatar }}"
+                                                                 alt="{{ current_user.nickname }}">
+                                                            <div class="div-msg-content msg-right">
+                                                                <small><b>{{ pm.c_time }}</b></small>
+                                                                <p style="font-size: 14px">{{ pm.content }}</p>
                                                             </div>
-                                                        {% endif %}
+                                                        </div>
                                                     {% else %}
                                                         <!-- 过滤用户接收的已删除消息 -->
-                                                        {% if pm.receiver_status != 2 %}
-                                                            <div class="d-flex mb-2 ml-1">
-                                                                <img class="img-profile-bg-50"
-                                                                     src="{{ pm.send_user.avatar }}"
-                                                                     alt="{{ pm.send_user.nickname }}">
-                                                                <div class="div-msg-content msg-left">
-                                                                    <small><b>{{ pm.c_time }}</b></small>
-                                                                    <p style="font-size: 14px">{{ pm.content }}</p>
-                                                                </div>
+                                                        <div class="d-flex mb-2 ml-1">
+                                                            <img class="img-profile-bg-50"
+                                                                 src="{{ pm.send_user.avatar }}"
+                                                                 alt="{{ pm.send_user.nickname }}">
+                                                            <div class="div-msg-content msg-left">
+                                                                <small><b>{{ pm.c_time }}</b></small>
+                                                                <p style="font-size: 14px">{{ pm.content }}</p>
                                                             </div>
-                                                        {% endif %}
+                                                        </div>
                                                     {% endif %}
                                                 {% endfor %}
                                             </div>
