@@ -71,12 +71,30 @@
     background-color: #d7d3d3;
 }
 
+
+
+/*私信页面样式*/
 .li-active {
     background-color: #c1c1c1;
 }
-/*私信页面样式*/
 
-.dropdown-toggle::after{
+.msg-right {
+    background: #9EEA6A;
+}
+
+.msg-right:hover {
+    background: #98E165;
+}
+
+.msg-left {
+    background: white;
+}
+
+.msg-left:hover {
+    background: #cbcbcb;
+}
+
+.dropdown-toggle::after {
     color: black;
 }
 
@@ -113,7 +131,7 @@
     border-radius: 5px 5px 0 0;
 }
 
-.post-tag-root{
+.post-tag-root {
     color: #101010;
     background: #eaeaea;
     padding: 8px;
