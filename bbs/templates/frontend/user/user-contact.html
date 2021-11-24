@@ -312,6 +312,7 @@
             div.scrollTop = div.scrollHeight
         }
 
+        // 如果有消息则显示聊天窗口
         {% if right_senders %}
             let currentPerson = "person{{ right_senders[0].id  }}"
             document.querySelector('.span-hand[data-chat="person{{ right_senders[0].id }}"]').classList.add('li-active');

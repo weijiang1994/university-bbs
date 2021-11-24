@@ -64,7 +64,6 @@
     background-color: #ececeb;
     color: black;
     padding: 3px;
-    width: 280px;
     max-width: 280px;
 }
 
@@ -75,6 +74,7 @@
 .li-active {
     background-color: #c1c1c1;
 }
+/*私信页面样式*/
 
 .dropdown-toggle::after{
     color: black;

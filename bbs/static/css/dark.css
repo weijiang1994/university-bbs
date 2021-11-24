@@ -95,7 +95,6 @@
     background-color: #585858;
     color: #eff0f1;
     padding: 3px;
-    width: 280px;
     max-width: 280px;
 }
 
@@ -106,6 +105,7 @@
 .li-active {
     background-color: #666666;
 }
+/*私信页面样式*/
 
 .dropdown-toggle::after {
     color: white;
