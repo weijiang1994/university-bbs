@@ -148,6 +148,23 @@ def read_private_message(user_id):
     return {'code': 200, 'msg': '读取消息成功！', 'unread': unread_count}
 
 
+@user_bp.route('/delete-message-records', methods=['POST'])
+@login_required
+def delete_msg_records():
+    person = request.form.get('person')
+    pms = PrivateMessage.query.filter(or_(and_(PrivateMessage.sender_id == person,
+                                               PrivateMessage.receiver_id == current_user.id),
+                                          and_(PrivateMessage.sender_id == current_user.id,
+                                               PrivateMessage.receiver_id == person))).all()
+    for pm in pms:
+        if pm.sender_id == current_user.id:
+            pm.sender_status = 2
+        else:
+            pm.receiver_status = 2
+    db.session.commit()
+    return {'code': 200, 'msg': '删除记录成功!'}
+
+
 @user_bp.route('/contacts/<user_id>/')
 @login_required
 @user_permission_required

@@ -157,7 +157,8 @@
         <div class="context-item" id="goHomePage" data-person="">
             进入个人主页
         </div>
-        <div class="context-item" id="deleteRecord" data-person="">删除记录
+        <div class="context-item" id="deleteRecord" data-toggle="modal" data-target="#confirmDeleteRecord"
+             data-person="">删除记录
         </div>
     </div>
     <main>
@@ -292,7 +293,55 @@
         </div>
     </main>
     </body>
+
+    <!-- 删除记录确认弹窗 -->
+    <div class="modal fade" id="confirmDeleteRecord" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">确认?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>确定删除该记录吗?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="deleteRecord()">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script rel="script">
+        let currentDeletePerson = null
+
+        $("#confirmDeleteRecord").on('show.bs.modal', function () {
+            currentDeletePerson = document.getElementById('deleteRecord').dataset.person
+            console.log(currentDeletePerson)
+        })
+
+        function deleteRecord() {
+            let person = document.getElementById('deleteRecord').dataset.person
+            $.ajax({
+                url: "{{ url_for('.delete_msg_records') }}",
+                type: "post",
+                data: {'person': person.split('person').pop()},
+                success: function (res) {
+                    if (res.code === 200) {
+                        $(`.span-hand[data-chat=${person}]`).remove()
+                        $(`.msg-active[data-chat=${person}]`).remove()
+                        if ($(".span-hand").length > 0) {
+                            $(".span-hand:first").addClass('li-active')
+                            $('.div-chat-content:first').addClass('msg-active')
+                        }
+                        $("#confirmDeleteRecord").modal('hide')
+                    }
+                }
+            })
+
+        }
 
         // 进入用户主页
         $("#goHomePage").on('click', function () {
@@ -303,13 +352,7 @@
 
         // 删除与当前用户的所有聊天记录
         $("#deleteRecord").on('click', function () {
-            let person = document.getElementById('deleteRecord').dataset.person
-            $(`.span-hand[data-chat=${person}]`).remove()
-            $(`.msg-active[data-chat=${person}]`).remove()
-            if ($(".span-hand").length > 0) {
-                $(".span-hand:first").addClass('li-active')
-                $('.div-chat-content:first').addClass('msg-active')
-            }
+
 
         })
 
@@ -346,6 +389,7 @@
             event.preventDefault();
             return false
         })
+
         // 消息输入框按键监听
         $("#messageBox").on('keyup', function (event) {
             let alt = event.altKey
