@@ -7,7 +7,7 @@
 @Software: PyCharm
 """
 from flask import Blueprint, render_template, request, jsonify
-from bbs.models import Post
+from bbs.models import Post, PrivateMessage
 from flask_login import current_user
 from bbs.extensions import db
 from bbs.decorators import admin_permission_required
@@ -36,6 +36,12 @@ def post_audit(post_id=None):
                 post.status_id = 1
             else:
                 post.status_id = 4
+                # 给用户发送审核未通过私信
+                pm = PrivateMessage(sender_id=current_user.id,
+                                    receiver_id=Post.user.id,
+                                    content='您的帖子审核未通过!')
+                db.session.add(pm)
+
             db.session.commit()
             return jsonify({'tag': 1, 'info': '帖子审核完成!'})
 
