@@ -253,7 +253,7 @@
     </main>
     </body>
     <script rel="script">
-        let currentPerson = "person{{ right_senders[0].id  }}"
+
         let currentUserAvatar = "{{ current_user.avatar }}"
         let currentUserNickname = "{{ current_user.nickname }}"
         let currentID = "{{ current_user.id }}"
@@ -313,6 +313,7 @@
         }
 
         {% if right_senders %}
+            let currentPerson = "person{{ right_senders[0].id  }}"
             document.querySelector('.span-hand[data-chat="person{{ right_senders[0].id }}"]').classList.add('li-active');
             document.querySelector('.div-chat-content[data-chat="person{{ right_senders[0].id }}"]').classList.add('msg-active');
 
