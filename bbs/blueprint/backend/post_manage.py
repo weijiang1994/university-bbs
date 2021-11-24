@@ -30,7 +30,7 @@ def post_audit(post_id=None):
         return render_template('backend/post/post-audit.html', user=current_user)
     else:
         if request.method == 'POST':
-            tag = request.form.get('tag')
+            tag = int(request.form.get('tag'))
             post = Post.query.filter_by(id=post_id).first()
             if tag:
                 post.status_id = 1
