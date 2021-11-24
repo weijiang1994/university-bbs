@@ -96,8 +96,10 @@
         <div class="container mt-2">
             <div class="row">
                 <div class="col-md-3">
-                    {{ user_page_header_ul('私信') }}
+                    <div class="d-flex">
                     {{ user_page_header('私信') }}
+                        <a href="{{ url_for('user.contact', user_id=current_user.id) }}" class="btn btn-primary ml-2">返回私信列表</a>
+                    </div>
                 </div>
                 <div class="col-md-8 mt-2">
                     {% include "_flash.html" %}
