@@ -84,6 +84,10 @@
             padding: 10px;
             top: 500px;
         }
+
+        .trash {
+            flex-grow: 1;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -98,7 +102,10 @@
                 <div class="col-md-8 mt-2">
                     {% include "_flash.html" %}
                     <div class="div-left-person right ">
-                        <div class="top-right"><p>{{ pms[0].send_user.nickname }}</p></div>
+                        <div class="top-right d-flex align-items-center p-1">
+                            <label class="flex-grow-1 mb-0"><b>{{ person.nickname }}</b></label>
+                            <label id="deleteRecord" data-person="person{{ person.id }}" class="mb-0 span-hand" data-toggle="modal" data-target="#confirmDeleteRecord"><i class="fa fa-trash"></i></label>
+                        </div>
                         <div class="div-chat-outer">
                             <div class="div-chat-content">
                                 {% for pm in pms %}
@@ -107,7 +114,7 @@
                                             <img class="img-profile-bg-50 ml-1"
                                                  src="{{ current_user.avatar }}"
                                                  alt="{{ current_user.nickname }}">
-                                            <div class="div-msg-content">
+                                            <div class="div-msg-content msg-right">
                                                 <small><b>{{ pm.c_time }}</b></small>
                                                 <p style="font-size: 14px">{{ pm.content }}</p>
                                             </div>
@@ -117,7 +124,7 @@
                                             <img class="img-profile-bg-50"
                                                  src="{{ pm.send_user.avatar }}"
                                                  alt="{{ pm.send_user.nickname }}">
-                                            <div class="div-msg-content">
+                                            <div class="div-msg-content msg-left">
                                                 <small><b>{{ pm.c_time }}</b></small>
                                                 <p style="font-size: 14px">{{ pm.content }}</p>
                                             </div>
@@ -142,8 +149,27 @@
         </div>
     </main>
     </body>
+    <div class="modal fade" id="confirmDeleteRecord" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">确认?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>确定删除该记录吗?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="deleteRecord()">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        $(document).ready(function (){
+        $(document).ready(function () {
             scrollToBottom()
         })
         let receiverID = "{{ receiver_id }}"
@@ -188,9 +214,25 @@
                 }
             })
         }
+
         function scrollToBottom() {
             let div = document.getElementsByClassName('div-chat-outer')[0]
             div.scrollTop = div.scrollHeight
+        }
+
+        function deleteRecord() {
+            let person = document.getElementById('deleteRecord').dataset.person
+            $.ajax({
+                url: "{{ url_for('.delete_msg_records') }}",
+                type: "post",
+                data: {'person': person.split('person').pop()},
+                success: function (res) {
+                    if (res.code === 200) {
+                        window.location = '{{ url_for('user.contact', user_id=current_user.id) }}'
+                    }
+                }
+            })
+
         }
     </script>
 {% endblock %}

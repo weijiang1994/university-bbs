@@ -236,6 +236,7 @@ def contact(user_id):
 @user_bp.route('/look-message/<person_id>')
 @login_required
 def look_message(person_id):
+    person = User.query.get_or_404(person_id)
     pms = PrivateMessage.query. \
         filter(or_(and_(PrivateMessage.sender_id == person_id,
                         PrivateMessage.receiver_id == current_user.id),
@@ -250,6 +251,7 @@ def look_message(person_id):
     return render_template('frontend/user/user-contact-phone.html',
                            pms=pms,
                            user=current_user,
+                           person=person,
                            receiver_id=person_id)
 
 
