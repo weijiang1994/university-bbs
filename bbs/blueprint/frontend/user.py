@@ -106,7 +106,8 @@ def notifications(user_id):
         per_page=per_page)
     read_notices = pagination.items
     return render_template('frontend/user/user-notification-read.html', user=user, notices=notices,
-                           read_notices=read_notices, tag=pagination.total > per_page, contacts=contacts, pagination=pagination)
+                           read_notices=read_notices, tag=pagination.total > per_page, contacts=contacts,
+                           pagination=pagination)
 
 
 @user_bp.route('notification-unread/<user_id>/')
@@ -123,7 +124,8 @@ def unread(user_id):
         per_page=per_page)
     unread_notices = pagination.items
     return render_template('frontend/user/user-notification-unread.html', user=user, notices=notices,
-                           unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts, pagination=pagination)
+                           unread_notices=unread_notices, tag=pagination.total > per_page, contacts=contacts,
+                           pagination=pagination)
 
 
 @user_bp.route('/contacts/read-message/<user_id>', methods=['POST'])
@@ -211,12 +213,17 @@ def contact(user_id):
 @user_bp.route('/look-message/<person_id>')
 @login_required
 def look_message(person_id):
-    pms = PrivateMessage.query.\
+    pms = PrivateMessage.query. \
         filter(or_(and_(PrivateMessage.sender_id == person_id,
-               PrivateMessage.receiver_id == current_user.id),
+                        PrivateMessage.receiver_id == current_user.id),
                    and_(PrivateMessage.sender_id == current_user.id,
-                        PrivateMessage.receiver_id == person_id))).\
+                        PrivateMessage.receiver_id == person_id))). \
         order_by(PrivateMessage.c_time).all()
+    # 更新消息为已读
+    PrivateMessage.query. \
+        filter(PrivateMessage.sender_id == person_id,
+               PrivateMessage.receiver_id == current_user.id). \
+        update({PrivateMessage.receiver_status: 1})
     return render_template('frontend/user/user-contact-phone.html',
                            pms=pms,
                            user=current_user,
