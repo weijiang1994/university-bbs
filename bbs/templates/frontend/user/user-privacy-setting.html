@@ -79,10 +79,10 @@
                                     <label class="form-check-label" for="threeDaysComment">三天</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="hiddenPost" {% if user.comment_range_id==5 %}
+                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="hiddenComment" {% if user.comment_range_id==5 %}
                                            checked
                                     {% endif %} value="5">
-                                    <label class="form-check-label" for="hiddenPost">隐藏</label>
+                                    <label class="form-check-label" for="hiddenComment">隐藏</label>
                                 </div>
                             </div>
                             <hr class="bg-primary">
@@ -115,8 +115,8 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="collectPrivacy" {% if user.collect_range_id==5 %}
                                            checked
-                                    {% endif %} id="hiddenPost" value="5">
-                                    <label class="form-check-label" for="hiddenPost">隐藏</label>
+                                    {% endif %} id="hiddenCollect" value="5">
+                                    <label class="form-check-label" for="hiddenCollect">隐藏</label>
                                 </div>
                             </div>
                             <hr class="bg-primary">
