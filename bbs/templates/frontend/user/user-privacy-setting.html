@@ -55,28 +55,28 @@
                             <div>
                                 <h4 class="user-sub-title">评论设置</h4>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="allPost" {% if user.comment_range_id==1 %}
+                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="allComment" {% if user.comment_range_id==1 %}
                                            checked
                                     {% endif %} value="1">
-                                    <label class="form-check-label" for="allPost">全部</label>
+                                    <label class="form-check-label" for="allComment">全部</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="halfYearPost" {% if user.comment_range_id==2 %}
+                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="halfYearComment" {% if user.comment_range_id==2 %}
                                            checked
                                     {% endif %} value="2">
-                                    <label class="form-check-label" for="halfYearPost">半年</label>
+                                    <label class="form-check-label" for="halfYearComment">半年</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="monthPost" {% if user.comment_range_id==3 %}
+                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="monthComment" {% if user.comment_range_id==3 %}
                                            checked
                                     {% endif %} value="3">
-                                    <label class="form-check-label" for="monthPost">一月</label>
+                                    <label class="form-check-label" for="monthComment">一月</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="threeDaysPost" {% if user.comment_range_id==4 %}
+                                    <input class="form-check-input" type="radio" name="commentPrivacy" id="threeDaysComment" {% if user.comment_range_id==4 %}
                                            checked
                                     {% endif %} value="4">
-                                    <label class="form-check-label" for="threeDaysPost">三天</label>
+                                    <label class="form-check-label" for="threeDaysComment">三天</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="commentPrivacy" id="hiddenPost" {% if user.comment_range_id==5 %}
@@ -89,28 +89,28 @@
                             <div>
                                 <h4 class="user-sub-title">收藏设置</h4>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="allPost" {% if user.collect_range_id==1 %}
+                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="allCollect" {% if user.collect_range_id==1 %}
                                            checked
                                     {% endif %} value="1">
-                                    <label class="form-check-label" for="allPost">全部</label>
+                                    <label class="form-check-label" for="allCollect">全部</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="halfYearPost" {% if user.collect_range_id==2 %}
+                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="halfYearCollect" {% if user.collect_range_id==2 %}
                                            checked
                                     {% endif %} value="2">
-                                    <label class="form-check-label" for="halfYearPost">半年</label>
+                                    <label class="form-check-label" for="halfYearCollect">半年</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="monthPost" {% if user.collect_range_id==3 %}
+                                    <input class="form-check-input" type="radio" name="collectPrivacy" id="monthCollect" {% if user.collect_range_id==3 %}
                                            checked
                                     {% endif %} value="3">
-                                    <label class="form-check-label" for="monthPost">一月</label>
+                                    <label class="form-check-label" for="monthCollect">一月</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="collectPrivacy" {% if user.collect_range_id==4 %}
                                            checked
-                                    {% endif %} id="threeDaysPost" value="4">
-                                    <label class="form-check-label" for="threeDaysPost">三天</label>
+                                    {% endif %} id="threeDaysCollect" value="4">
+                                    <label class="form-check-label" for="threeDaysCollect">三天</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="collectPrivacy" {% if user.collect_range_id==5 %}
@@ -123,16 +123,16 @@
                             <div>
                                 <h4 class="user-sub-title">私信设置</h4>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="contactPrivacy" id="allPost" {% if user.contact_range_id==1 %}
+                                    <input class="form-check-input" type="radio" name="contactPrivacy" id="allMessage" {% if user.contact_range_id==1 %}
                                            checked
                                     {% endif %} value="1">
-                                    <label class="form-check-label" for="allPost">全部</label>
+                                    <label class="form-check-label" for="allMessage">全部</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="contactPrivacy" id="halfYearPost" {% if user.contact_range_id==6 %}
+                                    <input class="form-check-input" type="radio" name="contactPrivacy" id="follower" {% if user.contact_range_id==6 %}
                                            checked
                                     {% endif %} value="6">
-                                    <label class="form-check-label" for="halfYearPost">关注我的</label>
+                                    <label class="form-check-label" for="follower">关注我的</label>
                                 </div>
                             </div>
                             <hr class="bg-primary">
