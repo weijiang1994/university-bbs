@@ -27,6 +27,7 @@ from bbs.blueprint.backend.post_manage import be_post_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
 from bbs.utils import get_text_plain
 import os
+from bbs.setting import basedir
 
 
 def create_app(config_name=None):
@@ -134,6 +135,7 @@ def register_cmd(app: Flask):
         click.echo('数据库初始化完成!')
 
         click.confirm('是否添加测试数据?', abort=True)
+        create_folders()
         generate_fake_data()
 
     @app.cli.command()
@@ -154,6 +156,11 @@ def register_cmd(app: Flask):
         db.session.add(u)
         db.session.commit()
         click.echo('超级管理员添加成功!')
+
+
+def create_folders():
+    if not os.path.exists(basedir + '/resources'):
+        os.mkdir(basedir + '/resources')
 
 
 def init_status():

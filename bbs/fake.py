@@ -24,6 +24,11 @@ def generate_post_tag():
 
 
 def generate_user():
+    if not os.path.exists(basedir + '/resources/avatars'):
+        os.mkdir(basedir + '/resources/avatars')
+    if not os.path.exists(basedir + '/resources/avatars/raw'):
+        os.mkdir(basedir + '/resources/avatars/raw')
+
     for i in range(30):
         user = User(username=fa.user_name().strip().lower() + str(random.randint(1, 9)),
                     college_id=random.randint(1, 7),
