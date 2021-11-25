@@ -3,19 +3,21 @@
 {% block head %}
     {{ super() }}
     <style>
-        .img-profile-bg{
+        .img-profile-bg {
             border-radius: 5px;
             height: 150px;
             width: 150px;
             background-size: cover;
             background: no-repeat center;
         }
-        @media screen and (max-width: 567px){
-            .img-profile-bg{
+
+        @media screen and (max-width: 567px) {
+            .img-profile-bg {
                 height: 75px;
                 width: 75px;
             }
-            .div-center-md{
+
+            .div-center-md {
                 text-align: center;
             }
         }
@@ -37,6 +39,11 @@
             {% if comments %}
                 <div class="mt-2">
                     {{ comment_list(comments) }}
+                    {% if user.range_comment.name != '全部' and current_user.id != user.id %}
+                        <div class="mt-2 text-center">
+                            <p class="text-muted"><b>该用户仅展示最近{{ user.range_comment.name }}的评论</b></p>
+                        </div>
+                    {% endif %}
                 </div>
             {% else %}
                 {% if current_user.id == user.id %}
@@ -45,7 +52,15 @@
                     </div>
                 {% else %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">他还没有发送过评论!</p>
+                        {% if user.comments|length %}
+                            {% if user.range_comment.name == '隐藏' %}
+                                <p class="text-muted"><b>该用户隐藏了帖子评论！</b></p>
+                            {% else %}
+                                <p class="text-muted"><b>该用户仅展示最近{{ user.range_comment.name }}的帖子评论</b></p>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">他还没有发送过评论!</p>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% endif %}

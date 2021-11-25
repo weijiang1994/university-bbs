@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     <style>
-        .img-profile-bg{
+        .img-profile-bg {
             border-radius: 5px;
             height: 150px;
             width: 150px;
@@ -11,31 +11,32 @@
             background: no-repeat center;
         }
 
-        @media screen and (max-width: 567px){
-            .img-profile-bg{
+        @media screen and (max-width: 567px) {
+            .img-profile-bg {
                 height: 75px;
                 width: 75px;
             }
-            .div-center-md{
+
+            .div-center-md {
                 text-align: center;
             }
         }
 
-        .a-title{
+        .a-title {
             font-size: 22px;
             font-weight: bold;
         }
 
-        .a-title-sm{
+        .a-title-sm {
             font-size: 16px;
             font-weight: bold;
         }
 
-        .ul-posts{
+        .ul-posts {
             border-radius: 5px;
         }
 
-        .f-12-b{
+        .f-12-b {
             font-weight: bold;
             font-size: 12px;
         }
@@ -62,32 +63,48 @@
                                 <div class="d-flex flex-row-reverse">
                                     <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
                                     {% if current_user.id == user.id %}
-                                        <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a class="mb-1 text-decoration-none mr-2" href="#" id="commentEmoji"
+                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </a>
                                         <div class="dropdown-menu" x-placement="left" aria-labelledby="commentEmoji">
-                                            <a class="dropdown-item" href="{{ url_for('profile.uncollect', post_id=collect.post.id) }}">取消收藏</a>
+                                            <a class="dropdown-item"
+                                               href="{{ url_for('profile.uncollect', post_id=collect.post.id) }}">取消收藏</a>
                                         </div>
                                     {% endif %}
-                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ collect.post.title|striptags|truncate(25, True) }}</a>
-                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ collect.post.title|striptags|truncate(15, True) }}</a>
+                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}"
+                                       class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ collect.post.title|striptags|truncate(25, True) }}</a>
+                                    <a href="{{ url_for('post.read', post_id=collect.post.id) }}"
+                                       class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ collect.post.title|striptags|truncate(15, True) }}</a>
                                 </div>
                                 <p>{{ collect.post.textplain|striptags|truncate(100) }}</p>
                                 <div class="d-flex">
                                     {% if collect.post.is_anonymous == 1 %}
-                                        <a class="text-muted text-decoration-none f-12-b" href="{{ url_for('profile.index', user_id=collect.post.author_id) }}"><i class="fa fa-user mr-1"></i>{{ collect.post.user.nickname }}&nbsp;&nbsp;</a>
+                                        <a class="text-muted text-decoration-none f-12-b"
+                                           href="{{ url_for('profile.index', user_id=collect.post.author_id) }}"><i
+                                                class="fa fa-user mr-1"></i>{{ collect.post.user.nickname }}&nbsp;&nbsp;</a>
                                     {% else %}
-                                        <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-user mr-1"></i>匿名&nbsp;&nbsp;</a>
+                                        <a class="text-muted text-decoration-none f-12-b"><i
+                                                class="fa fa-user mr-1"></i>匿名&nbsp;&nbsp;</a>
                                     {% endif %}
                                     <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ collect.post.collects }})&nbsp;&nbsp;</a>
-                                    <a class="text-muted text-decoration-none d-none d-sm-block  f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ collect.post.comments|length }})&nbsp;&nbsp;</a>
-                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ collect.timestamps }}" data-delay="500" data-original-title="" title="{{ collect.timestamps }}">{{ moment(collect.timestamps, local=True).fromNow(refresh=True) }}</span>
+                                    <a class="text-muted text-decoration-none d-none d-sm-block  f-12-b"><i
+                                            class="fa fa-comment-o mr-1"></i>评论({{ collect.post.comments|length }})&nbsp;&nbsp;</a>
+                                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b">
+                                        <span data-toggle="tooltip" data-placement="right"
+                                              data-timestamp="{{ collect.timestamps }}" data-delay="500"
+                                              data-original-title=""
+                                              title="{{ collect.timestamps }}">{{ moment(collect.timestamps, local=True).fromNow(refresh=True) }}</span>
                                     </a>
                                 </div>
                             </li>
                         {% endfor %}
                     </ul>
+                    {% if user.range_collect.name != '全部' and current_user.id != user.id %}
+                        <div class="mt-2 text-center">
+                            <p class="text-muted"><b>该用户仅展示最近{{ user.range_collect.name }}收藏的帖子！</b></p>
+                        </div>
+                    {% endif %}
                     {% if tag > 1 %}
                         <div class="float-right mt-1">
                             {{ render_pagination(pagination, size='sm') }}
@@ -101,7 +118,15 @@
                     </div>
                 {% else %}
                     <div class="text-center mt-5">
-                        <p class="text-muted">他还没有收藏过帖子!</p>
+                        {% if user.collect|length %}
+                            {% if user.range_collect.name == '隐藏' %}
+                                <p class="text-muted"><b>该用户隐藏了所收藏的帖子！</b></p>
+                            {% else %}
+                                <p class="text-muted"><b>该用户仅展示最近{{ user.range_collect.name }}收藏的帖子！</b></p>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">他还没有收藏过帖子!</p>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% endif %}

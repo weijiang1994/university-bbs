@@ -40,7 +40,7 @@
             {% if posts %}
                 <div class="mt-2">
                     {{ post_list(posts) }}
-                    {% if user.range_post.name != '全部' %}
+                    {% if user.range_post.name != '全部' and current_user.id != user.id %}
                         <div class="mt-2 text-center">
                             <p class="text-muted"><b>该用户仅展示最近{{ user.range_post.name }}的帖子</b></p>
                         </div>
@@ -53,7 +53,7 @@
                     </div>
                 {% else %}
                     <div class="text-center mt-5">
-                        {% if user.post|length %}
+                        {% if user.available_post_counts()|length %}
                             {% if user.range_post.name == '隐藏' %}
                                 <p class="text-muted"><b>该用户{{ user.range_post.name }}了帖子</b></p>
                             {% else %}

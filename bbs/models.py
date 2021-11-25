@@ -148,6 +148,10 @@ class User(db.Model, UserMixin):
             db.session.add(follow)
             db.session.commit()
 
+    def available_post_counts(self):
+        return Post.query.filter(Post.status_id == 1,
+                                 Post.author_id == self.id).all()
+
 
 class College(db.Model):
     __tablename__ = 't_college'
