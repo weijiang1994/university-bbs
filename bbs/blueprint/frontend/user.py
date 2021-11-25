@@ -140,10 +140,16 @@ def read_private_message(user_id):
     ).update(
         {PrivateMessage.receiver_status: 1})
 
+    person = User.query.get_or_404(sender_id)
+
     # 获取当前未读消息数量,更新侧边栏
     unread_count = PrivateMessage.query.filter(
         PrivateMessage.receiver_id == user_id,
         PrivateMessage.receiver_status == 0).count()
+
+    # 更新通知为已读
+    Notification.query.filter(Notification.send_user == person.username,
+                              Notification.receive_id == current_user.id).update({Notification.read: 1})
     db.session.commit()
     return {'code': 200, 'msg': '读取消息成功！', 'unread': unread_count}
 
@@ -243,11 +249,17 @@ def look_message(person_id):
                    and_(PrivateMessage.sender_id == current_user.id,
                         PrivateMessage.receiver_id == person_id))). \
         order_by(PrivateMessage.c_time).all()
-    # 更新消息为已读
+
+    # 更新私信为已读
     PrivateMessage.query. \
         filter(PrivateMessage.sender_id == person_id,
                PrivateMessage.receiver_id == current_user.id). \
         update({PrivateMessage.receiver_status: 1})
+
+    # 更新通知消息为已读
+    Notification.query.filter(Notification.send_user == person.username,
+                              Notification.receive_id == current_user.id).update({Notification.read: 1})
+    db.session.commit()
     return render_template('frontend/user/user-contact-phone.html',
                            pms=pms,
                            user=current_user,
