@@ -10,7 +10,7 @@
             {% include "_flash.html" %}
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('.index') }}">最新</a>
+                    <a class="nav-link" href="{{ url_for('.index') }}">推荐</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ url_for('.hot') }}">热帖</a>
@@ -18,18 +18,18 @@
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ url_for('.rands') }}">随机</a>
                 </li>
+                {% for cate in categories %}
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{{ url_for('.rands') }}">{{ cate.name }}</a>
+                    </li>
+                {% endfor %}
             </ul>
             <hr class="bg-secondary">
             <div class="row">
                 <div class="col-md-8 mt-1">
                     <div class="tab-content">
                         <div id="latestPost" class="tab-pane active">
-                            {{ post_item(latest) }}
-                            <div class="float-right mt-3">
-                                {% if tag %}
-                                    {{ render_pagination(pagination) }}
-                                {% endif %}
-                            </div>
+                            {{ post_item(posts) }}
                         </div>
                     </div>
                 </div>
