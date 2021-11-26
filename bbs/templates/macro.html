@@ -32,7 +32,7 @@
                                         匿名
                                     {% endif %}
                                     <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
+                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.update_time }}" data-delay="500" data-original-title="" title="{{ post.update_time }}">{{ moment(post.update_time, local=True).fromNow(refresh=True) }}</span>
                                     </a></span></p>
                             </div>
                             <div class="col text-right flex-row-reverse d-lg-flex d-none">
