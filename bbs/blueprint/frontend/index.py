@@ -25,41 +25,52 @@ def index():
     # 只获取过去30天以内的帖子
     day = datetime.datetime.today() - datetime.timedelta(days=30)
     posts = []
-    # 查找用户收藏的帖子类型
-    user_interests = UserInterest.query.with_entities(UserInterest.cate_id).filter(
-        UserInterest.user_id == current_user.id). \
-        order_by(UserInterest.visit_times.desc()).limit(5).all()
 
-    # 根据用户兴趣获取推荐的帖子
-    if user_interests:
-        user_interests = [user_interest[0] for user_interest in user_interests]
+    if current_user.is_authenticated:
+        # 查找用户收藏的帖子类型
+        user_interests = UserInterest.query.with_entities(UserInterest.cate_id).filter(
+            UserInterest.user_id == current_user.id). \
+            order_by(UserInterest.visit_times.desc()).limit(5).all()
 
-        posts += Post.query.filter(Post.cate_id.in_(user_interests),
-                                   Post.status_id == 1,
-                                   Post.create_time > day).order_by(Post.update_time.desc()).all()
+        # 根据用户兴趣获取推荐的帖子
+        if user_interests:
+            user_interests = [user_interest[0] for user_interest in user_interests]
 
-        post_ids = [post.id for post in posts]
+            posts += Post.query.filter(Post.cate_id.in_(user_interests),
+                                       Post.status_id == 1,
+                                       Post.create_time > day).order_by(Post.update_time.desc()).all()
 
-        if len(posts) >= 20:
-            posts = random.sample(posts, 20)
+            post_ids = [post.id for post in posts]
+
+            if len(posts) >= 20:
+                posts = random.sample(posts, 20)
+            else:
+                posts += Post.query. \
+                    filter(not_(Post.id.in_(post_ids)),
+                           Post.status_id == 1). \
+                    order_by(Post.update_time.desc(), func.random()). \
+                    limit(20 - len(posts))
         else:
-            posts += Post.query. \
-                filter(not_(Post.id.in_(post_ids)),
-                       Post.status_id == 1). \
-                order_by(Post.update_time.desc(), func.random()).\
-                limit(20 - len(posts))
+            posts += Post.query.filter(Post.status_id == 1).order_by(Post.update_time.desc(), func.random()).limit(20)
+        print(user_interests)
+        # 如果用户没有收藏帖子，则随机推荐五个类别
+        if 0 < len(user_interests) < 5:
+            categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
+            categories += PostCategory.query.filter(not_(PostCategory.id.in_(user_interests))).order_by(
+                func.random()).limit(5 - len(user_interests))
+
+            # for cate in categories:
+            #     user_interests.append(cate.id)
+            # categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
+
+        elif len(user_interests) == 0:
+            categories = PostCategory.query.order_by(func.random()).limit(5)
+
+        elif len(user_interests) >= 5:
+            categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
     else:
         posts += Post.query.filter(Post.status_id == 1).order_by(Post.update_time.desc(), func.random()).limit(20)
-
-    # 如果用户没有收藏帖子，则随机推荐五个类别
-    if len(user_interests) < 5:
-        categories = PostCategory.query.order_by(func.random()).limit(5 - len(user_interests))
-
-        for cate in categories:
-            user_interests.append(cate.id)
-        categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
-    else:
-        categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
+        categories = PostCategory.query.order_by(func.random()).limit(5)
 
     hot_posts = get_td_hot_posts()
     return render_template('frontend/index/index.html',
