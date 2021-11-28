@@ -214,7 +214,6 @@
                                                  data-chat="person{{ right_senders[loop.index0].id }}">
                                                 {% for pm in pms %}
                                                     {% if pm.sender_id == current_user.id %}
-                                                        <!-- 过滤用户发送的已删除消息 -->
                                                         <div class="d-flex flex-row-reverse mb-2 mr-1">
                                                             <img class="img-profile-bg-50 ml-1"
                                                                  src="{{ current_user.avatar }}"
@@ -225,7 +224,6 @@
                                                             </div>
                                                         </div>
                                                     {% else %}
-                                                        <!-- 过滤用户接收的已删除消息 -->
                                                         <div class="d-flex mb-2 ml-1">
                                                             <img class="img-profile-bg-50"
                                                                  src="{{ pm.send_user.avatar }}"
@@ -345,13 +343,6 @@
             console.log(userId)
             window.open("{{ url_for('profile.index', user_id='') }}" + `${userId}`)
         })
-
-        // 删除与当前用户的所有聊天记录
-        $("#deleteRecord").on('click', function () {
-
-
-        })
-
 
         let a = null
         let currentUserAvatar = "{{ current_user.avatar }}"
