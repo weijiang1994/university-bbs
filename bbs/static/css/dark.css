@@ -105,6 +105,16 @@
 .li-active {
     background-color: #666666;
 }
+
+.msg-right {
+    background: #9EEA6A;
+    color: black;
+}
+
+.msg-right:hover {
+    background: #98E165;
+}
+
 /*私信页面样式*/
 
 .dropdown-toggle::after {
