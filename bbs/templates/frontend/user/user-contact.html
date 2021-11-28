@@ -424,6 +424,7 @@
                     if (res.code === 200) {
                         $("#sendHint").text(res.msg)
                         $("#messageBox").val('')
+                        scrollToBottom()
                         setTimeout(function () {
                             $("#sendHint").remove()
                         }, 2000)
