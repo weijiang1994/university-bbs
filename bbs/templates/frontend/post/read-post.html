@@ -386,7 +386,7 @@
                 let pics = $(".pic")
                 for (let pic of pics) {
                     if (pic.height > 300) {
-                        pic.setAttribute('class', 'd-block img-fluid mx-auto pic small-pic')
+                        pic.className += ' small-pic'
                     }
                 }
             })
