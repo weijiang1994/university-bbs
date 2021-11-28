@@ -5,6 +5,12 @@
     {{ ckeditor.load_code_theme() }}
     <!--suppress ALL -->
     <style>
+
+        .small-pic {
+            height: 30%;
+            width: 30%;
+        }
+
         .post-title-h1 {
             font-size: 22px;
             font-weight: bold;
@@ -95,8 +101,6 @@
         .hr-margin-5 {
             margin: 5px 0 5px 0 !important;
         }
-
-
     </style>
 {% endblock %}
 {% block title %}
@@ -109,6 +113,7 @@
     <main>
         <div class="container mt-2">
             {% include "_flash.html" %}
+            {% include "frontend/big-image.html" %}
             <!-- 帖子主要信息 -->
             <ol class="breadcrumb mb-0 rounded-0">
                 <li class="breadcrumb-item"><a class="text-decoration-none" href="/">主页</a></li>
@@ -165,7 +170,8 @@
                         {{ post.content|safe }}
                     </article>
                     {% for tag in p_tags %}
-                        <label class="post-tag"><a style="color: inherit" class="text-decoration-none" href="{{ url_for('post.post_tag', tag_id=tag.tag.id) }}">#{{ tag.tag.name }}</a></label>
+                        <label class="post-tag"><a style="color: inherit" class="text-decoration-none"
+                                                   href="{{ url_for('post.post_tag', tag_id=tag.tag.id) }}">#{{ tag.tag.name }}</a></label>
                     {% endfor %}
                 </div>
                 {% if current_user.is_authenticated and current_user.id == post.user.id %}
@@ -376,6 +382,14 @@
         {{ markdownHelp() }}
         {{ confirmDelete() }}
         <script>
+            $(document).ready(function () {
+                let pics = $(".pic")
+                for (let pic of pics) {
+                    if (pic.height > 300) {
+                        pic.setAttribute('class', 'd-block img-fluid mx-auto pic small-pic')
+                    }
+                }
+            })
             // 刷新页面清除保存在sessionStorage中的原始数据
             $(function () {
                 sessionStorage.setItem('md', '');
@@ -569,6 +583,7 @@
                     obj.value += str;
                 }
             }
+
         </script>
     </main>
     </body>
