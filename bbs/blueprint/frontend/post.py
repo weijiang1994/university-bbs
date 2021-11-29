@@ -97,7 +97,8 @@ def read(post_id):
 def post_cate(cate_id):
     page = request.args.get('page', default=1, type=int)
     cate = PostCategory.query.get_or_404(cate_id)
-    paginations = Post.query.filter_by(cate_id=cate_id).order_by(Post.update_time.desc()).\
+    paginations = Post.query.filter(Post.cate_id == cate_id,
+                                    Post.status_id == 1).order_by(Post.update_time.desc()). \
         paginate(per_page=current_app.config['BBS_PER_PAGE'], page=page)
     posts = paginations.items
     return render_template('frontend/post/cate-post.html', posts=posts, cate=cate)
