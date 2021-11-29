@@ -16,11 +16,12 @@
                     <a class="nav-link" href="{{ url_for('.hot') }}">热帖</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('.rands') }}">随机</a>
+                    <a class="nav-link" href="{{ url_for('.latest') }}">最新</a>
                 </li>
                 {% for cate in categories %}
                     <li class="nav-item ">
-                        <a class="nav-link" href="{{ url_for('.rands') }}">{{ cate.name }}</a>
+{#                        <a class="nav-link" id="category{{ cate.id }}" href="{{ url_for('.category', category=cate.id) }}">{{ cate.name }}</a>#}
+                        <a class="nav-link" id="category{{ cate.id }}" href="{{ url_for('post.post_cate', cate_id=cate.id) }}">{{ cate.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -37,13 +38,4 @@
             </div>
         </div>
     </main>
-    <script>
-        $(document).ready(function () {
-            let cateId = window.location.href.split('=')[1]
-            $("#category" + cateId).addClass('nav-link active')
-            if (cateId === undefined) {
-                $("#categoryall").addClass('nav-link active')
-            }
-        })
-    </script>
 {% endblock %}
