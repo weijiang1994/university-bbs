@@ -340,7 +340,6 @@
         // 进入用户主页
         $("#goHomePage").on('click', function () {
             let userId = document.getElementById('goHomePage').dataset.person.split('person').pop()
-            console.log(userId)
             window.open("{{ url_for('profile.index', user_id='') }}" + `${userId}`)
         })
 
@@ -396,7 +395,7 @@
             $(`.div-chat-content[data-chat=${currentPerson}]`).append(
                 `<div class="d-flex flex-row-reverse mb-2 mr-1">
                 <img class="img-profile-bg-50 ml-1" src="${currentUserAvatar}" alt="${currentUserNickname}">
-                <div class="div-msg-content">
+                <div class="div-msg-content msg-right">
                 <small><b>${moment().format("YYYY-MM-DD HH:mm:ss")}</b></small>
                 <p style="font-size: 14px">${messageContent}</p>
                 <small id="sendHint" class="text-primary"><b>正在发送</b><i class="fa fa-spin fa-spinner"></i></small>
