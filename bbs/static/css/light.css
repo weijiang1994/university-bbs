@@ -1,19 +1,19 @@
 /*light theme style*/
 .a-link {
-    color: #0a0a0a;
+    color: #0a0a0a!important;
     text-decoration: none;
 }
 
 .a-link:hover {
-    color: #1b1e21;
+    color: #1b1e21!important;
 }
 
 .li-fade {
-    color: #333333;
+    color: #5b5b5b!important;
 }
 
 .li-fade:hover {
-    color: #222222;
+    color: #222222!important;
 }
 
 .span-border-bottom {
