@@ -10,7 +10,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest
+    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -244,7 +244,8 @@ def post_comment():
     comment_content = to_html(comment_content)
     com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
     # 如果评论帖子用户与发帖用户不为同一人则发送消息通知
-    if current_user.id != post.author_id:
+    if current_user.id != post.author_id and not BlockUser.query.filter(BlockUser.user_id == post.author_id,
+                                                                        BlockUser.block_user_id == current_user.id).all():
         notice = Notification(target_id=post_id, target_name=post.title, send_user=current_user.username,
                               receive_id=post.author_id, msg=comment_content)
         db.session.add(notice)
@@ -266,12 +267,16 @@ def reply_comment():
     post_id = request.form.get('post_id')
     reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id)
     post = Post.query.get_or_404(post_id)
-    notice = Notification(target_id=post_id, target_name=post.title, send_user=current_user.username, msg=comment,
-                          receive_id=comment_user_id)
-    post.update_time = datetime.datetime.now()
+    if not BlockUser.query.filter(BlockUser.user_id == comment_user_id,
+                                  BlockUser.block_user_id == current_user.id).all():
+        notice = Notification(target_id=post_id, target_name=post.title, send_user=current_user.username, msg=comment,
+                              receive_id=comment_user_id)
+        db.session.add(notice)
+
     db.session.add(reply)
-    db.session.add(notice)
+    post.update_time = datetime.datetime.now()
     db.session.commit()
+
     return jsonify({'tag': 1})
 
 
