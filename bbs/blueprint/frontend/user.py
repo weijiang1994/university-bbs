@@ -14,7 +14,7 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.expression import func
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification, Post, Comments, PrivateMessage
+from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
@@ -444,3 +444,16 @@ def send_message():
     db.session.add(ntf)
     db.session.commit()
     return {'code': 200, 'msg': '私信发送成功!'}
+
+
+@user_bp.route('/block-user', methods=['POST'])
+@login_required
+def block_user():
+    user_id = request.form.get('userId')
+    user = User.query.get_or_404(user_id)
+    bu = BlockUser(user_id=current_user.id,
+                   block_user_id=user.id)
+    db.session.add(bu)
+    db.session.commit()
+    flash('拉黑用户成功！', 'success')
+    return {'code': 200}

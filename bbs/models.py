@@ -14,6 +14,19 @@ from flask_login import UserMixin, current_user
 import os
 
 
+class BlockUser(db.Model):
+    # 用户黑名单
+    __tablename__ = 't_block_user'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'), nullable=False)
+    block_user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'), nullable=False)
+    c_time = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    user = db.relationship('User', foreign_keys=[user_id], back_populates='block_user', lazy='joined')
+    block_user = db.relationship('User', foreign_keys=[block_user_id], back_populates='blocked_user', lazy='joined')
+
+
 class PrivateMessage(db.Model):
     __tablename__ = 't_private_message'
 
@@ -115,7 +128,13 @@ class User(db.Model, UserMixin):
     ur_ship = db.relationship('UserRoleShip', back_populates='user')
 
     sender = db.relationship('PrivateMessage', back_populates='send_user', foreign_keys=[PrivateMessage.sender_id])
-    receiver = db.relationship('PrivateMessage', back_populates='receive_user', foreign_keys=[PrivateMessage.receiver_id])
+    receiver = db.relationship('PrivateMessage', back_populates='receive_user',
+                               foreign_keys=[PrivateMessage.receiver_id])
+
+    # block的用户
+    block_user = db.relationship('BlockUser', back_populates='user', foreign_keys=[BlockUser.user_id])
+    # 被block的用户
+    blocked_user = db.relationship('BlockUser', back_populates='block_user', foreign_keys=[BlockUser.block_user_id])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)

@@ -10,7 +10,7 @@ import datetime
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, jsonify
 from flask_login import current_user, login_required
 
-from bbs.models import User, Comments, Post, Collect
+from bbs.models import User, Comments, Post, Collect, BlockUser
 from bbs.blueprint.frontend.post import post_collect
 from bbs.utils import TIME_RANGE, PANGU_DATE
 
@@ -33,8 +33,10 @@ def index(user_id):
                                            page=page,
                                            per_page=per_page,
                                            range_day=TIME_RANGE.get(user.range_post.name))
+    blocked = BlockUser.query.filter(BlockUser.user_id == current_user.id,
+                                     BlockUser.block_user_id == user_id).all()
     return render_template('frontend/profile/profile.html', user=user, tag=pagination.total > per_page,
-                           pagination=pagination, posts=posts)
+                           pagination=pagination, posts=posts, blocked=blocked)
 
 
 @profile_bp.route('/comment/<user_id>/')
@@ -50,8 +52,10 @@ def profile_comment(user_id):
     else:
         pagination, comments = get_range_comment(user_id=user_id, page=page, per_page=per_page, range_day=TIME_RANGE.
                                                  get(user.range_comment.name))
+    blocked = BlockUser.query.filter(BlockUser.user_id == current_user.id,
+                                     BlockUser.block_user_id == user_id).all()
     return render_template('frontend/profile/profile-comment.html', tag=pagination.total > per_page, user=user,
-                           pagination=pagination, comments=comments)
+                           pagination=pagination, comments=comments, blocked=blocked)
 
 
 @profile_bp.route('/follow/<user_id>/', methods=['GET', 'POST'])
@@ -94,8 +98,10 @@ def collect(user_id):
     else:
         pagination, collects = get_range_collect(user, page, per_page,
                                                  range_day=TIME_RANGE.get(user.range_collect.name))
+    blocked = BlockUser.query.filter(BlockUser.user_id == current_user.id,
+                                     BlockUser.block_user_id == user_id).all()
     return render_template('frontend/profile/profile-collections.html', user=user, tag=pagination.total > per_page,
-                           pagination=pagination, collects=collects)
+                           pagination=pagination, collects=collects, blocked=blocked)
 
 
 @profile_bp.route('/uncollect/<post_id>')
@@ -113,8 +119,10 @@ def follower(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.followers.paginate(page, per_page)
     followers = pagination.items
+    blocked = BlockUser.query.filter(BlockUser.user_id == current_user.id,
+                                     BlockUser.block_user_id == user_id).all()
     return render_template('frontend/profile/profile-followers.html', tag=pagination.total > per_page, user=user,
-                           pagination=pagination, followers=followers)
+                           pagination=pagination, followers=followers, blocked=blocked)
 
 
 @profile_bp.route('/following/<user_id>/')
@@ -125,8 +133,10 @@ def following(user_id):
     per_page = current_app.config['BBS_PER_PAGE_SOCIAL']
     pagination = user.following.paginate(page, per_page)
     followings = pagination.items
+    blocked = BlockUser.query.filter(BlockUser.user_id == current_user.id,
+                                     BlockUser.block_user_id == user_id).all()
     return render_template('frontend/profile/profile-following.html', tag=pagination.total > per_page,
-                           user=user, pagination=pagination, followings=followings)
+                           user=user, pagination=pagination, followings=followings, blocked=blocked)
 
 
 def get_range_post(user_id, page=1, per_page=10, range_day=-1):

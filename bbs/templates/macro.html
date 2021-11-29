@@ -1,7 +1,8 @@
 {% macro nav_item(endpoint, text, fa) %}
     <!--suppress ALL -->
     <li class="nav-item" style="margin-right: 50px;">
-        <a class="nav-link {% if request.endpoint and request.endpoint==endpoint %}active{% endif %}" href="{{ endpoint }}">
+        <a class="nav-link {% if request.endpoint and request.endpoint==endpoint %}active{% endif %}"
+           href="{{ endpoint }}">
             <i class="{{ fa }}"></i>
             {{ text }}
         </a>
@@ -17,27 +18,35 @@
                     {% if post.is_anonymous == 1 %}
                         <img class="avatar-50 rounded mr-2" src="{{ post.user.avatar }}" alt="{{ post.user.nickname }}">
                     {% else %}
-                        <img class="avatar-50 rounded mr-2" src="{{ url_for('static', filename='img/anonymous.jpeg') }}" alt="anonymous">
+                        <img class="avatar-50 rounded mr-2" src="{{ url_for('static', filename='img/anonymous.jpeg') }}"
+                             alt="anonymous">
                     {% endif %}
                     <div class="flex-grow-1">
-                        <a class="text-decoration-none" href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
+                        <a class="text-decoration-none"
+                           href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
                         <div class="row mt-2">
                             <div class="col">
                                 <p class="mb-0 text-muted f-12">
-                                <a class="badge badge-secondary mr-2" href="{{ url_for('post.post_cate', cate_id=post.cats.id) }}">{{ post.cats.name }}</a>
+                                    <a class="badge badge-secondary mr-2"
+                                       href="{{ url_for('post.post_cate', cate_id=post.cats.id) }}">{{ post.cats.name }}</a>
                                     <i class="fa fa-user-o mr-1"></i>
                                     {% if post.is_anonymous == 1 %}
-                                        <a class="text-decoration-none" href="{{ url_for('profile.index', user_id=post.author_id) }}">{{post.user.nickname}}</a>
+                                        <a class="text-decoration-none"
+                                           href="{{ url_for('profile.index', user_id=post.author_id) }}">{{ post.user.nickname }}</a>
                                     {% else %}
                                         匿名
                                     {% endif %}
-                                    <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.update_time }}" data-delay="500" data-original-title="" title="{{ post.update_time }}">{{ moment(post.update_time, local=True).fromNow(refresh=True) }}</span>
+                                    <span><a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b">
+                                        <span data-toggle="tooltip" data-placement="right"
+                                              data-timestamp="{{ post.update_time }}" data-delay="500"
+                                              data-original-title=""
+                                              title="{{ post.update_time }}">{{ moment(post.update_time, local=True).fromNow(refresh=True) }}</span>
                                     </a></span></p>
                             </div>
                             <div class="col text-right flex-row-reverse d-lg-flex d-none">
-                                <p class="f-12 text-muted mb-0"><i class="fa fa-comment mr-1"></i>{{ post.comments|length }}</p>
-                                <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>{{post.read_times}}　</p>
+                                <p class="f-12 text-muted mb-0"><i
+                                        class="fa fa-comment mr-1"></i>{{ post.comments|length }}</p>
+                                <p class="f-12 text-muted mb-0"><i class="fa fa-eye mr-1"></i>{{ post.read_times }}　</p>
                             </div>
                         </div>
                     </div>
@@ -80,7 +89,8 @@
                     {# prev and next are only show if a symbol has been passed. #}
                     {% if prev != None -%}
                         <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
+                            <a class="page-link" href="
+                                    {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
 
@@ -88,7 +98,8 @@
                         {% if page %}
                             {% if page != pagination.page %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
+                                    <a class="page-link" href="
+                                            {{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
                                 </li>
                             {% else %}
                                 <li class="page-item active">
@@ -102,7 +113,8 @@
 
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
+                            <a class="page-link" href="
+                                    {{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
                         </li>
                     {%- endif -%}
                 </ul>
@@ -136,7 +148,8 @@
                                 <option>其他违反版规内容</option>
                             </select>
                             <label for="reportReason">举报理由</label>
-                            <textarea required class="form-control report-textarea" id="reportReason" name="reportReason" placeholder="请输入举报理由"></textarea>
+                            <textarea required class="form-control report-textarea" id="reportReason"
+                                      name="reportReason" placeholder="请输入举报理由"></textarea>
                         </div>
                         <div class="text-right">
                             <input type="submit" class="btn btn-outline-danger">
@@ -160,7 +173,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    可能有些同学对Markdown语法不是很了解,下面是一些简单的语法介绍!你们也可以访问这个<a href="https://www.runoob.com/markdown/md-tutorial.html" class="text-decoration-none" target="_blank">链接</a>学习怎么使用Markdown语法!
+                    可能有些同学对Markdown语法不是很了解,下面是一些简单的语法介绍!你们也可以访问这个<a
+                        href="https://www.runoob.com/markdown/md-tutorial.html" class="text-decoration-none"
+                        target="_blank">链接</a>学习怎么使用Markdown语法!
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -210,7 +225,8 @@
                             <td>```python <br>
                                 def test():<br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;print('Hello world!')<br>
-                                ```</td>
+                                ```
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -236,7 +252,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
-                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="submitDelete($(this).val())">删除</button>
+                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="submitDelete($(this).val())">删除
+                    </button>
                 </div>
             </div>
         </div>
@@ -254,19 +271,29 @@
             <p class="text-muted">@{{ user.username }}</p>
             <p>
                 <span class="mr-2">{{ user.post|length }}篇帖子</span>
-                <a href="{{ url_for('profile.follower', user_id=user.id) }}" class="mr-2 span-hand a-link text-decoration-none">{{ user.followers.count() }}位粉丝</a>
-                <a href="{{ url_for('profile.following', user_id=user.id) }}" class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
+                <a href="{{ url_for('profile.follower', user_id=user.id) }}"
+                   class="mr-2 span-hand a-link text-decoration-none">{{ user.followers.count() }}位粉丝</a>
+                <a href="{{ url_for('profile.following', user_id=user.id) }}"
+                   class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
             </p>
             {% if current_user.id == user.id %}
                 <a class="btn btn-outline-success" href="{{ url_for('user.index', user_id=current_user.id) }}">个人主页</a>
             {% else %}
                 {% if current_user.is_following(user) %}
-                    <a class="btn btn-outline-danger" href="/profile/unfollow/{{ user.id }}/">取消关注</a>
+                    <a class="btn btn-outline-info" href="/profile/unfollow/{{ user.id }}/">取消关注</a>
                 {% else %}
-                    <a class="btn btn-outline-danger" href="/profile/follow/{{ user.id }}/">关注TA</a>
+                    <a class="btn btn-outline-info" href="/profile/follow/{{ user.id }}/">关注TA</a>
                 {% endif %}
                 <!-- 弹出私信窗口 -->
-                <a class="btn btn-outline-primary" data-toggle="modal" data-userid="{{ user.id }}" data-target="#privacyChat">私信</a>
+                <a class="btn btn-outline-primary" data-toggle="modal" data-userid="{{ user.id }}"
+                   data-target="#privacyChat">私信</a>
+                {% if not blocked %}
+                    <a class="btn btn-outline-danger" data-toggle="modal" data-userid="{{ user.id }}"
+                       data-target="#confirmBlockUser">Block</a>
+                {% else %}
+                    <a class="btn btn-primary disabled" data-toggle="modal" data-userid="{{ user.id }}"
+                       data-target="#confirmBlockUser">Blocked</a>
+                {% endif %}
             {% endif %}
 
         </div>
@@ -280,13 +307,16 @@
                 <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">帖子</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if tabName == '评论' %}active{% endif %}" href="/profile/comment/{{ user.id }}/">评论</a>
+                <a class="nav-link {% if tabName == '评论' %}active{% endif %}"
+                   href="/profile/comment/{{ user.id }}/">评论</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if tabName == '收藏' %}active{% endif %}" href="/profile/collect/{{ user.id }}/">收藏</a>
+                <a class="nav-link {% if tabName == '收藏' %}active{% endif %}"
+                   href="/profile/collect/{{ user.id }}/">收藏</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if tabName == '社交' %}active{% endif %}" href="/profile/social/{{ user.id }}/">社交</a>
+                <a class="nav-link {% if tabName == '社交' %}active{% endif %}"
+                   href="/profile/social/{{ user.id }}/">社交</a>
             </li>
         </ul>
     </div>
@@ -302,13 +332,16 @@
     <div class="d-flex">
         <div>
             {% if not anonymous %}
-                <a class="ml-2 text-decoration-none" href="{{ url_for('profile.index', user_id=comment.author.id) }}">{{ comment.author.nickname }}</a>
+                <a class="ml-2 text-decoration-none"
+                   href="{{ url_for('profile.index', user_id=comment.author.id) }}">{{ comment.author.nickname }}</a>
             {% else %}
                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
             {% endif %}
             <div class="d-flex">
-                <a class="text-decoration-none ml-2 d-lg-block d-none"><span class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
-                <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-secondary">{{ comment.author.role.name }}</span></a>
+                <a class="text-decoration-none ml-2 d-lg-block d-none"><span
+                        class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
+                <a class="text-decoration-none ml-2"><span
+                        class="badge badge-pill badge-secondary">{{ comment.author.role.name }}</span></a>
                 {% if post.author_id == comment.author_id %}
                     <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">楼主</span></a>
                 {% endif %}
@@ -324,7 +357,8 @@
             <img class="rounded avatar-m" src="{{ user.avatar }}">
         </a>
         <h6>
-            <a class="text-decoration-none a-link" href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
+            <a class="text-decoration-none a-link"
+               href="{{ url_for('profile.index', user_id=user.id) }}">{{ user.nickname }}</a>
         </h6>
         {% if current_user.is_following(user) %}
             <a class="btn btn-outline-danger" href="{{ url_for('profile.unfollow_user', user_id=user.id) }}">取关</a>
@@ -338,15 +372,18 @@
 {% macro user_card_md(user) %}
     <li class="list-group-item">
         <div class="d-flex">
-            <img  alt="avatar" class="img-profile-bg-50" src="{{ user.avatar }}">
+            <img alt="avatar" class="img-profile-bg-50" src="{{ user.avatar }}">
             <div class="ml-2 flex-grow-1">
                 <p class="mb-0"><a>{{ user.nickname }}</a></p>
-                <p class="mb-0"><a href="{{ url_for('profile.index', user_id=user.id) }}" class="span-blockquote text-decoration-none">@{{user.username}}</a></p>
+                <p class="mb-0"><a href="{{ url_for('profile.index', user_id=user.id) }}"
+                                   class="span-blockquote text-decoration-none">@{{ user.username }}</a></p>
             </div>
             {% if current_user.is_following(user) %}
-                <a class="btn btn-outline-danger btn-sm h-50" href="{{ url_for('profile.unfollow_user', user_id=user.id) }}">取关</a>
+                <a class="btn btn-outline-danger btn-sm h-50"
+                   href="{{ url_for('profile.unfollow_user', user_id=user.id) }}">取关</a>
             {% else %}
-                <a class="btn btn-outline-success btn-sm h-50" href="{{ url_for('profile.follow_user', user_id=user.id) }}">关注</a>
+                <a class="btn btn-outline-success btn-sm h-50"
+                   href="{{ url_for('profile.follow_user', user_id=user.id) }}">关注</a>
             {% endif %}
         </div>
     </li>
@@ -355,17 +392,21 @@
 <!-- user page header -->
 {% macro user_page_header(title) %}
     <div class="dropdown d-lg-none">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{title}}
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            {{ title }}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.index', user_id=user.id) }}">个人资料</a>
-            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.notifications', user_id=user.id) }}">通知</a>
+            <a class="dropdown-item text-decoration-none"
+               href="{{ url_for('user.notifications', user_id=user.id) }}">通知</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.contact', user_id=user.id) }}">私信</a>
-            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
+            <a class="dropdown-item text-decoration-none"
+               href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.change_password', user_id=user.id) }}">修改密码</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
-            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.trash_station_post', user_id=user.id) }}">回收站</a>
+            <a class="dropdown-item text-decoration-none"
+               href="{{ url_for('user.trash_station_post', user_id=user.id) }}">回收站</a>
         </div>
     </div>
 {% endmacro %}
@@ -392,9 +433,9 @@
                 a-link{% else %} li-fade
             {% endif %}  text-decoration-none" href="{{ url_for('user.contact', user_id=user.id) }}">私信</a>
             {% if not contacts %}
-            <span class="badge badge-primary badge-pill">0</span>
+                <span class="badge badge-primary badge-pill">0</span>
             {% else %}
-            <span class="badge badge-danger badge-pill" id="unreadMessage">{{ contacts|length }}</span>
+                <span class="badge badge-danger badge-pill" id="unreadMessage">{{ contacts|length }}</span>
             {% endif %}
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -427,32 +468,44 @@
                 <div class="d-flex flex-row-reverse">
                     <!-- 如果当前登录用户id与post的作者id一致则显示帖子操作按钮 -->
                     {% if current_user.id == post.author_id %}
-                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-ellipsis-h"></i>
                         </a>
                         {% if request.endpoint == 'profile.index' %}
                             <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
-                                <a class="dropdown-item" href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">删除</a>
-                                <a class="dropdown-item" href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
+                                <a class="dropdown-item"
+                                   href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">删除</a>
+                                <a class="dropdown-item"
+                                   href="{{ url_for('post.set_anonymous', post_id=post.id) }}">匿名</a>
                             </div>
                         {% else %}
                             <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
-                                <a class="dropdown-item" href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">恢复</a>
+                                <a class="dropdown-item"
+                                   href="{{ url_for('user.post_delete_or_recover', post_id=post.id) }}">恢复</a>
                             </div>
                         {% endif %}
 
                     {% endif %}
-                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
-                    <a href="{{ url_for('post.read', post_id=post.id) }}" class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
+                    <a href="{{ url_for('post.read', post_id=post.id) }}"
+                       class="d-none d-sm-block text-decoration-none a-title flex-grow-1">{{ post.title|striptags|truncate(25, True) }}</a>
+                    <a href="{{ url_for('post.read', post_id=post.id) }}"
+                       class="d-sm-none d-block text-decoration-none a-title-sm flex-grow-1">{{ post.title|striptags|truncate(15, True) }}</a>
                 </div>
                 <p>{{ post.textplain|striptags|truncate(100) }}</p>
                 <div class="d-flex">
-                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }})&nbsp;&nbsp;</a>
-                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i class="fa fa-thumbs-o-down mr-1"></i>点灭({{ post.unlikes }})&nbsp;&nbsp;</a>
-                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-heart mr-1"></i>收藏({{ post.collects }})&nbsp;&nbsp;</a>
-                    <a class="text-muted text-decoration-none f-12-b"><i class="fa fa-comment-o mr-1"></i>评论({{ post.comments|length }})&nbsp;&nbsp;</a>
-                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b" >
-                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}" data-delay="500" data-original-title="" title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
+                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i
+                            class="fa fa-thumbs-o-up mr-1"></i>点亮({{ post.likes }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none d-none d-sm-block f-12-b"><i
+                            class="fa fa-thumbs-o-down mr-1"></i>点灭({{ post.unlikes }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none f-12-b"><i
+                            class="fa fa-heart mr-1"></i>收藏({{ post.collects }})&nbsp;&nbsp;</a>
+                    <a class="text-muted text-decoration-none f-12-b"><i
+                            class="fa fa-comment-o mr-1"></i>评论({{ post.comments|length }})&nbsp;&nbsp;</a>
+                    <a class="text-decoration-none ml-2 text-muted flex-grow-1 text-left f-12-b">
+                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ post.create_time }}"
+                              data-delay="500" data-original-title=""
+                              title="{{ post.create_time }}">{{ moment(post.create_time, local=True).fromNow(refresh=True) }}</span>
                     </a>
                 </div>
             </li>
@@ -472,22 +525,27 @@
             <li class="list-group-item">
                 <div class="d-flex flex-row-reverse">
                     {% if current_user.id == comment.author_id %}
-                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="mb-1 text-decoration-none mr-2" href="#" id="postOperator" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-ellipsis-h"></i>
                         </a>
                         {% if request.endpoint == 'profile.profile_comment' %}
                             <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
-                                <a class="dropdown-item" href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">删除</a>
+                                <a class="dropdown-item"
+                                   href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">删除</a>
                             </div>
                         {% else %}
                             <div class="dropdown-menu" x-placement="left" aria-labelledby="postOperator">
-                                <a class="dropdown-item" href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">恢复</a>
+                                <a class="dropdown-item"
+                                   href="{{ url_for('user.comment_operator', comment_id=comment.id) }}">恢复</a>
                             </div>
                         {% endif %}
                     {% endif %}
 
-                    <a class="text-decoration-none text-muted flex-grow-1 text-left f-12-b" >
-                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}" data-delay="500" data-original-title="" title="{{ comment.timestamps }}">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
+                    <a class="text-decoration-none text-muted flex-grow-1 text-left f-12-b">
+                        <span data-toggle="tooltip" data-placement="right" data-timestamp="{{ comment.timestamps }}"
+                              data-delay="500" data-original-title=""
+                              title="{{ comment.timestamps }}">{{ moment(comment.timestamps, local=True).fromNow(refresh=True) }}</span>
                     </a>
                 </div>
 
@@ -498,10 +556,14 @@
                         {{ comment.replied.body|safe }}
                     </div>
                     {{ comment.body|safe }}
-                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none"
+                                                 href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a>
+                    </p>
                 {% else %}
                     {{ comment.body|safe|string }}
-                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none" href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a></p>
+                    <p class="mt-1 mb-0">来自帖子:<a class="text-decoration-none"
+                                                 href="{{ url_for('post.read', post_id=comment.post.id) }}">{{ comment.post.title }}</a>
+                    </p>
                 {% endif %}
             </li>
         {% endfor %}
@@ -519,32 +581,40 @@
         {% for notice in notices %}
             <li class="list-group-item">
                 <div class="d-flex">
-                {% if notice.type == 0 %}
-                    <p class="flex-grow-1 p-mt-1"><span class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 回复你:</span></p>
-                {% elif notice.type == 1 %}
-                    <p class="flex-grow-1 p-mt-1"><span class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 私信你:</span></p>
-                {% endif %}
-                    <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if notice.type == 0 %}
+                        <p class="flex-grow-1 p-mt-1"><span
+                                class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 回复你:</span>
+                        </p>
+                    {% elif notice.type == 1 %}
+                        <p class="flex-grow-1 p-mt-1"><span
+                                class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 私信你:</span>
+                        </p>
+                    {% endif %}
+                    <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-ellipsis-h"></i>
                     </a>
                     {% if request.endpoint == 'user.notifications' %}
                         <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
-                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}" class="dropdown-item">未读</a>
+                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}"
+                               class="dropdown-item">未读</a>
                             <a class="dropdown-item">删除</a>
                         </div>
                     {% else %}
                         <div class="dropdown-menu" x-placement="left" aria-labelledby="noticeOperator">
-                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}" class="dropdown-item">已读</a>
+                            <a href="{{ url_for('user.mark_notification', user_id=notice.receive_id, notify_id=notice.id) }}"
+                               class="dropdown-item">已读</a>
                             <a class="dropdown-item">删除</a>
                         </div>
                     {% endif %}
                 </div>
                 {{ notice.msg|safe }}
-            {% if notice.type == 1 %}
-                <p class="p-mt-1">来自: <b>用户私信</b></p>
-            {% else %}
-                <p class="p-mt-1">来自: <a href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
-            {% endif %}
+                {% if notice.type == 1 %}
+                    <p class="p-mt-1">来自: <b>用户私信</b></p>
+                {% else %}
+                    <p class="p-mt-1">来自: <a
+                            href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
