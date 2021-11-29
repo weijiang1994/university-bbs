@@ -186,7 +186,7 @@
             $(".div-chat-content").append(
                 `<div class="d-flex flex-row-reverse mb-2 mr-1">
                 <img class="img-profile-bg-50 ml-1" src="{{ current_user.avatar }}" alt="{{ current_user.nickname }}">
-                <div class="div-msg-content">
+                <div class="div-msg-content msg-right">
                 <small><b>${moment().format("YYYY-MM-DD HH:mm:ss")}</b></small>
                 <p style="font-size: 14px">${messageContent}</p>
                 <small id="sendHint" class="text-primary"><b>正在发送</b><i class="fa fa-spin fa-spinner"></i></small>
@@ -202,16 +202,19 @@
                     'senderID': "{{ current_user.id }}"
                 },
                 success: function (res) {
+                    scrollToBottom()
                     if (res.code === 200) {
-                        $("#sendHint").text(res.msg)
+                        $("#sendHint").html(`<b>${res.msg}</b>`)
                         $("#messageBox").val('')
-                        scrollToBottom()
                         setTimeout(function () {
                             $("#sendHint").remove()
                         }, 2000)
-
                     } else {
-                        $("#sendHint").text(res.msg)
+                        $("#sendHint").html(`<b>${res.msg}</b>`)
+                        setTimeout(function () {
+                            $("#sendHint").remove()
+                            $(".div-chat-content").children().last().remove()
+                        }, 2000)
                     }
                 }
             })

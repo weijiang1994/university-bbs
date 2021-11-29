@@ -411,15 +411,19 @@
                     'senderID': currentID
                 },
                 success: function (res) {
+                    scrollToBottom()
                     if (res.code === 200) {
-                        $("#sendHint").text(res.msg)
+                        $("#sendHint").html(`<b>${res.msg}</b>`)
                         $("#messageBox").val('')
-                        scrollToBottom()
                         setTimeout(function () {
                             $("#sendHint").remove()
                         }, 2000)
                     } else {
-                        $("#sendHint").text(res.msg)
+                        $("#sendHint").html(`<b>${res.msg}</b>`)
+                        setTimeout(function () {
+                            $("#sendHint").remove()
+                            $(`.div-chat-content[data-chat=${currentPerson}]`).children().last().remove()
+                        }, 2000)
                     }
                 }
             })

@@ -50,6 +50,7 @@
     function sendPrivacyLetter() {
         let message = $("#messageContent").val().trim()
         if (message === ''){
+            $("#noContent").text("请输入私信内容!")
             $("#noContent").slideDown(500).delay(2000).hide(500)
             return
         }
@@ -64,6 +65,9 @@
                 if (res.code === 200){
                     $("#sendSuccess").slideDown(500).delay(2000).hide(500)
                     $("#messageContent").val('')
+                }else {
+                    $("#noContent").text(res.msg)
+                    $("#noContent").slideDown(500).delay(2000).hide(500)
                 }
                 $btn.attr('disabled', false)
                 $btn.text('发送')

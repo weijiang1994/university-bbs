@@ -431,6 +431,13 @@ def send_message():
     sender_id = request.form.get('senderID')
     send_user = User.query.get_or_404(sender_id)
     receiver_id = request.form.get('receiverID')
+
+    # 检查发送者是否在接收者的黑名单中
+    bu = BlockUser.query.filter(BlockUser.user_id == receiver_id,
+                                BlockUser.block_user_id == send_user.id).all()
+    if bu:
+        return {'code': 400, 'msg': '你在该用户的黑名单中,发送私信失败!'}
+
     pm = PrivateMessage(sender_id=sender_id,
                         receiver_id=receiver_id,
                         content=message)
