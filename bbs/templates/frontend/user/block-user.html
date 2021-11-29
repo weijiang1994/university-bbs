@@ -1,0 +1,67 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul, user_card_lg, user_card_md with context %}
+{% block title %}
+    {{ user.nickname }}的个人主页
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-lg-3">
+                    {{ user_page_header_ul('黑名单') }}
+                    {{ user_page_header('黑名单') }}
+                </div>
+                <div class="col-lg-9 col-md-9">
+                    {% include "_flash.html" %}
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">黑名单</span></p>
+                    {% if bus|length > 0 %}
+                        <!-- 大屏幕下黑名单列表 -->
+                        <div class="d-none d-lg-block col-md-12">
+                            {% for bu in bus %}
+                                <div class="user-card text-center">
+                                    <a href="{{ url_for('profile.index', user_id=bu.block_user.id) }}">
+                                        <img class="rounded avatar-m" src="{{ bu.block_user.avatar }}"
+                                             alt="{{ bu.block_user.nickname }}">
+                                    </a>
+                                    <h6>
+                                        <a class="text-decoration-none a-link"
+                                           href="{{ url_for('profile.index', user_id=bu.block_user.id) }}">{{ bu.block_user.nickname }}</a>
+                                    </h6>
+                                    <a class="btn btn-outline-danger"
+                                       href="{{ url_for('user.delete_block_user', user_id=user.id) }}">移出</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- 小屏幕下黑名单列表 -->
+                        <div class="d-lg-none col-md-12 mt-2 p-0">
+                            <ul class="list-group list-group-flush ul-posts">
+                                {% for bu in bus %}
+                                    <li class="list-group-item">
+                                        <div class="d-flex">
+                                            <img alt="avatar" class="img-profile-bg-50"
+                                                 src="{{ bu.block_user.avatar }}">
+                                            <div class="ml-2 flex-grow-1">
+                                                <p class="mb-0"><a>{{ bu.block_user.nickname }}</a></p>
+                                                <p class="mb-0"><a
+                                                        href="{{ url_for('profile.index', user_id=bu.block_user.id) }}"
+                                                        class="span-blockquote text-decoration-none">@{{ bu.block_user.username }}</a>
+                                                </p>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <a class="btn btn-outline-danger btn-sm h-50 z"
+                                                   href="{{ url_for('user.delete_block_user', user_id=bu.block_user.id) }}">移出</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}

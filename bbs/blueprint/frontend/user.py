@@ -464,3 +464,20 @@ def block_user():
     db.session.commit()
     flash('拉黑用户成功！', 'success')
     return {'code': 200}
+
+
+@user_bp.route('/block-user-list')
+@login_required
+def block_user_list():
+    bus = BlockUser.query.filter_by(user_id=current_user.id).order_by(BlockUser.c_time.desc()).all()
+    return render_template('frontend/user/block-user.html', bus=bus, user=current_user)
+
+
+@user_bp.route('/delete-block-user/<user_id>')
+@login_required
+def delete_block_user(user_id):
+    BlockUser.query.filter(BlockUser.user_id==current_user.id,
+                           BlockUser.block_user_id == user_id).delete()
+    db.session.commit()
+    flash('移出黑名单成功!', 'success')
+    return redirect(request.referrer)
