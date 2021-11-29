@@ -476,7 +476,7 @@ def block_user_list():
 @user_bp.route('/delete-block-user/<user_id>')
 @login_required
 def delete_block_user(user_id):
-    BlockUser.query.filter(BlockUser.user_id==current_user.id,
+    BlockUser.query.filter(BlockUser.user_id == current_user.id,
                            BlockUser.block_user_id == user_id).delete()
     db.session.commit()
     flash('移出黑名单成功!', 'success')
