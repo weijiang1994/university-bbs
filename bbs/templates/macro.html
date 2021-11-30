@@ -91,6 +91,8 @@
                         <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
                             <a class="page-link" href="
 
+
+
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
@@ -100,6 +102,8 @@
                             {% if page != pagination.page %}
                                 <li class="page-item">
                                     <a class="page-link" href="
+
+
 
                                             {{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
                                 </li>
@@ -116,6 +120,8 @@
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
                             <a class="page-link" href="
+
+
 
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
                         </li>
@@ -270,8 +276,14 @@
             <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
         </div>
         <div class="col-md-9 col-lg-9 div-center-md">
-            <h3>{{ user.nickname }}</h3>
-            <p class="text-muted">@{{ user.username }}</p>
+            <h3 class="mb-0">{{ user.nickname }}</h3>
+            <p class="text-muted mb-2">@{{ user.username }}</p>
+            {% if user.slogan %}
+                <p class="mb-2">{{ user.slogan }}</p>
+            {% endif %}
+            {% if user.website or user.location %}
+                <p class="mb-2"><span class="social-label"><i class="fa fa-home fa-fw mr-1"></i><a href="{{ user.website }}" target="_blank" title="{{ user.nickname }}的个人主页">{{ user.website }}</a></span><span class="social-label"><i class="fa fa-location-arrow fa-fw mr-1"></i>{{ user.location }}</span></p>
+            {% endif %}
             <p>
                 <span class="mr-2">{{ user.post|length }}篇帖子</span>
                 <a href="{{ url_for('profile.follower', user_id=user.id) }}"
