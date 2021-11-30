@@ -93,6 +93,7 @@
 
 
 
+
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
@@ -102,6 +103,7 @@
                             {% if page != pagination.page %}
                                 <li class="page-item">
                                     <a class="page-link" href="
+
 
 
 
@@ -120,6 +122,7 @@
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
                             <a class="page-link" href="
+
 
 
 
@@ -282,7 +285,17 @@
                 <p class="mb-2">{{ user.slogan }}</p>
             {% endif %}
             {% if user.website or user.location %}
-                <p class="mb-2"><span class="social-label"><i class="fa fa-home fa-fw mr-1"></i><a href="{{ user.website }}" target="_blank" title="{{ user.nickname }}的个人主页">{{ user.website }}</a></span><span class="social-label"><i class="fa fa-location-arrow fa-fw mr-1"></i>{{ user.location }}</span></p>
+                <p class="mb-2">
+                    {% if user.website %}
+                        <span class="social-label"><i class="fa fa-home fa-fw mr-1"></i>
+                        <a href="{{ user.website }}" target="_blank"
+                           title="{{ user.nickname }}的个人主页">{{ user.website }}</a>
+                    {% endif %}
+                    {% if user.location %}
+                        </span><span class="social-label"><i
+                            class="fa fa-location-arrow fa-fw mr-1"></i>{{ user.location }}</span>
+                    {% endif %}
+                </p>
             {% endif %}
             <p>
                 <span class="mr-2">{{ user.post|length }}篇帖子</span>
