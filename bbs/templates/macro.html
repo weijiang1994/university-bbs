@@ -287,13 +287,16 @@
             {% if user.website or user.location %}
                 <p class="mb-2">
                     {% if user.website %}
-                        <span class="social-label"><i class="fa fa-home fa-fw mr-1"></i>
-                        <a href="{{ user.website }}" target="_blank"
-                           title="{{ user.nickname }}的个人主页">{{ user.website }}</a>
+                        <a class="text-decoration-none social-label" href="{{ user.website }}" target="_blank"
+                           title="{{ user.nickname }}的个人主页"><i class="fa fa-home fa-fw mr-1"></i>{{ user.website }}</a>
                     {% endif %}
                     {% if user.location %}
-                        </span><span class="social-label"><i
-                            class="fa fa-location-arrow fa-fw mr-1"></i>{{ user.location }}</span>
+                        <span class="social-label d-lg-inline d-none"><i
+                            class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location }}
+                        </span>
+                        <span class="social-label d-lg-none d-md-block" title="{{ user.location }}"><i
+                            class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location|truncate(8) }}
+                        </span>
                     {% endif %}
                 </p>
             {% endif %}
