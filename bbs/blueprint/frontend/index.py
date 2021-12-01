@@ -28,9 +28,9 @@ def get_index_category():
             user_interests = [user_interest[0] for user_interest in user_interests]
             categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
 
-            pcs = PostCategory.query.\
-                filter(not_(PostCategory.id.in_(user_interests))).\
-                order_by(func.random()).\
+            pcs = PostCategory.query. \
+                filter(not_(PostCategory.id.in_(user_interests))). \
+                order_by(func.random()). \
                 limit(5 - len(user_interests)).all()
             categories += pcs
     else:
@@ -93,11 +93,13 @@ def index():
         categories = PostCategory.query.order_by(func.random()).limit(5)
 
     hot_posts = get_td_hot_posts()
+    rand_posts = get_random_posts()
     return render_template('frontend/index/index.html',
                            posts=posts,
                            categories=categories,
                            unread_count=get_notification_count(),
-                           hot_posts=hot_posts)
+                           hot_posts=hot_posts,
+                           rand_posts=rand_posts)
 
 
 def get_notification_count():
@@ -119,11 +121,13 @@ def latest():
     posts = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     categories = get_index_category()
+    rand_posts = get_random_posts()
     return render_template('frontend/index/latest.html',
                            posts=posts,
                            tag=tag,
                            pagination=pagination,
-                           categories=categories)
+                           categories=categories,
+                           rand_posts=rand_posts)
 
 
 @index_bp.route('/hot-post/')
@@ -138,12 +142,14 @@ def hot():
     hots = pagination.items
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     categories = get_index_category()
+    rand_posts = get_random_posts()
     return render_template('frontend/index/hot-post.html',
                            hots=hots,
                            pagination=pagination,
                            tag=tag,
                            unread_count=get_notification_count(),
-                           categories=categories)
+                           categories=categories,
+                           rand_posts=rand_posts)
 
 
 @index_bp.route('/rand-post/')
@@ -151,6 +157,15 @@ def hot():
 def rands():
     rand = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)
     return render_template('frontend/index/rand-post.html', rands=rand, unread_count=get_notification_count())
+
+
+def get_random_posts():
+    day = datetime.date.today() - datetime.timedelta(days=30)
+    rand = Post.query.filter(Post.status_id == 1,
+                             Post.create_time > day).order_by(func.random(), Post.update_time.desc()).limit(5).all()
+    if len(rand) < 5:
+        rand += Post.query.filter(Post.status_id == 1).order_by(func.random(), Post.update_time.desc()).limit(5 - len(rand)).all()
+    return rand
 
 
 def get_td_hot_posts():

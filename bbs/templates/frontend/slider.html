@@ -112,6 +112,19 @@
         </div>
     </div>
 
+    <div class="card border-secondary mb-2">
+        <div class="card-header"><i class="fa fa-random mr-2"></i>随机推荐</div>
+        <div id="hot-posts" class="card-body p-2 f-15">
+            {% if rand_posts|length %}
+                <ol class="mb-0 pl-4">
+                    {% for hp in rand_posts %}
+                        <li><a href="{{ url_for('post.read', post_id=hp.id) }}" class="text-decoration-none">{{ hp.title }}</a></li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
 <script>
     $(document).ready(function () {
