@@ -79,10 +79,6 @@ def index():
             categories += PostCategory.query.filter(not_(PostCategory.id.in_(user_interests))).order_by(
                 func.random()).limit(5 - len(user_interests))
 
-            # for cate in categories:
-            #     user_interests.append(cate.id)
-            # categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
-
         elif len(user_interests) == 0:
             categories = PostCategory.query.order_by(func.random()).limit(5)
 
@@ -150,13 +146,6 @@ def hot():
                            unread_count=get_notification_count(),
                            categories=categories,
                            rand_posts=rand_posts)
-
-
-@index_bp.route('/rand-post/')
-@statistic_traffic(db, VisitStatistic)
-def rands():
-    rand = Post.query.filter_by(status_id=1).order_by(func.random()).limit(20)
-    return render_template('frontend/index/rand-post.html', rands=rand, unread_count=get_notification_count())
 
 
 def get_random_posts():
