@@ -5,7 +5,7 @@
 </style>
 <div class="col-md-4 mt-1">
     <div class="card border-secondary mb-2">
-        <div class="card-header"><i class="fa fa-user mr-2"></i>用户</div>
+        <div class="card-header p-2"><i class="fa fa-user fa-fw mr-1"></i>用户</div>
         <div class="card-body">
             {% if not current_user.is_authenticated %}
                 <div><small class="text-danger"><b>您尚未登录！</b></small>请先
@@ -68,15 +68,15 @@
     </div>
 
     <div class="card border-secondary mb-2">
-        <div class="card-header"><i class="fa fa-file-word-o mr-2"></i>今日鸡汤</div>
+        <div class="card-header p-2"><i class="fa fa-file-word-o fa-fw mr-1"></i>今日鸡汤</div>
         <div id="oneWord" class="card-body p-2 f-15">
             <i class="fa fa-spinner fa-spin f-hint"></i>
         </div>
     </div>
 
     <div class="card border-secondary mb-2">
-        <div class="card-header">
-            <i class="fa fa-github mr-2"></i>Github
+        <div class="card-header p-2">
+            <i class="fa fa-github fa-fw mr-1"></i>Github
         </div>
         <div class="card-body p-2 f-15">
             <div style="border-bottom: 1px solid rgba(58,10,10,0.19); margin-bottom: 5px;padding-bottom: 3px;"
@@ -98,7 +98,7 @@
     </div>
 
     <div class="card border-secondary mb-2">
-        <div class="card-header"><i class="fa fa-fire mr-2"></i>今日热议</div>
+        <div class="card-header p-2"><i class="fa fa-fire fa-fw mr-1"></i>今日热议</div>
         <div id="hot-posts" class="card-body p-2 f-15">
             {% if hot_posts|length %}
                 <ol class="mb-0 pl-4">
@@ -113,7 +113,7 @@
     </div>
 
     <div class="card border-secondary mb-2">
-        <div class="card-header"><i class="fa fa-random mr-2"></i>随机推荐</div>
+        <div class="card-header p-2"><i class="fa fa-random fa-fw mr-1"></i>随机推荐</div>
         <div id="hot-posts" class="card-body p-2 f-15">
             {% if rand_posts|length %}
                 <ol class="mb-0 pl-4">
