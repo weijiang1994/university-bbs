@@ -23,12 +23,11 @@ all_comments = list()
 
 
 def get_slider_variables():
-    global all_users
-    global all_posts
-    global all_comments
-    all_users = User.query.all()
-    all_posts = Post.query.all()
-    all_comments = Comments.query.all()
+    if request.endpoint in ['index_bp.index', 'index_bp.latest', 'index_bp.hot']:
+        global all_users, all_posts, all_comments
+        all_users = User.query.all()
+        all_posts = Post.query.all()
+        all_comments = Comments.query.all()
 
 
 index_bp.before_request(get_slider_variables)
