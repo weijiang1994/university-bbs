@@ -25,7 +25,8 @@
                     {% if unread_count %}
                         <div>
                             <a class="ml-3 f-16 text-decoration-none"
-                               href="{{ url_for('user.unread', user_id=current_user.id) }}"><label class="badge badge-info span-hand">{{ unread_count }}条未读</label></a>
+                               href="{{ url_for('user.unread', user_id=current_user.id) }}"><label
+                                    class="badge badge-info span-hand">{{ unread_count }}条未读</label></a>
                         </div>
                     {% endif %}
                 </div>
@@ -103,7 +104,8 @@
             {% if hot_posts|length %}
                 <ol class="mb-0 pl-4">
                     {% for hp in hot_posts %}
-                        <li><a href="{{ url_for('post.read', post_id=hp.id) }}" class="text-decoration-none">{{ hp.title }}</a></li>
+                        <li><a href="{{ url_for('post.read', post_id=hp.id) }}"
+                               class="text-decoration-none">{{ hp.title }}</a></li>
                     {% endfor %}
                 </ol>
             {% else %}
@@ -118,7 +120,8 @@
             {% if rand_posts|length %}
                 <ol class="mb-0 pl-4">
                     {% for hp in rand_posts %}
-                        <li><a href="{{ url_for('post.read', post_id=hp.id) }}" class="text-decoration-none">{{ hp.title }}</a></li>
+                        <li><a href="{{ url_for('post.read', post_id=hp.id) }}"
+                               class="text-decoration-none">{{ hp.title }}</a></li>
                     {% endfor %}
                 </ol>
             {% endif %}
@@ -128,10 +131,20 @@
     <div class="card border-secondary mb-2">
         <div class="card-header p-2"><i class="fa fa-dashboard fa-fw mr-1"></i>社区运行状况</div>
         <div id="hot-posts" class="card-body p-2 f-15 pl-4">
-            <p class="mb-0">注册会员 <b>{{ all_users }}</b></p>
-            <p class="mb-0">帖子 <b>{{ all_posts }}</b></p>
-            <p class="mb-0">回复 <b>{{ all_comments }}</b></p>
-            <p class="mb-0">今日访问 <b>{{ today_visits }}</b></p>
+            <div class="d-flex">
+                <div class="text-right">
+                    <p class="mb-0">注册会员 </p>
+                    <p class="mb-0">帖子 </p>
+                    <p class="mb-0">回复 </p>
+                    <p class="mb-0">今日访问 </p>
+                </div>
+                <div class="ml-2">
+                    <p class="mb-0"><b>{{ all_users }}</b></p>
+                    <p class="mb-0"><b>{{ all_posts }}</b></p>
+                    <p class="mb-0"><b>{{ all_comments }}</b></p>
+                    <p class="mb-0"><b>{{ today_visits }}</b></p>
+                </div>
+            </div>
         </div>
     </div>
 
