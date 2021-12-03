@@ -20,14 +20,18 @@ index_bp = Blueprint('index_bp', __name__)
 all_users = list()
 all_posts = list()
 all_comments = list()
+today_visits = 0
 
 
 def get_slider_variables():
     if request.endpoint in ['index_bp.index', 'index_bp.latest', 'index_bp.hot']:
-        global all_users, all_posts, all_comments
+        global all_users, all_posts, all_comments, today_visits
         all_users = User.query.all()
         all_posts = Post.query.all()
         all_comments = Comments.query.all()
+        today_visits = VisitStatistic.query.filter(VisitStatistic.day == datetime.date.today()).first()
+        if today_visits:
+            today_visits = today_visits.times
 
 
 index_bp.before_request(get_slider_variables)
@@ -113,7 +117,8 @@ def index():
                            rand_posts=rand_posts,
                            all_users=all_users,
                            all_posts=all_posts,
-                           all_comments=all_comments)
+                           all_comments=all_comments,
+                           today_visits=today_visits)
 
 
 def get_notification_count():
@@ -146,7 +151,8 @@ def latest():
                            all_users=all_users,
                            all_posts=all_posts,
                            hot_posts=hot_posts,
-                           all_comments=all_comments)
+                           all_comments=all_comments,
+                           today_visits=today_visits)
 
 
 @index_bp.route('/hot-post/')
@@ -173,7 +179,8 @@ def hot():
                            rand_posts=rand_posts,
                            all_users=all_users,
                            all_posts=all_posts,
-                           all_comments=all_comments)
+                           all_comments=all_comments,
+                           today_visits=today_visits)
 
 
 def get_random_posts():
