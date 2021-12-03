@@ -6,7 +6,7 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request, current_app, jsonify
-from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory
+from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User
 from bbs.extensions import db
 import random
 from sqlalchemy.sql.expression import func, not_, or_
@@ -16,6 +16,22 @@ from flask_login import current_user
 import datetime
 
 index_bp = Blueprint('index_bp', __name__)
+
+all_users = list()
+all_posts = list()
+all_comments = list()
+
+
+def get_slider_variables():
+    global all_users
+    global all_posts
+    global all_comments
+    all_users = User.query.all()
+    all_posts = Post.query.all()
+    all_comments = Comments.query.all()
+
+
+index_bp.before_request(get_slider_variables)
 
 
 def get_index_category():
@@ -95,7 +111,10 @@ def index():
                            categories=categories,
                            unread_count=get_notification_count(),
                            hot_posts=hot_posts,
-                           rand_posts=rand_posts)
+                           rand_posts=rand_posts,
+                           all_users=all_users,
+                           all_posts=all_posts,
+                           all_comments=all_comments)
 
 
 def get_notification_count():
@@ -123,7 +142,10 @@ def latest():
                            tag=tag,
                            pagination=pagination,
                            categories=categories,
-                           rand_posts=rand_posts)
+                           rand_posts=rand_posts,
+                           all_users=all_users,
+                           all_posts=all_posts,
+                           all_comments=all_comments)
 
 
 @index_bp.route('/hot-post/')
@@ -145,7 +167,10 @@ def hot():
                            tag=tag,
                            unread_count=get_notification_count(),
                            categories=categories,
-                           rand_posts=rand_posts)
+                           rand_posts=rand_posts,
+                           all_users=all_users,
+                           all_posts=all_posts,
+                           all_comments=all_comments)
 
 
 def get_random_posts():
@@ -153,7 +178,8 @@ def get_random_posts():
     rand = Post.query.filter(Post.status_id == 1,
                              Post.create_time > day).order_by(func.random(), Post.update_time.desc()).limit(5).all()
     if len(rand) < 5:
-        rand += Post.query.filter(Post.status_id == 1).order_by(func.random(), Post.update_time.desc()).limit(5 - len(rand)).all()
+        rand += Post.query.filter(Post.status_id == 1).order_by(func.random(), Post.update_time.desc()).limit(
+            5 - len(rand)).all()
     return rand
 
 
@@ -188,7 +214,7 @@ def load_github():
     return jsonify({'tag': 1, 'star': ret[0], 'fork': ret[1]})
 
 
-def get_ghinfo(theme='default'):
+def get_ghinfo(theme: object = 'default') -> object:
     import requests
     stars = 'https://img.shields.io/github/stars/weijiang1994/university-bbs?style=social'
     forks = 'https://img.shields.io/github/forks/weijiang1994/university-bbs?style=social'
