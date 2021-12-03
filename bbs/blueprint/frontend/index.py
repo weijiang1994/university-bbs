@@ -136,6 +136,7 @@ def latest():
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     categories = get_index_category()
     rand_posts = get_random_posts()
+    hot_posts = get_td_hot_posts()
     return render_template('frontend/index/latest.html',
                            posts=posts,
                            tag=tag,
@@ -144,6 +145,7 @@ def latest():
                            rand_posts=rand_posts,
                            all_users=all_users,
                            all_posts=all_posts,
+                           hot_posts=hot_posts,
                            all_comments=all_comments)
 
 
@@ -160,11 +162,13 @@ def hot():
     tag = pagination.total > current_app.config['BBS_PER_PAGE']
     categories = get_index_category()
     rand_posts = get_random_posts()
+    hot_posts = get_td_hot_posts()
     return render_template('frontend/index/hot-post.html',
                            hots=hots,
                            pagination=pagination,
                            tag=tag,
                            unread_count=get_notification_count(),
+                           hot_posts=hot_posts,
                            categories=categories,
                            rand_posts=rand_posts,
                            all_users=all_users,
