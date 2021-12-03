@@ -17,18 +17,18 @@ import datetime
 
 index_bp = Blueprint('index_bp', __name__)
 
-all_users = list()
-all_posts = list()
-all_comments = list()
+all_users = 0
+all_posts = 0
+all_comments = 0
 today_visits = 0
 
 
 def get_slider_variables():
     if request.endpoint in ['index_bp.index', 'index_bp.latest', 'index_bp.hot']:
         global all_users, all_posts, all_comments, today_visits
-        all_users = User.query.all()
-        all_posts = Post.query.all()
-        all_comments = Comments.query.all()
+        all_users = User.query.count()
+        all_posts = Post.query.count()
+        all_comments = Comments.query.count()
         today_visits = VisitStatistic.query.filter(VisitStatistic.day == datetime.date.today()).first()
         if today_visits:
             today_visits = today_visits.times
