@@ -94,6 +94,8 @@
 
 
 
+
+
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
@@ -103,6 +105,8 @@
                             {% if page != pagination.page %}
                                 <li class="page-item">
                                     <a class="page-link" href="
+
+
 
 
 
@@ -122,6 +126,8 @@
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
                             <a class="page-link" href="
+
+
 
 
 
@@ -292,10 +298,10 @@
                     {% endif %}
                     {% if user.location %}
                         <span class="social-label d-lg-inline d-none"><i
-                            class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location }}
+                                class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location }}
                         </span>
                         <span class="social-label d-lg-none d-md-block" title="{{ user.location }}"><i
-                            class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location|truncate(8) }}
+                                class="fa fa-map-marker fa-fw mr-1"></i>{{ user.location|truncate(8) }}
                         </span>
                     {% endif %}
                 </p>
@@ -640,6 +646,10 @@
                         <p class="flex-grow-1 p-mt-1"><span
                                 class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 私信你:</span>
                         </p>
+                    {% elif notice.type == 2 %}
+                        <p class="flex-grow-1 p-mt-1"><span
+                                class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 通知你:</span>
+                        </p>
                     {% endif %}
                     <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
@@ -662,9 +672,12 @@
                 {{ notice.msg|safe }}
                 {% if notice.type == 1 %}
                     <p class="p-mt-1">来自: <b>用户私信</b></p>
-                {% else %}
+                {% elif notice.type == 0 %}
                     <p class="p-mt-1">来自: <a
                             href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
+                {% elif notice.type == 2 %}
+                    <p class="p-mt-1">来自: <b>帖子审核</b></p>
+
                 {% endif %}
             </li>
         {% endfor %}
