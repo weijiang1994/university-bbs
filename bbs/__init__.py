@@ -25,7 +25,7 @@ from bbs.blueprint.backend.index import be_index_bp
 from bbs.blueprint.backend.user_manage import be_user_manage_bp
 from bbs.blueprint.backend.post_manage import be_post_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
-from bbs.utils import get_text_plain
+from bbs.utils import get_text_plain, get_backend_url
 import os
 from bbs.setting import basedir
 
@@ -43,6 +43,8 @@ def create_app(config_name=None):
     register_bp(app)
     register_error_handlers(app)
     register_log(app)
+    print(get_backend_url())
+    app.context_processor(get_backend_url)
     return app
 
 

@@ -136,6 +136,11 @@ def get_upload_img_limit():
     return yl.get('admin').get('upload-img')
 
 
+def get_backend_url():
+    yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
+    return dict(backend=yl.get('admin').get('backend_url'))
+
+
 def get_emoji_url():
     """
     获取所有表情的url连接
