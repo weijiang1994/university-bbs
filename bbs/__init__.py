@@ -43,7 +43,6 @@ def create_app(config_name=None):
     register_bp(app)
     register_error_handlers(app)
     register_log(app)
-    print(get_backend_url())
     app.context_processor(get_backend_url)
     return app
 
