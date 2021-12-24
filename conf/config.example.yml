@@ -3,4 +3,5 @@ admin:
   register: true
   upload-img: 1024
   mail:
-  url: http:127.0.0.1:8008
+  backend_url: http:127.0.0.1:8008
+  category_img:
