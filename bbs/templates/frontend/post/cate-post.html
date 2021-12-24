@@ -21,15 +21,20 @@
             </div>
             {% if current_user.is_authenticated %}
                 <div class="d-flex post-tag-root">
-                    <p class="mb-0 flex-grow-1"><a href="{{ url_for('post.new_post') }}"
-                                                   class="btn btn-light btn-sm">发布新的帖子</a></p>
-                    {% if not cate.user_collected() %}
-                        <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
-                           onclick="if(confirm('加入收藏主页会优先显示该主题，确定收藏该主题吗？')===false)return false;"><small>加入收藏</small></a>
-                    {% else %}
-                        <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
-                           onclick="if(confirm('取消收藏会删除你与该主题相关的所有信息，确定操作吗？')===false)return false;"><small>取消收藏</small></a>
-                    {% endif %}
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <p class="mb-0 "><a href="{{ url_for('post.new_post') }}"
+                                                       class="btn btn-light btn-sm">发布新的帖子</a></p>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        {% if not cate.user_collected() %}
+                            <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
+                               onclick="if(confirm('加入收藏主页会优先显示该主题，确定收藏该主题吗？')===false)return false;"><small>加入收藏</small></a>
+                        {% else %}
+                            <a href="{{ url_for('post.collect_cate', cate_id=cate.id) }}" class="text-decoration-none"
+                               onclick="if(confirm('取消收藏会删除你与该主题相关的所有信息，确定操作吗？')===false)return false;"><small>取消收藏</small></a>
+                        {% endif %}
+                    </div>
                 </div>
             {% endif %}
             <div class="mt-2">
