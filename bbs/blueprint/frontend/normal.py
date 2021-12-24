@@ -13,7 +13,7 @@ from flask import Blueprint, send_from_directory, request, jsonify, flash
 from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort, render_template
-from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code
+from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code, conf
 from flask_login import login_required
 import re
 from bbs.email import send_email
@@ -147,3 +147,9 @@ def init_select():
     data_dict['role'] = r
     data_dict['college'] = c
     return jsonify({'tag': 1, 'data': data_dict})
+
+
+@normal_bp.route('/category-image/<category_id>/<image_name>')
+def category_image(category_id, image_name):
+    path = os.path.join(conf.get('admin').get('category_img'), category_id)
+    return send_from_directory(path, image_name)

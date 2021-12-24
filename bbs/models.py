@@ -218,7 +218,8 @@ class PostCategory(db.Model):
     p_topic = db.relationship('PostTopic', back_populates='post_cate')
 
     def get_sample_img(self):
-        if os.path.isdir(str(self.cate_img)):
+
+        if self.cate_img:
             return self.cate_img
         return '/static/img/no-sample.png'
 

@@ -120,6 +120,10 @@ EMOJI_INFOS = [[('angry-face_1f620.png', 'angry-face'),
 PANGU_DATE = '1970-01-01'
 TIME_RANGE = {'全部': 1, '半年': 180, '一月': 30, '三天': 3, '隐藏': -1}
 
+yaml_file = basedir + '/conf/config.yml'
+fs = open(yaml_file, encoding='utf8')
+conf = yaml.load(fs, Loader=yaml.FullLoader)
+
 
 def get_audit():
     yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
