@@ -9,12 +9,15 @@
         <div class="container mt-2">
             {% include "_flash.html" %}
             <div class="d-flex post-tag-header">
-                <img src="{{ cate.get_sample_img() }}" alt="{{ cate.name }}" class="avatar-50">
+                <div class="d-flex align-items-center">
+                    <img src="{{ cate.get_sample_img() }}" alt="{{ cate.name }}" class="avatar-50">
+                </div>
                 <div class="ml-2 flex-grow-1">
                     <p class="mb-0"><a href="/" class="text-decoration-none">university-bbs</a> > {{ cate.name }}</p>
                     <p class="mb-0"><small>{{ cate.desc|empty }}</small></p>
                 </div>
-                <p class="mb-0"><small>帖子总数{{ posts|length }}</small></p>
+                <p class="mb-0 d-none d-lg-block"><small>帖子总数{{ posts|length }}</small></p>
+                <p class="mb-0 d-lg-none"><small><label class="badge badge-info">{{ posts|length }}</label></small></p>
             </div>
             {% if current_user.is_authenticated %}
                 <div class="d-flex post-tag-root">
