@@ -562,6 +562,9 @@
                     contentType: false,
                     success: function (res) {
                         insertText(document.getElementById('commentContent'), res.imgPath)
+                    },
+                    error: function (){
+                        alert('上传图片失败!')
                     }
                 })
             }
