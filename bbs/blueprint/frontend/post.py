@@ -17,6 +17,7 @@ from bbs.extensions import db
 from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email
 from bbs.decorators import statistic_traffic, post_can_read, record_read
 from bbs.email import send_email
+from bs4 import BeautifulSoup
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -242,7 +243,8 @@ def post_comment():
     post_id = request.form.get('postId')
     post = Post.query.get_or_404(post_id)
     comment_content = to_html(comment_content)
-    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id)
+    soup = BeautifulSoup(comment_content, 'html.parser')
+    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id, text=soup.text)
     # 如果评论帖子用户与发帖用户不为同一人则发送消息通知
     if current_user.id != post.author_id and not BlockUser.query.filter(BlockUser.user_id == post.author_id,
                                                                         BlockUser.block_user_id == current_user.id).all():
@@ -265,7 +267,8 @@ def reply_comment():
     comment = request.form.get('comment')
     comment = to_html(comment)
     post_id = request.form.get('post_id')
-    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id)
+    soup = BeautifulSoup(comment_content, 'html.parser')
+    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id, text=soup.text)
     post = Post.query.get_or_404(post_id)
     if not BlockUser.query.filter(BlockUser.user_id == comment_user_id,
                                   BlockUser.block_user_id == current_user.id).all():

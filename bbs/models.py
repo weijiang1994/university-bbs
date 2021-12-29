@@ -309,6 +309,7 @@ class Comments(db.Model):
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
+    text = db.Column(db.TEXT, comment='not contain html tag text')
     timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
 
     replied_id = db.Column(db.INTEGER, db.ForeignKey('t_comments.id'))
