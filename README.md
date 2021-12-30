@@ -67,9 +67,8 @@ flask run
 
 > 此仓库为项目的前台系统，面向的是用户端！如需后台管理端，请点击下方连接跳转！后台管理系统采用前后端分离模式开发！(vue2.x + flask1.x)
 
-- 后台管理系统前端
+- [后台管理系统前端](https://github.com/weijiang1994/bbs-admin-frontend)
+
+- [后台管理系统后端](https://github.com/weijiang1994/bbs-admin-backend)
   
-  [前端](https://github.com/weijiang1994/bbs-admin-frontend)
-- 后台管理系统后端
   
-  [后端](https://github.com/weijiang1994/bbs-admin-backend)
