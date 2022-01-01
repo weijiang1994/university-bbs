@@ -242,9 +242,10 @@ def post_comment():
     comment_content = request.form.get('commentContent')
     post_id = request.form.get('postId')
     post = Post.query.get_or_404(post_id)
+    md_text = comment_content
     comment_content = to_html(comment_content)
     soup = BeautifulSoup(comment_content, 'html.parser')
-    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id, text=soup.text)
+    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id, text=soup.text, md=md_text)
     # 如果评论帖子用户与发帖用户不为同一人则发送消息通知
     if current_user.id != post.author_id and not BlockUser.query.filter(BlockUser.user_id == post.author_id,
                                                                         BlockUser.block_user_id == current_user.id).all():
@@ -265,10 +266,12 @@ def reply_comment():
     # 用于处理消息通知
     comment_user_id = request.form.get('comment_user_id')
     comment = request.form.get('comment')
+    md_text = comment
     comment = to_html(comment)
     post_id = request.form.get('post_id')
     soup = BeautifulSoup(comment_content, 'html.parser')
-    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id, text=soup.text)
+    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id, text=soup.text,
+                     md=md_text)
     post = Post.query.get_or_404(post_id)
     if not BlockUser.query.filter(BlockUser.user_id == comment_user_id,
                                   BlockUser.block_user_id == current_user.id).all():
