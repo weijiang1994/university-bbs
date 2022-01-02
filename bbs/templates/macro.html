@@ -51,7 +51,6 @@
                         </div>
                     </div>
                 </div>
-
             </li>
         {% endfor %}
     </ul>
@@ -90,27 +89,14 @@
                     {% if prev != None -%}
                         <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
                             <a class="page-link" href="
-
-
-
-
-
-
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
-
                     {%- for page in pagination.iter_pages() %}
                         {% if page %}
                             {% if page != pagination.page %}
                                 <li class="page-item">
                                     <a class="page-link" href="
-
-
-
-
-
-
                                             {{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
                                 </li>
                             {% else %}
@@ -125,14 +111,7 @@
 
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                            <a class="page-link" href="
-
-
-
-
-
-
-                                    {{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
+                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
                         </li>
                     {%- endif -%}
                 </ul>
@@ -248,6 +227,46 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro editComment() %}
+    <div class="modal fade" id="edit-comment" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">编辑评论</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-pills " role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="pill" href="#editComments"><i
+                                    class="fa fa-commenting mr-2"></i>评论</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="getMarkDownData('editCommentContent', 'editCommentPreviewContent')" data-toggle="pill"
+                               href="#editCommentPreview"><i class="fa fa-print mr-2"></i>预览</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="editComments" class="tab-pane active div-300">
+                            <textarea class="form-control mt-2" rows="13" id="editCommentContent"></textarea>
+                        </div>
+                        <div id="editCommentPreview" class="tab-pane fade div-300">
+                            <div class="mt-2" id="editCommentPreviewContent"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+                    <button class="btn btn-danger btn-confirm" id="deleteBtn" onclick="saveEditComment()">保存
+                    </button>
                 </div>
             </div>
         </div>

@@ -286,6 +286,35 @@ def reply_comment():
     return jsonify({'tag': 1})
 
 
+@post_bp.route('/get-comment', methods=['POST'])
+@login_required
+def get_comment():
+    comment_id = request.form.get('commId')
+    comment = Comments.query.filter_by(id=comment_id).first()
+    return jsonify({
+        'code': 200,
+        'markdown': comment.md
+    })
+
+
+@post_bp.route('/edit-comment', methods=['POST'])
+@login_required
+def edit_comment():
+    comment_id = request.form.get('commId')
+    content = request.form.get('content')
+    comment = Comments.query.filter_by(id=comment_id).first()
+    comment.md = content
+    comment.body = to_html(content)
+    soup = BeautifulSoup(content, 'html.parser')
+    comment.text = soup.text
+    db.session.commit()
+    flash('编辑评论成功!', 'success')
+    return jsonify({
+        'code': 200,
+        'message': '编辑评论成功!'
+    })
+
+
 @post_bp.route('/delete-comment/', methods=['GET', 'POST'])
 @login_required
 def delete_comment():
