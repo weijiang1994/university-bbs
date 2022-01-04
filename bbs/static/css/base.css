@@ -174,3 +174,8 @@ header{
 .nav-link{
     padding: .4rem .4rem;
 }
+
+.div-300{
+    height: 300px;
+    overflow-y: auto;
+}

@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination, commentDiv with context %}
+{% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination, commentDiv, editComment with context %}
 {% block head %}
     {{ super() }}
     {{ ckeditor.load_code_theme() }}
@@ -265,6 +265,13 @@
                                                data-target="#confirm-delete">
                                                 <small>删除</small>
                                             </a>
+                                            {% if comment.md %}
+                                                <a class="text-decoration-none text-muted ml-2" href="#"
+                                                   data-commid="{{ comment.id }}" data-toggle="modal"
+                                                   data-target="#edit-comment">
+                                                    <small>编辑</small>
+                                                </a>
+                                            {% endif %}
                                         {% else %}
                                             <a class="text-decoration-none text-muted ml-2" data-toggle="modal"
                                                data-target="#exampleModal" href="#"><small>举报</small></a>
@@ -307,7 +314,7 @@
                                         class="fa fa-commenting mr-2"></i>评论</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" onclick="getMarkDownData()" data-toggle="pill"
+                                <a class="nav-link" onclick="getMarkDownData('commentContent', 'previewHtml')" data-toggle="pill"
                                    href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
                             </li>
                         </ul>
@@ -376,12 +383,13 @@
                 {% endif %}
             </div>
         </div>
-
         <!-- 举报内容填写模态框 -->
         {{ reportModal() }}
         {{ markdownHelp() }}
         {{ confirmDelete() }}
+        {{ editComment() }}
         <script>
+            let editCommentId = null
             $(document).ready(function () {
                 let pics = $(".pic")
                 for (let pic of pics) {
@@ -449,10 +457,10 @@
             })
 
             // 预览评论
-            function getMarkDownData() {
-                let comment = $("#commentContent").val();
+            function getMarkDownData(contentId, previewId) {
+                let comment = $(`#${contentId}`).val();
                 if (comment == '') {
-                    $("#previewHtml").html('<p class="text-muted"><b>你还没有输入评论!</b></p>')
+                    $(`#${previewId}`).html('<p class="text-muted"><b>你还没有输入评论!</b></p>')
                     return false;
                 }
                 let last = sessionStorage.getItem('md');
@@ -468,7 +476,19 @@
                     url: '/normal/comment/render-md/',
                     data: {'md': comment},
                     success: function (res) {
-                        $("#previewHtml").html(res.html);
+                        $(`#${previewId}`).html(res.html);
+                    }
+                })
+            }
+
+            function saveEditComment(){
+                let content = $("#editCommentContent").val()
+                $.ajax({
+                    url: '/post/edit-comment',
+                    data: {commId: editCommentId, content},
+                    method: 'post',
+                    success: function (res){
+                        window.location.reload()
                     }
                 })
             }
@@ -545,6 +565,22 @@
                 $("#deleteBtn").val(commID);
             })
 
+            $("#edit-comment").on('show.bs.modal', function (e){
+                let commId = $(e.relatedTarget).data('commid')
+
+                if (commId != editCommentId){
+                    editCommentId = commId
+                    $.ajax({
+                        url: '/post/get-comment',
+                        data: {'commId': editCommentId},
+                        method: 'post',
+                        success: function (res){
+                            $("#editCommentContent").text(res.markdown)
+                        }
+                    })
+                }
+            })
+
             function upload() {
                 $("#uploadInput").click();
             }
@@ -563,7 +599,7 @@
                     success: function (res) {
                         insertText(document.getElementById('commentContent'), res.imgPath)
                     },
-                    error: function (){
+                    error: function () {
                         alert('上传图片失败!')
                     }
                 })
