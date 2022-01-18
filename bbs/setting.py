@@ -65,6 +65,8 @@ class BaseConfig(object):
     GITHUB_USERNAME = 'weijiang1994'
     GITHUB_REPO = 'university-bbs'
 
+    SCHEDULER_API_ENABLED = True
+
 
 class DevelopmentConfig(BaseConfig):
     if BaseConfig.DATABASE_USER is not None:
@@ -81,3 +83,4 @@ class ProductionConfig(BaseConfig):
                                                                                     BaseConfig.DATABASE_PWD,
                                                                                     BaseConfig.DATABASE_HOST)
     REDIS_URL = "redis://localhost:6379"
+
