@@ -81,6 +81,7 @@ def post_can_read(func):
             flash('该帖子审核未通过,不能查看!', 'warning')
             return redirect(url_for('index_bp.index'))
         return func(post_id, *args, **kwargs)
+
     return decorator
 
 
@@ -94,5 +95,18 @@ def record_read(func):
                 uit.visit_times += 1
                 db.session.commit()
         return func(post_id, *args, **kwargs)
+
     return wrapper
 
+
+def log_traceback(logger):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                import traceback
+                logger.error(str(traceback.format_exc()))
+        return wrapper
+    return decorator
