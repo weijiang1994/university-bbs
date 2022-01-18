@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 import click
 from flask import Flask, render_template
-from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, aps
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
 # 前台蓝图
@@ -28,6 +28,7 @@ from bbs.fake import generate_user, generate_post, generate_real_post, generate_
 from bbs.utils import get_text_plain, get_backend_url
 import os
 from bbs.setting import basedir
+from bbs import task
 
 
 def create_app(config_name=None):
@@ -49,6 +50,7 @@ def create_app(config_name=None):
 
 def register_extensions(app: Flask):
     db.init_app(app)
+    db.app = app
     migrate.init_app(app, db)
     login_manager.init_app(app)
     bs.init_app(app)
@@ -57,6 +59,7 @@ def register_extensions(app: Flask):
     moment.init_app(app)
     mail.init_app(app)
     whooshee.init_app(app)
+    scheduler_init(app)
 
 
 def register_bp(app: Flask):
@@ -282,3 +285,46 @@ def my_truncate(msg, length=10):
     if len(msg) > length:
         return msg[:length] + '...'
     return msg
+
+
+def scheduler_init(app):
+    """
+    保证系统只启动一次定时任务
+    :param app: 当前flask实例
+    :return: None
+    """
+    import atexit
+    import platform
+    if platform.system() != 'Windows':
+        fcntl = __import__("fcntl")
+        f = open(basedir + '/resources/scheduler.lock', 'wb')
+        try:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            aps.init_app(app)
+            aps.start()
+        except:
+            pass
+
+        def unlock():
+            fcntl.flock(f, fcntl.LOCK_UN)
+            f.close()
+
+        atexit.register(unlock)
+    else:
+        msvcrt = __import__('msvcrt')
+        f = open(basedir + 'resources/scheduler.lock', 'wb')
+        try:
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+            aps.init_app(app)
+            aps.start()
+        except:
+            pass
+
+        def _unlock_file():
+            try:
+                f.seek(0)
+                msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+            except:
+                pass
+
+        atexit.register(_unlock_file)
