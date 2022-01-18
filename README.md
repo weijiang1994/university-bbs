@@ -59,9 +59,11 @@ flask superuser
 flask run
 ```
 
-打开浏览器，访问`http://127.0.0.1:5000`就可以看到下面的页面啦~
+打开浏览器，访问`http://127.0.0.1:5000`就可以看到下面的页面啦
 
-![image.png](https://7.dusays.com/2021/04/14/9546a7e1b7358.png)
+**PS:** 图片为在线首页，本地首页可能会不同
+
+![image.png](images/index.png)
 
 ## 后台管理系统
 
