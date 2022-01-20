@@ -104,6 +104,22 @@ def register_cmd(app: Flask):
         click.echo('Initialized database.')
 
     @app.cli.command()
+    def addvisit():
+        from bbs.models import VisitStatistic, CommentStatistic, PostStatistic, SearchStatistic
+        start_date = datetime.datetime.strptime('2021-12-01', '%Y-%m-%d')
+        import random
+        while start_date < datetime.datetime.today():
+            start_date += datetime.timedelta(days=1)
+            cs = CommentStatistic(day=start_date, times=0)
+            ps = PostStatistic(day=start_date, times=0)
+            ss = SearchStatistic(day=start_date, times=0)
+            db.session.add(vs)
+            db.session.add(cs)
+            db.session.add(ps)
+            db.session.add(ss)
+        db.session.commit()
+
+    @app.cli.command()
     def init():
         click.confirm('这个操作会清空整个数据库,要继续吗?', abort=True)
         db.drop_all()
