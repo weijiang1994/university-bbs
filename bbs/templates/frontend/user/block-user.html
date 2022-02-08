@@ -29,7 +29,7 @@
                                            href="{{ url_for('profile.index', user_id=bu.block_user.id) }}">{{ bu.block_user.nickname }}</a>
                                     </h6>
                                     <a class="btn btn-outline-danger"
-                                       href="{{ url_for('user.delete_block_user', user_id=user.id) }}">移出</a>
+                                       href="{{ url_for('user.delete_block_user', user_id=bu.block_user_id) }}">移出</a>
                                 </div>
                             {% endfor %}
                         </div>
