@@ -328,7 +328,7 @@ def scheduler_init(app):
         atexit.register(unlock)
     else:
         msvcrt = __import__('msvcrt')
-        f = open(basedir + 'resources/scheduler.lock', 'wb')
+        f = open(basedir + '/resources/scheduler.lock', 'wb')
         try:
             msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
             aps.init_app(app)
