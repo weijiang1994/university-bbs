@@ -238,6 +238,7 @@ class Post(db.Model):
     textplain = db.Column(db.TEXT, nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.datetime.now)
+    is_elite = db.Column(db.BOOLEAN, default=False, comment='It is elite post?')
     is_anonymous = db.Column(db.INTEGER, default=1, comment='post is anonymous? 2: yes 1: no')
     read_times = db.Column(db.INTEGER, default=0)
     likes = db.Column(db.INTEGER, default=0, comment='like post persons')

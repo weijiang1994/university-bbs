@@ -40,13 +40,19 @@
             <div class="mt-2">
                 <ul class="nav nav-pills mb-2">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('post.post_cate', cate_id=cate.id) }}">全部帖子</a>
+                        <a class="nav-link" href="{{ url_for('post.post_cate', cate_id=cate.id) }}">全部帖子</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('post.elite_post', cate_id=cate.id) }}">精华帖子</a>
+                        <a class="nav-link active" href="{{ url_for('post.elite_post', cate_id=cate.id) }}">精华帖子</a>
                     </li>
                 </ul>
-                {{ post_item(posts) }}
+                {% if not posts %}
+                    <div class="text-center">
+                        <p class="font-weight-bold">当前分区暂无精华帖子！</p>
+                    </div>
+                {% else %}
+                    {{ post_item(posts) }}
+                {% endif %}
             </div>
         </div>
     </main>

@@ -133,6 +133,9 @@
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-heart mr-1"></i><span
                             class="d-none d-lg-inline-block">收藏</span>({{ post.collects }}) </p>
                     <p class="text-muted mb-0"><i class="fa fa-calendar-minus-o mr-1"></i>{{ post.create_time }}</p>
+                    {% if post.is_elite %}
+                        <span class="elite-star ml-2" title="精品帖子"><i class="fa fa-star"></i></span>
+                    {% endif %}
                 </div>
 
                 <div class="d-flex">
@@ -206,7 +209,13 @@
                             <a class="text-decoration-none text-muted ml-2"
                                href="/post/like/{{ post.id }}/"><small>点亮</small></a>
                         {% endif %}
-
+                        {% if current_user.role_id == 1 %}
+                            {% if post.is_elite %}
+                                <a class="text-decoration-none text-muted ml-2" href="{{ url_for('post.elite', post_id=post.id) }}"><small>取消精品贴</small></a>
+                            {% else %}
+                                <a class="text-decoration-none text-muted ml-2" href="{{ url_for('post.elite', post_id=post.id) }}"><small>精品贴</small></a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
@@ -314,7 +323,8 @@
                                         class="fa fa-commenting mr-2"></i>评论</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" onclick="getMarkDownData('commentContent', 'previewHtml')" data-toggle="pill"
+                                <a class="nav-link" onclick="getMarkDownData('commentContent', 'previewHtml')"
+                                   data-toggle="pill"
                                    href="#previewComment"><i class="fa fa-print mr-2"></i>预览</a>
                             </li>
                         </ul>
@@ -481,13 +491,13 @@
                 })
             }
 
-            function saveEditComment(){
+            function saveEditComment() {
                 let content = $("#editCommentContent").val()
                 $.ajax({
                     url: '/post/edit-comment',
                     data: {commId: editCommentId, content},
                     method: 'post',
-                    success: function (res){
+                    success: function (res) {
                         window.location.reload()
                     }
                 })
@@ -565,16 +575,16 @@
                 $("#deleteBtn").val(commID);
             })
 
-            $("#edit-comment").on('show.bs.modal', function (e){
+            $("#edit-comment").on('show.bs.modal', function (e) {
                 let commId = $(e.relatedTarget).data('commid')
 
-                if (commId != editCommentId){
+                if (commId != editCommentId) {
                     editCommentId = commId
                     $.ajax({
                         url: '/post/get-comment',
                         data: {'commId': editCommentId},
                         method: 'post',
-                        success: function (res){
+                        success: function (res) {
                             $("#editCommentContent").text(res.markdown)
                         }
                     })

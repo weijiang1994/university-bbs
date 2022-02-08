@@ -22,8 +22,15 @@
                              alt="anonymous">
                     {% endif %}
                     <div class="flex-grow-1">
-                        <a class="text-decoration-none"
+                    <div class="d-flex flex-row-reverse">
+
+                        {% if post.is_elite %}
+                            <span class="elite-star" title="精华帖子"><i class="fa fa-star"></i></span>
+                        {% endif %}
+                        <a class="text-decoration-none flex-grow-1"
                            href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
+                    </div>
+
                         <div class="row mt-2">
                             <div class="col">
                                 <p class="mb-0 text-muted f-12">

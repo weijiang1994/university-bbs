@@ -94,6 +94,16 @@ def read(post_id):
                            p_tags=p_tags)
 
 
+@post_bp.route('/elite-operator/<post_id>')
+@login_required
+def elite(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    post.is_elite = not post.is_elite
+    db.session.commit()
+    flash('操作成功！', 'success')
+    return redirect(url_for('post.read', post_id=post_id))
+
+
 @post_bp.route('/cate/<cate_id>/', methods=['GET'])
 def post_cate(cate_id):
     page = request.args.get('page', default=1, type=int)
@@ -103,6 +113,17 @@ def post_cate(cate_id):
         paginate(per_page=current_app.config['BBS_PER_PAGE'], page=page)
     posts = paginations.items
     return render_template('frontend/post/cate-post.html', posts=posts, cate=cate)
+
+
+@post_bp.route('/elite/<cate_id>', methods=['GET'])
+def elite_post(cate_id):
+    page = request.args.get('page', default=1, type=int)
+    cate = PostCategory.query.get_or_404(cate_id)
+    paginates = Post.query.filter(Post.cate_id == cate_id, Post.is_elite == True).order_by(
+        Post.create_time.desc()).paginate(
+        per_page=current_app.config['BBS_PER_PAGE'], page=page)
+    posts = paginates.items
+    return render_template('frontend/post/elite-post.html', posts=posts, cate=cate)
 
 
 @post_bp.route('/edit/<post_id>/', methods=['GET', 'POST'])
