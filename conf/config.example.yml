@@ -3,6 +3,6 @@ admin:
   register: true # enable or disable register
   upload-img: 1024 # the max size of image that user can upload.
   mail: # website admin mail account to receive website notify.
-  backend_url: http://127.0.0.1:8008 # backend
-  category_img:
+  backend_url: http://127.0.0.1:8008 # manage url
+  category_img: # post category image save path.
   oauth: true # enable or disable third party login like github google etc.
