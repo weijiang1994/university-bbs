@@ -1,7 +1,8 @@
 admin:
-  audit: true
-  register: true
-  upload-img: 1024
-  mail:
-  backend_url: http:127.0.0.1:8008
+  audit: true # enable or disable user post need to audit.
+  register: true # enable or disable register
+  upload-img: 1024 # the max size of image that user can upload.
+  mail: # website admin mail account to receive website notify.
+  backend_url: http://127.0.0.1:8008 # backend
   category_img:
+  oauth: true # enable or disable third party login like github google etc.
