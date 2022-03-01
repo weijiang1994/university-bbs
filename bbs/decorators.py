@@ -49,7 +49,7 @@ def statistic_traffic(database, obj):
         def statistic(*args, **kwargs):
             td = datetime.date.today()
             vst = obj.query.filter_by(day=td).first()
-            if isinstance(obj, PostStatistic) and request.method == 'GET':
+            if obj == PostStatistic and request.method == 'GET':
                 return func(*args, **kwargs)
             if vst is None:
                 new_vst = obj(day=td, times=1)
