@@ -9,7 +9,7 @@ import datetime
 import os
 
 from bleach import clean, linkify
-from flask import Blueprint, send_from_directory, request, jsonify, flash
+from flask import Blueprint, send_from_directory, request, jsonify, flash, url_for
 from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort, render_template
@@ -19,7 +19,7 @@ import re
 from bbs.email import send_email
 from bbs.models import VerifyCode, Gender, Role, College, User, Post
 from bbs.extensions import db
-
+from flask_ckeditor import upload_success, upload_fail
 normal_bp = Blueprint('normal', __name__, url_prefix='/normal')
 
 
@@ -42,7 +42,7 @@ def search():
                            tag=paginates.total > 20, paginates=paginates)
 
 
-@normal_bp.route('/image/<string:path>/<string:filename>/', methods=['GET'])
+@normal_bp.route('/image/<path:path>/<string:filename>/', methods=['GET'])
 def get_image(path, filename):
     path = basedir + '/resources/{}/'.format(path)
     return send_from_directory(path, filename)
@@ -64,9 +64,24 @@ def change_theme(theme_name):
     return response
 
 
-@normal_bp.route('/image/upload/')
+@normal_bp.route('/image/upload/', methods=['POST'])
+@login_required
 def image_upload():
-    pass
+    f = request.files.get('upload')
+    extension = f.filename.split('.')[1].lower()
+    if extension not in ['jpg', 'gif', 'png', 'jpeg']:
+        return upload_fail(message='Image only!')
+    import random
+    pre = random.randint(1, 10000)
+    filename = str(pre) + f.filename
+    root_path = current_app.config['BBS_UPLOAD_PATH']
+    today = datetime.date.today()
+    path = os.path.join(root_path, 'posts/{}'.format(today))
+    if not os.path.exists(path):
+        os.mkdir(path)
+    f.save(os.path.join(path, filename))
+    url = url_for('normal.get_image', path='posts/{}'.format(datetime.date.today()), filename=filename, _external=True)
+    return upload_success(url=url)
 
 
 @normal_bp.route('/ajax-upload/', methods=['POST'])
