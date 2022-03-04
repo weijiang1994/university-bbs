@@ -179,8 +179,11 @@ def register_cmd(app: Flask):
 
 
 def create_folders():
-    if not os.path.exists(basedir + '/resources'):
-        os.mkdir(basedir + '/resources')
+    if not os.path.exists(os.path.join(basedir, 'resources')):
+        os.mkdir(os.path.join(basedir, 'resources'))
+    for path in ['avatars', 'comments', 'posts']:
+        if not os.path.exists(os.path.join(basedir, 'resources', path)):
+            os.mkdir(os.path.join(basedir, 'resources', path))
 
 
 def init_status():
