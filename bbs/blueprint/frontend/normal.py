@@ -77,7 +77,8 @@ def ajax_upload():
     filename = get_md5(str(datetime.datetime.now())) + '.' + origin_filename.split(r'.')[-1]
     upload_path = os.path.join(basedir, 'resources/comments', filename)
     f.save(upload_path)
-    md_str = '![{}](/normal/image/comments/{}/)'.format(origin_filename, filename)
+    domain = conf.get('website').get('domain')
+    md_str = '![{}]({}/normal/image/comments/{}/)'.format(origin_filename, domain, filename)
     return jsonify({'tag': 1, 'imgPath': md_str})
 
 

@@ -6,3 +6,5 @@ admin:
   backend_url: http://127.0.0.1:8008 # manage url
   category_img: # post category image save path.
   oauth: true # enable or disable third party login like github google etc.
+website:
+  domain: http://127.0.0.1:5000 # website domain
