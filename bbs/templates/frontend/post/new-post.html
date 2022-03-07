@@ -38,7 +38,7 @@
     </main>
     </body>
     {{ ckeditor.load() }}
-    {{ ckeditor.config(name='body') }}
+    {{ ckeditor.config(name='body', custom_url=url_for('static', filename='ckeditor/ckeditor.js')) }}
     <script>
         CKEDITOR.on('instanceReady', function (evt) {
             evt.editor.dataProcessor.htmlFilter.addRules({
