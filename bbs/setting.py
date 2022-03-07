@@ -58,7 +58,7 @@ class BaseConfig(object):
     CKEDITOR_ENABLE_CODESNIPPET = True
     CKEDITOR_HEIGHT = 400
     CKEDITOR_FILE_UPLOADER = 'normal.image_upload'
-
+    CKEDITOR_PKG_TYPE = 'full'
     # whooshee config
     WHOOSHEE_MIN_STRING_LEN = 1
 
@@ -83,4 +83,3 @@ class ProductionConfig(BaseConfig):
                                                                                     BaseConfig.DATABASE_PWD,
                                                                                     BaseConfig.DATABASE_HOST)
     REDIS_URL = "redis://localhost:6379"
-

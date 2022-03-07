@@ -234,6 +234,8 @@ def get_ghinfo(theme: object = 'default') -> object:
     try:
         star = requests.get(stars).text
         fork = requests.get(forks).text
+        if star.startswith('<!DOCTYPE') or fork.startswith('<!DOCTYPE'):
+            return False
         return star, fork
     except Exception as e:
         return False
