@@ -20,7 +20,7 @@ pip install -r requirments.txt -i https://pypi.douban.com/simple
 如果是`Linux`用户的话，可以通过如下命令创建数据库
 ```bash
 sudo mysql
-create database bbs charset utf8 collate utf8_general_ci
+create database bbs charset utf8mb4 collate utf8mb4_general_ci
 ```
 
 ## 配置相关文件
