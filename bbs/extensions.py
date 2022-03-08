@@ -16,6 +16,7 @@ from flask_moment import Moment
 from flask_mail import Mail
 from flask_whooshee import Whooshee
 from flask_apscheduler import APScheduler
+from flask_oauthlib.client import OAuth
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -29,6 +30,7 @@ moment = Moment()
 mail = Mail()
 whooshee = Whooshee()
 aps = APScheduler()
+oauth = OAuth()
 
 
 @login_manager.user_loader
