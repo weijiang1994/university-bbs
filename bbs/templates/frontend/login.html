@@ -11,7 +11,8 @@
             <div class="jumbotron pt-5 pb-3 mt-2">
                 <div class="row">
                     <div class="col-md-8">
-                        <img alt="sample-img" src="{{ url_for('static', filename='img/index.jpg') }}" class="rounded img-fluid d-none d-md-block">
+                        <img alt="sample-img" src="{{ url_for('static', filename='img/index.jpg') }}"
+                             class="rounded img-fluid d-none d-md-block">
                     </div>
                     <div class="col-md-4">
                         <div class="card mb-3 w-100 bg-light align-self-center">
@@ -23,8 +24,14 @@
                                     {{ wtf.form_field(form.password) }}
                                     {{ wtf.form_field(form.remember_me) }}
                                     {{ form.submit }}
-                                    <hr>
-                                    <small>没有账号? <a style="text-decoration: none;" href="{{ url_for('.register') }}">注册.</a>
+                                    <hr class="hr-line">
+                                    {% if oauth %}
+                                        <p class="mb-1 mt-1"><span class="span-border-bottom"><small><b>第三方登录</b></small></span></p>
+                                        <p class="mb-1"><a class="a-link" href=""><i class="fa fa-github fa-2x"></i></a></p>
+                                        <hr class="hr-line">
+                                    {% endif %}
+                                    <small>没有账号? <a style="text-decoration: none;"
+                                                    href="{{ url_for('.register') }}">注册.</a>
                                     </small>
                                 </form>
                             </div>

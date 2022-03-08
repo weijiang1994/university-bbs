@@ -13,12 +13,15 @@ from bbs.extensions import db
 from bbs.forms import RegisterForm, LoginForm
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy import or_
+from bbs.utils import Config
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @auth_bp.route('/login/', methods=['GET', 'POST'])
 def login():
+    conf = Config()
+    oauth = conf.read(['admin', 'oauth'])
     if current_user.is_authenticated:
         return redirect(url_for('index_bp.index'))
     next = request.args.get('next')
@@ -41,7 +44,7 @@ def login():
             flash('无效的邮箱或用户名.', 'danger')
         else:
             flash('无效的密码', 'danger')
-    return render_template('frontend/login.html', form=form)
+    return render_template('frontend/login.html', form=form, oauth=oauth)
 
 
 @auth_bp.route('/logout/', methods=['GET'])
