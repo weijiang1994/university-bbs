@@ -8,3 +8,4 @@ admin:
   oauth: true # enable or disable third party login like github google etc.
 website:
   domain: http://127.0.0.1:5000 # website domain
+  name: University-BBS # website name
