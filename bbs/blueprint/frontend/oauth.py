@@ -11,9 +11,9 @@ from flask import Blueprint, abort, redirect, url_for, flash
 from flask_oauthlib.client import OAuthResponse
 import os
 from flask_login import current_user, login_user
-from bbs.utils import Config
+from bbs.models import User
+from bbs.extensions import oauth, db
 
-oauth_enable = Config().read(['admin', 'oauth'])
 
 github = oauth.remote_app(
     name='github',
@@ -49,6 +49,10 @@ profile_endpoints = {
     'gitee': 'user'
 }
 
+THIRD_PARTY = {
+    'github': 1,
+    'gitee': 2
+}
 
 oauth_bp = Blueprint('oauth_bp', __name__)
 
@@ -106,29 +110,28 @@ def oauth_callback(provider_name):
 
         if access_token is None:
             flash('权限拒绝，请稍后再试!', 'danger')
-            return redirect(url_for('auth_bp.login'))
+            return redirect(url_for('auth.login'))
 
         username, website, email, bio, avatar = get_social_profile(provider, access_token)
 
         if email is None:
             flash('未能正确的获取到您的邮箱，请到第三方社交网络设置邮箱后登录！', 'danger')
-            return redirect(url_for('auth_bp.login'))
+            return redirect(url_for('auth.login'))
 
         user = User.query.filter_by(email=email).first()
         if user is None:
-            tp = ThirdParty.query.filter_by(name=provider.name).first()
-            user = User(username=username, email=email, website=website, password=provider.name, avatar=avatar,
-                        slogan=bio, confirm=1, reg_way=tp.id)
+            user = User(username=username, email=email, website=website,avatar=avatar, nickname=username, slogan=bio,
+                        account_type=THIRD_PARTY.get(provider_name))
             db.session.add(user)
             db.session.commit()
             login_user(user, remember=True)
             flash('使用{}社交账号登录成功!'.format(provider.name), 'success')
-            return redirect(url_for('accounts_bp.profile', user_id=user.id))
+            return redirect(url_for('profile.index', user_id=user.id))
         login_user(user, remember=True)
         flash('使用{}社交账号登录成功!'.format(provider.name), 'success')
-        return redirect(url_for('blog_bp.index'))
+        return redirect(url_for('index_bp.index'))
     except:
         import traceback
         traceback.print_exc()
         flash('使用{}登录出现了意外了~稍后再试吧~'.format(provider.name), 'danger')
-        return redirect(url_for('auth_bp.login'))
+        return redirect(url_for('auth.login'))

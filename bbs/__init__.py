@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 import click
 from flask import Flask, render_template
-from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, aps
+from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, aps, oauth
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
 # 前台蓝图
@@ -20,6 +20,7 @@ from bbs.blueprint.frontend.normal import normal_bp
 from bbs.blueprint.frontend.post import post_bp
 from bbs.blueprint.frontend.profile import profile_bp
 from bbs.blueprint.frontend.user import user_bp
+from bbs.blueprint.frontend.oauth import oauth_bp
 # 后台蓝图
 from bbs.blueprint.backend.index import be_index_bp
 from bbs.blueprint.backend.user_manage import be_user_manage_bp
@@ -60,6 +61,7 @@ def register_extensions(app: Flask):
     mail.init_app(app)
     whooshee.init_app(app)
     scheduler_init(app)
+    oauth.init_app(app)
 
 
 def register_bp(app: Flask):
@@ -72,6 +74,7 @@ def register_bp(app: Flask):
     app.register_blueprint(be_index_bp)
     app.register_blueprint(be_user_manage_bp)
     app.register_blueprint(be_post_manage_bp)
+    app.register_blueprint(oauth_bp)
 
 
 def register_error_handlers(app: Flask):
