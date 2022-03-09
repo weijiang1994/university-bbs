@@ -29,7 +29,7 @@
         {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
         <!-- 自定义的css样式 -->
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
-        {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero'] %}
+        {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero', 'solar'] %}
             <link href="{{ url_for('static', filename='css/dark.css') }}" rel="stylesheet">
         {% else %}
             <link href="{{ url_for('static', filename='css/light.css') }}" rel="stylesheet">
@@ -49,14 +49,14 @@
 {% block nav %}
     <nav class="navbar navbar-expand-lg container" style="flex: none">
         <a class="navbar-brand navbar-text" href="/">
-            {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero'] %}
+            {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero', 'solar'] %}
                 <img style="height: 60px;width: 80px" src="{{ url_for('static', filename='img/logoko-light.png') }}"
                      alt="">
             {% else %}
                 <img style="height: 60px;width: 80px" src="{{ url_for('static', filename='img/logoko.png') }}" alt="">
             {% endif %}
         </a>
-        <button class="navbar-toggler {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg'] %}navbar-dark bg-dark{% else %}navbar-light bg-light{% endif %}"
+        <button class="navbar-toggler {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'solar'] %}navbar-dark bg-dark{% else %}navbar-light bg-light{% endif %}"
                 type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
