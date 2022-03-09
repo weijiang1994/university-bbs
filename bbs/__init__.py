@@ -331,6 +331,10 @@ def scheduler_init(app):
         atexit.register(unlock)
     else:
         msvcrt = __import__('msvcrt')
+
+        if not os.path.exists(os.path.join(basedir, 'resources')):
+            os.mkdir(os.path.join(basedir, 'resources'))
+
         f = open(basedir + '/resources/scheduler.lock', 'wb')
         try:
             msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)

@@ -20,7 +20,7 @@ pip install -r requirments.txt -i https://pypi.douban.com/simple
 如果是`Linux`用户的话，可以通过如下命令创建数据库
 ```bash
 sudo mysql
-create database bbs charset utf8 collate utf8_general_ci
+create database bbs charset utf8mb4 collate utf8mb4_general_ci
 ```
 
 ## 配置相关文件
@@ -36,7 +36,7 @@ MAIL_USERNAME= # 设置邮箱名
 MAIL_PASSWORD= # 设置邮箱秘钥,不是登录密码而是申请SMTP时自动生成的秘钥
 ```
 
-在`config`目录根据`config.exmpale.yml`文件复制一份改名为`config.yml`，然后根据实际情况修改当中的内容，yaml文件内容如下图
+在`config`目录根据`config.example.yml`文件复制一份改名为`config.yml`，然后根据实际情况修改当中的内容，yaml文件内容如下图
 
 ![yaml.png](https://gitee.com/weiijang/image-bed/raw/master/images/image.png)
 > 这一步的操作需要在本机先安装好`MySQL`数据库或者`Mariadb`数据。
