@@ -13,15 +13,17 @@ import os
 from flask_login import current_user, login_user
 from bbs.models import User
 from bbs.extensions import oauth, db
+from functools import wraps
 
 
 def check_oauth_enable(func):
-    def inner(*args, **kwargs):
+    @wraps(func)
+    def inner(provider_name):
         from bbs.utils import Config
         if not Config().read(['admin', 'oauth']):
             flash('管理员没有开启第三方登录功能！', 'info')
             return redirect(url_for('index_bp.index'))
-        return func(*args, **kwargs)
+        return func(provider_name)
     return inner
 
 
