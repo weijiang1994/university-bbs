@@ -120,8 +120,8 @@ def oauth_callback(provider_name):
 
         user = User.query.filter_by(email=email).first()
         if user is None:
-            user = User(username=username, email=email, website=website,avatar=avatar, nickname=username, slogan=bio,
-                        account_type=THIRD_PARTY.get(provider_name))
+            user = User(username=username, email=email, website=website, avatar=avatar, nickname=username, slogan=bio,
+                        account_type=THIRD_PARTY.get(provider_name), college_id=1)
             db.session.add(user)
             db.session.commit()
             login_user(user, remember=True)
