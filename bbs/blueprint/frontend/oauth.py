@@ -15,6 +15,16 @@ from bbs.models import User
 from bbs.extensions import oauth, db
 
 
+def check_oauth_enable(func):
+    def inner(*args, **kwargs):
+        from bbs.utils import Config
+        if not Config().read(['admin', 'oauth']):
+            flash('管理员没有开启第三方登录功能！', 'info')
+            return redirect(url_for('index_bp.index'))
+        return func(*args, **kwargs)
+    return inner
+
+
 github = oauth.remote_app(
     name='github',
     consumer_key=os.getenv('GITHUB_CLIENT_ID'),
@@ -79,6 +89,7 @@ def get_social_profile(provider, token):
 
 
 @oauth_bp.route('/login/<provider_name>')
+@check_oauth_enable
 def oauth_login(provider_name):
     if provider_name not in providers.keys():
         abort(404)
