@@ -23,9 +23,27 @@ load_dotenv('.env')
 class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY')
 
-    BBS_THEMES = {'Darkly': 'darkly', 'Sketchy': 'sketchy', 'Journal': 'journal', 'Flatly': 'flatly',
-                  'Cerulean': 'cerulean', 'Cyborg': 'cyborg', 'Lumen': 'lumen', 'Minty': 'minty',
-                  'Yeti': 'yeti', 'Slate': 'slate', 'Superhero': 'superhero'}
+    BBS_THEMES = {'Darkly': 'darkly',
+                  'Materia': 'materia',
+                  'Sketchy': 'sketchy',
+                  'Journal': 'journal',
+                  'Flatly': 'flatly',
+                  'Cerulean': 'cerulean',
+                  'Cyborg': 'cyborg',
+                  'Lumen': 'lumen',
+                  'Minty': 'minty',
+                  'Yeti': 'yeti',
+                  'Slate': 'slate',
+                  'Superhero': 'superhero',
+                  'Cosmo': 'cosmo',
+                  'Litera': 'litera',
+                  'Lux': 'lux',
+                  'Pulse': 'pulse',
+                  'Sandstone': 'sandstone',
+                  'Simplex': 'simplex',
+                  'Solar': 'solar',
+                  'Spacelab': 'spacelab',
+                  'United': 'united'}
 
     BBS_PER_PAGE = 20
     BBS_PER_PAGE_SOCIAL = 40

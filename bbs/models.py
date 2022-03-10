@@ -88,6 +88,7 @@ class User(db.Model, UserMixin):
     following_permission = db.Column(db.BOOLEAN, default=True)
     follower_permission = db.Column(db.BOOLEAN, default=True)
     create_time = db.Column(db.DATETIME, default=datetime.datetime.now)
+    account_type = db.Column(db.INTEGER, default=0, comment='account type: 0 is register other is third party')
 
     status_id = db.Column(db.INTEGER, db.ForeignKey('t_status.id'), default=1)
     college_id = db.Column(db.INTEGER, db.ForeignKey('t_college.id'))
