@@ -113,6 +113,7 @@ def register_cmd(app: Flask):
         import random
         while start_date < datetime.datetime.today():
             start_date += datetime.timedelta(days=1)
+            vs = VisitStatistic(day=start_date, times=0)
             cs = CommentStatistic(day=start_date, times=0)
             ps = PostStatistic(day=start_date, times=0)
             ss = SearchStatistic(day=start_date, times=0)
