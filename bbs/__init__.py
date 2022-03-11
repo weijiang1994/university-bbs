@@ -261,7 +261,7 @@ def init_role_permission_ship():
             db.session.add(RolePermissionShip(rid=role.id, pid=comment_block_pid))
             db.session.add(RolePermissionShip(rid=role.id, pid=normal_pid))
         elif role.role == 'teacher':
-            db.session.add(RolePermissionShip(rid=role.id, pid=post_blocker_pid))
+            db.session.add(RolePermissionShip(rid=role.id, pid=post_block_pid))
             db.session.add(RolePermissionShip(rid=role.id, pid=comment_block_pid))
             db.session.add(RolePermissionShip(rid=role.id, pid=normal_pid))
         else:
