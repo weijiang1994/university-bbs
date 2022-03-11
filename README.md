@@ -34,11 +34,12 @@ SECRET_KEY='dev'
 MAIL_SERVER='smtp.qq.com'
 MAIL_USERNAME= # 设置邮箱名
 MAIL_PASSWORD= # 设置邮箱秘钥,不是登录密码而是申请SMTP时自动生成的秘钥
-
 GITHUB_CLIENT_ID=  # (Github)第三方登录标识 
 GITHUB_CLIENT_SECRET=  # (Github)第三方登录密钥
 GITEE_CLIENT_ID=   # (Gitee)第三方登录标识
 GITEE_CLIENT_SECRET=   # (Gitee)第三方登录密钥
+OSCHINA_CLIENT_ID=
+OSCHINA_CLIENT_SECRET=
 ```
 
 在`config`目录根据`config.example.yml`文件复制一份改名为`config.yml`，然后根据实际情况修改当中的内容，yaml文件内容如下图
