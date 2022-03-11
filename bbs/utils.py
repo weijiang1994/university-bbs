@@ -233,7 +233,19 @@ def generate_ver_code():
 
 class MyMDStyleTreeProcessor(Treeprocessor):
     def run(self, root):
-        for child in root.getiterator():
+        # from packaging import version
+        # import platform
+        # if version.parse(platform.python_version()) >= version.parse("3.9.0"):
+        #     root_iter = root.iter()
+        # else:
+        #     root_iter = root.getiterator()
+
+        try:
+            root_iter = root.getiterator()
+        except AttributeError:
+            root_iter = root.iter()
+
+        for child in root_iter:
             if child.tag == 'table':
                 child.set("class", "table table-bordered table-hover")
             elif child.tag == 'img':
