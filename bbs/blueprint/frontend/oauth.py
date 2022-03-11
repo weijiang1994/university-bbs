@@ -112,8 +112,6 @@ def oauth_callback(provider_name):
         response = provider.authorized_response()
 
         if response is not None:
-            if provider_name == 'twitter':
-                access_token = response.get('oauth_token'), response.get('oauth_token_secret')
             if provider_name == 'github':
                 access_token = response.get('access_token')
             if provider_name == 'gitee':
