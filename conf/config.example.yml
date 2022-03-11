@@ -6,6 +6,23 @@ admin:
   backend_url: http://127.0.0.1:8008 # manage url
   category_img: # post category image save path.
   oauth: true # enable or disable third party login like github google etc.
+  third-party:
+    github:
+      enable: true
+      name: Github
+      icon: /static/img/github.svg
+    gitee:
+      enable: true
+      name: Gitee
+      icon: /static/img/gitee.svg
+    oschina:
+      enable: false
+      name: OSChina
+      icon: /static/img/oschina.svg
+    stackoverflow:
+      enable: false
+      name: StackOverflow
+      icon: /static/img/stackoverflow.svg
 website:
   domain: http://127.0.0.1:5000 # website domain
   name: University-BBS # website name
