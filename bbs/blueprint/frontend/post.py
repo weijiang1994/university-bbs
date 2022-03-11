@@ -7,6 +7,7 @@
 """
 import datetime
 
+import markdown
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.frontend.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
@@ -290,7 +291,7 @@ def reply_comment():
     md_text = comment
     comment = to_html(comment)
     post_id = request.form.get('post_id')
-    soup = BeautifulSoup(comment_content, 'html.parser')
+    soup = BeautifulSoup(comment, 'html.parser')
     reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id, text=soup.text,
                      md=md_text)
     post = Post.query.get_or_404(post_id)
