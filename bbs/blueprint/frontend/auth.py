@@ -22,9 +22,10 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     conf = Config()
     oauth = conf.read(['admin', 'oauth'])
+    third_parties = conf.read(['admin', 'third-party'])
     if current_user.is_authenticated:
         return redirect(url_for('index_bp.index'))
-    next = request.args.get('next')
+    _next = request.args.get('_next')
     form = LoginForm()
     if form.validate_on_submit():
         usr = form.usr_email.data
@@ -36,15 +37,15 @@ def login():
         if user is not None and user.check_password(pwd):
             if login_user(user, form.remember_me.data):
                 flash('登录成功!', 'success')
-                if next:
-                    return redirect(next)
+                if _next:
+                    return redirect(_next)
                 else:
                     return redirect(url_for('index_bp.index'))
         elif user is None:
             flash('无效的邮箱或用户名.', 'danger')
         else:
             flash('无效的密码', 'danger')
-    return render_template('frontend/login.html', form=form, oauth=oauth)
+    return render_template('frontend/login.html', form=form, oauth=oauth, third_parties=third_parties)
 
 
 @auth_bp.route('/logout/', methods=['GET'])
