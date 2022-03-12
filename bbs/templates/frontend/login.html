@@ -29,11 +29,14 @@
                                         <p class="mb-1 mt-1"><span
                                                 class="span-border-bottom"><small><b>第三方登录</b></small></span></p>
                                         <p class="mb-1">
-                                        {% for k, v in third_parties.items() %}
-                                            {% if v.get('enable') %}
-                                            <a class="a-link" title="{{ k }}" href="{{ url_for('oauth_bp.oauth_login', provider_name=k) }}"><img src="{{ v.get('icon') }}" alt=""></a>
-                                            {% endif %}
-                                        {% endfor %}
+                                        <div class="mt-2">
+                                            {% for k, v in third_parties.items() %}
+                                                {% if v.get('enable') %}
+                                                    <a class="a-link" title="{{ k }}" href="{{ url_for('oauth_bp.oauth_login', provider_name=k) }}"><img src="{{ v.get('icon') }}" alt=""></a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+
                                         <hr class="hr-line">
                                     {% endif %}
                                     <small>没有账号? <a style="text-decoration: none;"
