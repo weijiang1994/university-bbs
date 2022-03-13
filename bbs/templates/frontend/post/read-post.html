@@ -77,7 +77,11 @@
             display: none;
             font-weight: bold;
         }
-
+        .p-info-hint{
+            color: #0b75c9;
+            display: none;
+            font-weight: bold;
+        }
         .p-reply {
             color: #80bdff;
             margin-bottom: 0px;
@@ -360,6 +364,7 @@
                                     <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal"
                                        data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
+                                    <p class="flex-grow-1 text-right mb-1 p-info-hint" id="upload-img-hint">正在上传图片<i class="fa fa-spinner fa-spin"></i></p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
                                     <button class="btn btn-info" id="commentBtn" onclick="postComment()">评论</button>
@@ -426,6 +431,9 @@
                 }
             });
             function uploadimg2server(formdata){
+                let infoHint = $("#upload-img-hint")
+                infoHint.html('正在上传图片<i class="fa fa-spinner fa-spin"><i>')
+                infoHint.slideDown(500);
                 $.ajax({
                     url: "/normal/ajax-upload/",
                     type: "post",
@@ -435,9 +443,11 @@
                     contentType: false,
                     success: function (res) {
                         insertText(document.getElementById('commentContent'), res.imgPath)
+                        infoHint.show().hide(500);
                     },
                     error: function () {
-                        alert('上传图片失败!')
+                        infoHint.text('图片上传失败！')
+                        infoHint.show().delay(2000).hide(500);
                     }
                 })
             }
