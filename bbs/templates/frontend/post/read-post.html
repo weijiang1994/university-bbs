@@ -408,6 +408,39 @@
                     }
                 }
             })
+            document.getElementById('commentContent').addEventListener('paste',function(e){
+                if ( !(e.clipboardData && e.clipboardData.items) ) {
+                    return;
+                }
+                for (let i = 0, len = e.clipboardData.items.length; i < len; i++) {
+                    let item = e.clipboardData.items[i];
+                    if (item.kind === "file") {
+                        let blob= item.getAsFile();
+                        if (blob.size === 0) {
+                            return;
+                        }
+                        let formdata = new FormData();
+                        formdata.append("file", blob);
+                        uploadimg2server(formdata)
+                    }
+                }
+            });
+            function uploadimg2server(formdata){
+                $.ajax({
+                    url: "/normal/ajax-upload/",
+                    type: "post",
+                    async: false,
+                    data: formdata,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        insertText(document.getElementById('commentContent'), res.imgPath)
+                    },
+                    error: function () {
+                        alert('上传图片失败!')
+                    }
+                })
+            }
             // 刷新页面清除保存在sessionStorage中的原始数据
             $(function () {
                 sessionStorage.setItem('md', '');
@@ -599,20 +632,7 @@
                 let img = $("#uploadInput")[0].files[0];
                 let formdata = new FormData();
                 formdata.append('file', img);
-                $.ajax({
-                    url: "/normal/ajax-upload/",
-                    type: "post",
-                    async: false,
-                    data: formdata,
-                    processData: false,
-                    contentType: false,
-                    success: function (res) {
-                        insertText(document.getElementById('commentContent'), res.imgPath)
-                    },
-                    error: function () {
-                        alert('上传图片失败!')
-                    }
-                })
+                uploadimg2server(formdata)
             }
 
             // 在textarea中插入上传的图片markdown的值
