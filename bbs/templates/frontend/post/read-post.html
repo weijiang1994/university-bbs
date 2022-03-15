@@ -433,7 +433,7 @@
             function uploadimg2server(formdata){
                 let infoHint = $("#upload-img-hint")
                 infoHint.html('正在上传图片<i class="fa fa-spinner fa-spin"><i>')
-                infoHint.slideDown(500);
+                infoHint.slideDown(100);
                 $.ajax({
                     url: "/normal/ajax-upload/",
                     type: "post",
