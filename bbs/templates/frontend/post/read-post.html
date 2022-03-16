@@ -77,11 +77,13 @@
             display: none;
             font-weight: bold;
         }
-        .p-info-hint{
+
+        .p-info-hint {
             color: #0b75c9;
             display: none;
             font-weight: bold;
         }
+
         .p-reply {
             color: #80bdff;
             margin-bottom: 0px;
@@ -215,9 +217,11 @@
                         {% endif %}
                         {% if current_user.role_id == 1 %}
                             {% if post.is_elite %}
-                                <a class="text-decoration-none text-muted ml-2" href="{{ url_for('post.elite', post_id=post.id) }}"><small>取消精品贴</small></a>
+                                <a class="text-decoration-none text-muted ml-2"
+                                   href="{{ url_for('post.elite', post_id=post.id) }}"><small>取消精品贴</small></a>
                             {% else %}
-                                <a class="text-decoration-none text-muted ml-2" href="{{ url_for('post.elite', post_id=post.id) }}"><small>精品贴</small></a>
+                                <a class="text-decoration-none text-muted ml-2"
+                                   href="{{ url_for('post.elite', post_id=post.id) }}"><small>精品贴</small></a>
                             {% endif %}
                         {% endif %}
                     </div>
@@ -340,7 +344,7 @@
                                 <div class="d-flex mt-1">
                                     <a class="mb-1 text-decoration-none mr-2 a-link" href="#" id="commentEmoji"
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-smile-o mr-1"></i>表情
+                                        <i class="fa fa-smile-o mr-1" data-toggle="tooltip" title="插入表情"></i>
                                     </a>
                                     <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
                                         {% for emoji_url in emoji_urls %}
@@ -357,14 +361,16 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand"><i
-                                            class="fa fa-photo mr-1"></i>图片</a>
-                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png"
-                                           hidden="hidden">
+                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand">
+                                        <i class="fa fa-photo mr-1" title="插入图片" data-toggle="tooltip"></i>
+                                    </a>
+                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png" hidden="hidden">
                                     <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal"
-                                       data-target="#markdownHelp"><i class="fa fa-file mr-1"></i>帮助</a>
+                                       data-target="#markdownHelp"><i class="fa fa-info-circle mr-1" title="查看帮助信息" data-toggle="tooltip"></i>
+                                    </a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
-                                    <p class="flex-grow-1 text-right mb-1 p-info-hint" id="upload-img-hint">正在上传图片<i class="fa fa-spinner fa-spin"></i></p>
+                                    <p class="flex-grow-1 text-right mb-1 p-info-hint" id="upload-img-hint">正在上传图片<i
+                                            class="fa fa-spinner fa-spin"></i></p>
                                 </div>
                                 <div class="d-flex flex-row-reverse">
                                     <button class="btn btn-info" id="commentBtn" onclick="postComment()">评论</button>
@@ -413,14 +419,14 @@
                     }
                 }
             })
-            document.getElementById('commentContent').addEventListener('paste',function(e){
-                if ( !(e.clipboardData && e.clipboardData.items) ) {
+            document.getElementById('commentContent').addEventListener('paste', function (e) {
+                if (!(e.clipboardData && e.clipboardData.items)) {
                     return;
                 }
                 for (let i = 0, len = e.clipboardData.items.length; i < len; i++) {
                     let item = e.clipboardData.items[i];
                     if (item.kind === "file") {
-                        let blob= item.getAsFile();
+                        let blob = item.getAsFile();
                         if (blob.size === 0) {
                             return;
                         }
@@ -430,7 +436,8 @@
                     }
                 }
             });
-            function uploadimg2server(formdata){
+
+            function uploadimg2server(formdata) {
                 let infoHint = $("#upload-img-hint")
                 infoHint.html('正在上传图片<i class="fa fa-spinner fa-spin"><i>')
                 infoHint.slideDown(100);
@@ -451,6 +458,7 @@
                     }
                 })
             }
+
             // 刷新页面清除保存在sessionStorage中的原始数据
             $(function () {
                 sessionStorage.setItem('md', '');
