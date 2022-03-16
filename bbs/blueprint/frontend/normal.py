@@ -102,7 +102,6 @@ def ajax_upload():
 def render_md():
     md = request.form.get('md')
     html = to_html(md)
-    print(html)
     return jsonify({'html': html})
 
 
