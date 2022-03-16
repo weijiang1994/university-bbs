@@ -102,6 +102,7 @@ def ajax_upload():
 def render_md():
     md = request.form.get('md')
     html = to_html(md)
+    print(html)
     return jsonify({'html': html})
 
 
@@ -129,7 +130,8 @@ def send():
 # noinspection PyTypeChecker
 def to_html(raw):
     allowed_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'abbr', 'b', 'br', 'blockquote', 'code', 'del', 'div',
-                    'em', 'img', 'p', 'pre', 'strong', 'span', 'ul', 'li', 'ol']
+                    'em', 'img', 'p', 'pre', 'strong', 'span', 'ul', 'li', 'ol', 'table', 'thead', 'tbody', 'tr', 'th',
+                    'td']
     allowed_attributes = ['src', 'title', 'alt', 'href', 'class']
     html = markdown(raw, output_format='html',
                     extensions=['markdown.extensions.fenced_code',
