@@ -341,10 +341,11 @@
                                 <textarea onkeydown="tab(this)" class="form-control mt-2 report-textarea"
                                           style="height: 150px!important;" id="commentContent"
                                           placeholder="请输入评论内容"></textarea>
+                                <!-- 快捷工具栏 -->
                                 <div class="d-flex mt-1">
-                                    <a class="mb-1 text-decoration-none mr-2 a-link" href="#" id="commentEmoji"
+                                    <a class="mb-1 text-decoration-none a-link mr-2" href="#" id="commentEmoji"
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-smile-o mr-1" data-toggle="tooltip" title="插入表情"></i>
+                                        <i class="fa fa-smile-o fa-fw" data-toggle="tooltip" title="插入表情"></i>
                                     </a>
                                     <div class="dropdown-menu" id="emoji-list" aria-labelledby="commentEmoji">
                                         {% for emoji_url in emoji_urls %}
@@ -361,12 +362,55 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a onclick="upload()" class="mb-1 text-decoration-none mr-2 a-link span-hand">
-                                        <i class="fa fa-photo mr-1" title="插入图片" data-toggle="tooltip"></i>
+
+                                    <a onclick="upload()" class="mb-1 text-decoration-none a-link span-hand mr-2">
+                                        <i class="fa fa-photo  fa-fw" title="插入图片" data-toggle="tooltip"></i>
                                     </a>
-                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png" hidden="hidden">
-                                    <a href="#" class="mb-1 text-decoration-none mr-2 a-link" data-toggle="modal"
-                                       data-target="#markdownHelp"><i class="fa fa-info-circle mr-1" title="查看帮助信息" data-toggle="tooltip"></i>
+                                    <input type="file" id="uploadInput" onchange="uploadImage()" accept=".png"
+                                           hidden="hidden">
+
+                                    <div class="dropdown mr-2">
+                                        <a id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-header fa-fw" data-toggle="tooltip" title="插入标题"></i>
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" onclick="insertMarkdown('h1')">H1</a>
+                                            <a class="dropdown-item" onclick="insertMarkdown('h2')">H2</a>
+                                            <a class="dropdown-item" onclick="insertMarkdown('h3')">H3</a>
+                                        </div>
+                                    </div>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('bold')">
+                                        <i class="fa fa-bold  fa-fw" title="粗体" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('italic')">
+                                        <i class="fa fa-italic fa-fw" title="斜体" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('list')">
+                                        <i class="fa fa-list-ul fa-fw" title="列表" data-toggle="tooltip"></i>
+                                    </a>
+
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('code')">
+                                        <i class="fa fa-code fa-fw" title="插入代码" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('table')">
+                                        <i class="fa fa-table fa-fw" title="插入表格" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2"
+                                       onclick="insertMarkdown('link')">
+                                        <i class="fa fa-link fa-fw" title="插入链接" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a onclick="insertMarkdown('image')"
+                                       class="mb-1 text-decoration-none a-link span-hand mr-2">
+                                        <i class="fa fa-cloud fa-fw" title="插入远程图片" data-toggle="tooltip"></i>
+                                    </a>
+                                    <a class="mb-1 text-decoration-none a-link span-hand mr-2" data-toggle="modal"
+                                       data-target="#markdownHelp"><i class="fa fa-info-circle  fa-fw" title="查看帮助信息"
+                                                                      data-toggle="tooltip"></i>
                                     </a>
                                     <p class="flex-grow-1 text-right mb-1 p-error-hint">请输入评论内容!</p>
                                     <p class="flex-grow-1 text-right mb-1 p-info-hint" id="upload-img-hint">正在上传图片<i
@@ -419,6 +463,43 @@
                     }
                 }
             })
+
+            function insertMarkdown(type) {
+                let obj = document.getElementById('commentContent')
+                switch (type) {
+                    case "image":
+                        insertText(obj, '![alt 属性文本](图片地址)')
+                        break
+                    case 'link':
+                        insertText(obj, '[链接名称](链接地址)')
+                        break
+                    case 'bold':
+                        insertText(obj, '**文本**')
+                        break
+                    case 'italic':
+                        insertText(obj, '*文本*')
+                        break
+                    case 'h1':
+                        insertText(obj, '# ')
+                        break
+                    case 'h2':
+                        insertText(obj, '## ')
+                        break
+                    case 'h3':
+                        insertText(obj, '### ')
+                        break
+                    case 'code':
+                        insertText(obj, '```\ncode\n```')
+                        break
+                    case 'table':
+                        insertText(obj, '|  表头   | 表头  |\n |  ----  | ----  |\n | 单元格  | 单元格 |\n | 单元格  | 单元格 |\n')
+                        break
+                    case 'list':
+                        insertText(obj, '- ')
+                        break
+                }
+            }
+
             document.getElementById('commentContent').addEventListener('paste', function (e) {
                 if (!(e.clipboardData && e.clipboardData.items)) {
                     return;
@@ -526,10 +607,8 @@
                 }
                 let last = sessionStorage.getItem('md');
                 // 评论没有修改时,不发送预览请求
-                if (last) {
-                    if (last == comment) {
-                        return false;
-                    }
+                if (last && last === comment) {
+                    return false;
                 }
                 sessionStorage.setItem('md', comment);
                 $.ajax({
@@ -669,6 +748,7 @@
                 } else {
                     obj.value += str;
                 }
+                obj.focus()
             }
 
         </script>
