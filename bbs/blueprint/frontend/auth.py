@@ -25,7 +25,7 @@ def login():
     third_parties = conf.read(['admin', 'third-party'])
     if current_user.is_authenticated:
         return redirect(url_for('index_bp.index'))
-    _next = request.args.get('_next')
+    _next = request.args.get('next', url_for('index_bp.index'))
     form = LoginForm()
     if form.validate_on_submit():
         usr = form.usr_email.data
@@ -33,14 +33,12 @@ def login():
         user = User.query.filter(or_(User.username == usr, User.email == usr.lower())).first()
         if user is not None:
             if user.status.name == '禁用':
+                flash('该账号目前处于封禁状态，如需解禁请联系管理员', 'info')
                 return redirect(url_for('.login'))
             if user.check_password(pwd):
                 if login_user(user, form.remember_me.data):
                     flash('登录成功!', 'success')
-                    if _next:
-                        return redirect(_next)
-                    else:
-                        return redirect(url_for('index_bp.index'))
+                    return redirect(_next)
             else:
                 flash('无效的密码', 'danger')
         else:
