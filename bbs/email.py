@@ -27,3 +27,12 @@ def send_email(to_mail, subject, template, **kwargs):
     th = Thread(target=async_send_mail, args=(current_app._get_current_object(), message))
     th.start()
     return th
+
+
+def send_reset_password_email(user, token, ver_code):
+    send_email(subject='Reset Password',
+               to_mail=user.email,
+               template='email/resetPassword',
+               token=token,
+               ver_code=ver_code,
+               username=user.username)

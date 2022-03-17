@@ -31,8 +31,6 @@ mail = Mail()
 whooshee = Whooshee()
 aps = APScheduler()
 oauth = OAuth()
-pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
-rd = redis.Redis(connection_pool=pool)
 
 
 @login_manager.user_loader
