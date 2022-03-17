@@ -33,16 +33,16 @@ def login():
         user = User.query.filter(or_(User.username == usr, User.email == usr.lower())).first()
         if user is not None:
             if user.status.name == '禁用':
-                flash('该账号目前处于封禁状态，如需解禁请联系管理员', 'info')
+                flash('该账号目前处于封禁状态，如需解禁请联系网站管理员!', 'info')
                 return redirect(url_for('.login'))
             if user.check_password(pwd):
                 if login_user(user, form.remember_me.data):
                     flash('登录成功!', 'success')
                     return redirect(_next)
             else:
-                flash('无效的密码', 'danger')
+                flash('无效的密码', 'info')
         else:
-            flash('无效的邮箱或用户名.', 'danger')
+            flash('无效的邮箱或用户名.', 'info')
     return render_template('frontend/login.html', form=form, oauth=oauth, third_parties=third_parties)
 
 
