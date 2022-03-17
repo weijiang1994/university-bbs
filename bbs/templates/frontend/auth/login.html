@@ -39,9 +39,12 @@
 
                                         <hr class="hr-line">
                                     {% endif %}
-                                    <small>没有账号? <a style="text-decoration: none;"
-                                                    href="{{ url_for('.register') }}">注册.</a>
+                                    <small>没有账号?
+                                        <a class="text-decoration-none" href="{{ url_for('.register') }}">注册.</a> |
+                                        <a class="text-decoration-none" href="{{ url_for('.reset') }}">忘记密码？</a>
                                     </small>
+
+
                                 </form>
                             </div>
                         </div>
