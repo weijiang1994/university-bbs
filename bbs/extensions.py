@@ -42,4 +42,4 @@ def load_user(user_id):
 
 login_manager.login_view = 'auth.login'
 login_manager.login_message = u'请先登陆!'
-login_manager.login_message_category = 'danger'
+login_manager.login_message_category = 'info'
