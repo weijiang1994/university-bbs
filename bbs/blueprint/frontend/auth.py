@@ -31,20 +31,20 @@ def login():
         usr = form.usr_email.data
         pwd = form.password.data
         user = User.query.filter(or_(User.username == usr, User.email == usr.lower())).first()
-        if user is not None and user.status.name == '禁用':
-            flash('您的账号处于封禁状态,禁止登陆！联系管理员解除封禁!', 'danger')
-            return redirect(url_for('.login'))
-        if user is not None and user.check_password(pwd):
-            if login_user(user, form.remember_me.data):
-                flash('登录成功!', 'success')
-                if _next:
-                    return redirect(_next)
-                else:
-                    return redirect(url_for('index_bp.index'))
-        elif user is None:
-            flash('无效的邮箱或用户名.', 'danger')
+        if user is not None:
+            if user.status.name == '禁用':
+                return redirect(url_for('.login'))
+            if user.check_password(pwd):
+                if login_user(user, form.remember_me.data):
+                    flash('登录成功!', 'success')
+                    if _next:
+                        return redirect(_next)
+                    else:
+                        return redirect(url_for('index_bp.index'))
+            else:
+                flash('无效的密码', 'danger')
         else:
-            flash('无效的密码', 'danger')
+            flash('无效的邮箱或用户名.', 'danger')
     return render_template('frontend/login.html', form=form, oauth=oauth, third_parties=third_parties)
 
 
