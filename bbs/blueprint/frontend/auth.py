@@ -7,13 +7,14 @@
 """
 import datetime
 
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from bbs.models import User, College, VerifyCode
-from bbs.extensions import db
-from bbs.forms import RegisterForm, LoginForm
+from bbs.extensions import db, rd
+from bbs.forms import RegisterForm, LoginForm, ResetPasswordForm
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy import or_
-from bbs.utils import Config
+from bbs.utils import Config, generate_token, validate_token, generate_ver_code
+from bbs.email import send_reset_password_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -43,7 +44,7 @@ def login():
                 flash('无效的密码', 'info')
         else:
             flash('无效的邮箱或用户名.', 'info')
-    return render_template('frontend/login.html', form=form, oauth=oauth, third_parties=third_parties)
+    return render_template('frontend/auth/login.html', form=form, oauth=oauth, third_parties=third_parties)
 
 
 @auth_bp.route('/logout/', methods=['GET'])
@@ -91,4 +92,50 @@ def register():
         db.session.commit()
         flash('注册成功,欢迎加入二狗学院!', 'success')
         return redirect(url_for('.login'))
-    return render_template('frontend/register.html', colleges=colleges, form=form)
+    return render_template('frontend/auth/register.html', colleges=colleges, form=form)
+
+
+@auth_bp.route('/forget-password')
+def forget():
+    return render_template('frontend/auth/forget-password.html')
+
+
+@auth_bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    email = request.form.get('email')
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash('邮箱不存在,请输入正确的邮箱!', 'danger')
+        return redirect(url_for('.forget'))
+    ver_code = generate_ver_code()
+    # 将验证码设置到redis中,过期时间为10分钟
+    rd.set(user.id, ver_code, ex=current_app.config['EXPIRE_TIME'])
+    token = generate_token(user=user)
+    send_reset_password_email(user=user, token=token, ver_code=ver_code)
+    flash('验证邮件发送成功，请到邮箱查看然后重置密码!', 'success')
+    return render_template('frontend/auth/reset-password-continue.html')
+
+
+@auth_bp.route('/reset-confirm')
+def reset_confirm():
+    token = request.args.get('token', None)
+    if not token:
+        flash('参数不足', 'danger')
+        return redirect(url_for('.login'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email).first()
+        if user:
+            if not validate_token(user, token):
+                flash('认证失败，不是当前邮箱对应账号的token！', 'danger')
+                return redirect(url_for('.login'))
+            else:
+                user.set_password(form.password)
+                db.session.commit()
+                flash('密码重置成功！', 'success')
+                return redirect(url_for('.login'))
+        else:
+            flash('不存在的邮箱', 'danger')
+            return redirect('.login')
+    return render_template('frontend/auth/reset-password.html',
+                           form=form)

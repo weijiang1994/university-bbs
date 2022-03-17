@@ -15,6 +15,8 @@ import yaml
 import os
 import logging
 from logging.handlers import RotatingFileHandler
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
 
 try:
     from urlparse import urlparse, urljoin
@@ -296,3 +298,27 @@ def log_util(log_name, log_path, max_size=2 * 1024 * 1024, backup_count=10):
     logger.addHandler(file_handler)
     logger.setLevel(logging.DEBUG)
     return logger
+
+
+def generate_token(user, expire_in=None, **kwargs):
+    s = Serializer(current_app.config['SECRET_KEY'], expire_in)
+    data = {'id': user.id}
+    data.update(**kwargs)
+    return s.dumps(data)
+
+
+def validate_token(user, token):
+    s = Serializer(current_app.config['SECRET_KEY'])
+    try:
+        data = s.loads(token)
+    except (SignatureExpired, BadSignature):
+        return False
+    if user.id != data.get('id'):
+        return False
+
+    return True
+
+
+def generate_ver_code():
+    import random
+    return random.randint(10518, 952511)

@@ -85,6 +85,9 @@ class BaseConfig(object):
 
     SCHEDULER_API_ENABLED = True
 
+    # Redis Configure
+    EXPIRE_TIME = 60 * 10
+
 
 class DevelopmentConfig(BaseConfig):
     if BaseConfig.DATABASE_USER is not None:
