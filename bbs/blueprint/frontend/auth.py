@@ -116,7 +116,7 @@ def reset_password():
     return render_template('frontend/auth/reset-password-continue.html')
 
 
-@auth_bp.route('/reset-confirm')
+@auth_bp.route('/reset-confirm', methods=['GET', 'POST'])
 def reset_confirm():
     token = request.args.get('token', None)
     if not token:
@@ -124,18 +124,24 @@ def reset_confirm():
         return redirect(url_for('.login'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user:
             if not validate_token(user, token):
                 flash('认证失败，不是当前邮箱对应账号的token！', 'danger')
                 return redirect(url_for('.login'))
+            elif not rd.get(user.id):
+                flash('验证码已过期！', 'danger')
+                return redirect(url_for('.login'))
+            elif rd.get(user.id) != form.captcha.data:
+                flash('请输入正确的验证码', 'danger')
+                return redirect(request.referrer)
             else:
-                user.set_password(form.password)
+                user.set_password(form.password.data)
                 db.session.commit()
                 flash('密码重置成功！', 'success')
                 return redirect(url_for('.login'))
         else:
             flash('不存在的邮箱', 'danger')
-            return redirect('.login')
+            return redirect(url_for('.login'))
     return render_template('frontend/auth/reset-password.html',
                            form=form)
