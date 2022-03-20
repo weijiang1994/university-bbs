@@ -6,6 +6,7 @@
 @Software: PyCharm
 """
 import datetime
+import time
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from bbs.models import User, College, VerifyCode
@@ -13,7 +14,7 @@ from bbs.extensions import db, rd
 from bbs.forms import RegisterForm, LoginForm, ResetPasswordForm
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy import or_
-from bbs.utils import Config, generate_token, validate_token, generate_ver_code
+from bbs.utils import Config, generate_token, validate_token, generate_ver_code, deserialize_token
 from bbs.email import send_reset_password_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -110,7 +111,7 @@ def reset_password():
     ver_code = generate_ver_code()
     # 将验证码设置到redis中,过期时间为10分钟
     rd.set(user.id, ver_code, ex=current_app.config['EXPIRE_TIME'])
-    token = generate_token(user=user)
+    token = generate_token(user=user, expire_in=600)
     send_reset_password_email(user=user, token=token, ver_code=ver_code)
     flash('验证邮件发送成功，请到邮箱查看然后重置密码!', 'success')
     return render_template('frontend/auth/reset-password-continue.html')
@@ -124,24 +125,25 @@ def reset_confirm():
         return redirect(url_for('.login'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        data = deserialize_token(token)
+        if data is None:
+            flash('认证失败，无效的token！', 'danger')
+            return redirect(url_for('.login'))
+
+        if rd.get(data.get('id')) != form.captcha.data:
+            flash('请输入正确的验证码', 'danger')
+            return redirect(request.referrer)
+
+        user = User.query.filter_by(id=data.get('id')).first()
         if user:
-            if not validate_token(user, token):
-                flash('认证失败，不是当前邮箱对应账号的token！', 'danger')
-                return redirect(url_for('.login'))
-            elif not rd.get(user.id):
-                flash('验证码已过期！', 'danger')
-                return redirect(url_for('.login'))
-            elif rd.get(user.id) != form.captcha.data:
-                flash('请输入正确的验证码', 'danger')
-                return redirect(request.referrer)
-            else:
-                user.set_password(form.password.data)
-                db.session.commit()
-                flash('密码重置成功！', 'success')
-                return redirect(url_for('.login'))
+            user.set_password(form.password.data)
+            db.session.commit()
+            # delete cached captcha if password resetting successfully
+            rd.delete(data.get('id'))
+            flash('密码重置成功！', 'success')
+            return redirect(url_for('.login'))
         else:
-            flash('不存在的邮箱', 'danger')
+            flash('无效的token: 系统错误', 'danger')
             return redirect(url_for('.login'))
     return render_template('frontend/auth/reset-password.html',
                            form=form)
