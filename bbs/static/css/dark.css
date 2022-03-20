@@ -174,3 +174,20 @@
 .hr-line{
     background-color: #1b71ca;
 }
+
+#previewHtml::-webkit-scrollbar{
+    width: 6px;
+    height: 4px;
+}
+
+#previewHtml::-webkit-scrollbar-thumb{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgb(233 221 221 / 20%);
+    background: rgb(227 217 217);
+}
+
+#previewHtml::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    background: #303030;
+}
