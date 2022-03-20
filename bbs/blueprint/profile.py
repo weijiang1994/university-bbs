@@ -11,7 +11,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import current_user, login_required
 
 from bbs.models import User, Comments, Post, Collect, BlockUser
-from bbs.blueprint.frontend.post import post_collect
+from bbs.blueprint.post import post_collect
 from bbs.utils import TIME_RANGE, PANGU_DATE
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')

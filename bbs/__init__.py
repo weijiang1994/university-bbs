@@ -13,13 +13,13 @@ from flask import Flask, render_template
 from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, aps, oauth
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
-from bbs.blueprint.frontend.index import index_bp
-from bbs.blueprint.frontend.auth import auth_bp
-from bbs.blueprint.frontend.normal import normal_bp
-from bbs.blueprint.frontend.post import post_bp
-from bbs.blueprint.frontend.profile import profile_bp
-from bbs.blueprint.frontend.user import user_bp
-from bbs.blueprint.frontend.oauth import oauth_bp
+from bbs.blueprint.index import index_bp
+from bbs.blueprint.auth import auth_bp
+from bbs.blueprint.normal import normal_bp
+from bbs.blueprint.post import post_bp
+from bbs.blueprint.profile import profile_bp
+from bbs.blueprint.user import user_bp
+from bbs.blueprint.oauth import oauth_bp
 from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
 from bbs.utils import get_text_plain, get_backend_url
 import os
@@ -102,7 +102,6 @@ def register_cmd(app: Flask):
     def addvisit():
         from bbs.models import VisitStatistic, CommentStatistic, PostStatistic, SearchStatistic
         start_date = datetime.datetime.strptime('2021-12-01', '%Y-%m-%d')
-        import random
         while start_date < datetime.datetime.today():
             start_date += datetime.timedelta(days=1)
             vs = VisitStatistic(day=start_date, times=0)
