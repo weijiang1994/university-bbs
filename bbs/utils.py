@@ -304,7 +304,7 @@ def log_util(log_name, log_path, max_size=2 * 1024 * 1024, backup_count=10):
 
 def generate_token(user, expire_in=None, **kwargs):
     s = Serializer(current_app.config['SECRET_KEY'], expire_in)
-    data = {'id': user.id, 'expire': int(time.time()) + expire_in}
+    data = {'id': user.id}
     data.update(**kwargs)
     return s.dumps(data)
 
@@ -316,8 +316,6 @@ def validate_token(user, token):
     except (SignatureExpired, BadSignature):
         return False
 
-    if time.time() > data.get('expire'):
-        return False
     if user.id != data.get('id'):
         return False
 

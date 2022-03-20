@@ -108,8 +108,11 @@ def reset_password():
     if not user:
         flash('邮箱不存在,请输入正确的邮箱!', 'danger')
         return redirect(url_for('.forget'))
+    ver_code = generate_ver_code()
+    # 将验证码设置到redis中,过期时间为10分钟
+    rd.set(user.id, ver_code, ex=current_app.config['EXPIRE_TIME'])
     token = generate_token(user=user, expire_in=600)
-    send_reset_password_email(user=user, token=token)
+    send_reset_password_email(user=user, token=token, ver_code=ver_code)
     flash('验证邮件发送成功，请到邮箱查看然后重置密码!', 'success')
     return render_template('frontend/auth/reset-password-continue.html')
 
@@ -127,9 +130,9 @@ def reset_confirm():
             flash('认证失败，无效的token！', 'danger')
             return redirect(url_for('.login'))
 
-        if time.time() > data.get('expire'):
-            flash('token已过期！', 'danger')
-            return redirect(url_for('.login'))
+        if rd.get(data.get('id')) != form.captcha.data:
+            flash('请输入正确的验证码', 'danger')
+            return redirect(request.referrer)
 
         user = User.query.filter_by(id=data.get('id')).first()
         if user:
