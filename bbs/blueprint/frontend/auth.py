@@ -138,6 +138,8 @@ def reset_confirm():
         if user:
             user.set_password(form.password.data)
             db.session.commit()
+            # delete cached captcha if password resetting successfully
+            rd.delete(data.get('id'))
             flash('密码重置成功！', 'success')
             return redirect(url_for('.login'))
         else:
