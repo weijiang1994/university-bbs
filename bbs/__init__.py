@@ -13,7 +13,6 @@ from flask import Flask, render_template
 from bbs.extensions import db, migrate, login_manager, bs, avatars, ck, moment, mail, whooshee, aps, oauth
 from bbs.setting import DevelopmentConfig, ProductionConfig, BaseConfig
 from bbs.models import *
-# 前台蓝图
 from bbs.blueprint.frontend.index import index_bp
 from bbs.blueprint.frontend.auth import auth_bp
 from bbs.blueprint.frontend.normal import normal_bp
@@ -21,10 +20,6 @@ from bbs.blueprint.frontend.post import post_bp
 from bbs.blueprint.frontend.profile import profile_bp
 from bbs.blueprint.frontend.user import user_bp
 from bbs.blueprint.frontend.oauth import oauth_bp
-# 后台蓝图
-from bbs.blueprint.backend.index import be_index_bp
-from bbs.blueprint.backend.user_manage import be_user_manage_bp
-from bbs.blueprint.backend.post_manage import be_post_manage_bp
 from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
 from bbs.utils import get_text_plain, get_backend_url
 import os
@@ -71,9 +66,6 @@ def register_bp(app: Flask):
     app.register_blueprint(post_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(user_bp)
-    app.register_blueprint(be_index_bp)
-    app.register_blueprint(be_user_manage_bp)
-    app.register_blueprint(be_post_manage_bp)
     app.register_blueprint(oauth_bp)
 
 
