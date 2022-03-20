@@ -183,15 +183,15 @@ class ChangePasswordForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    email = StringField(u'注册邮箱',
-                        validators=[DataRequired(message='注册邮箱不能为空'),
-                                    Length(min=4, message='注册邮箱长度必须大于4')],
-                        render_kw={'placeholder': '请输入注册邮箱', 'type': 'email'})
+    # email = StringField(u'注册邮箱',
+    #                     validators=[DataRequired(message='注册邮箱不能为空'),
+    #                                 Length(min=4, message='注册邮箱长度必须大于4')],
+    #                     render_kw={'placeholder': '请输入注册邮箱', 'type': 'email'})
     password = PasswordField('新的密码', validators=[
         DataRequired(), Length(8, 128), EqualTo('password2', message='两次密码必须一致!')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
-    captcha = StringField(u'验证码',
-                          validators=[DataRequired(message='验证码不能为空'),
-                                      Length(min=6, max=6, message='验证码长度错误')],
-                          )
+    # captcha = StringField(u'验证码',
+    #                       validators=[DataRequired(message='验证码不能为空'),
+    #                                   Length(min=6, max=6, message='验证码长度错误')],
+    #                       )
     submit = SubmitField(u'重置密码', render_kw={'class': 'btn btn-info', 'type': 'submit'})
