@@ -5,6 +5,12 @@
     {{ ckeditor.load_code_theme() }}
     <!--suppress ALL -->
     <style>
+        #previewHtml{
+            height: 210px;
+            overflow-y: scroll;
+            padding-right: 10px;
+        }
+
 
         .small-pic {
             height: 30%;
@@ -430,8 +436,7 @@
                             </div>
                             <!-- 评论预览界面 -->
                             <div id="previewComment" class="tab-pane fade">
-                                <div id="previewHtml" class="mt-2" style="min-height: 50px">
-
+                                <div id="previewHtml" class="mt-2">
                                 </div>
                             </div>
                         </div>
