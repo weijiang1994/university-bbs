@@ -6,6 +6,8 @@
 @Software: PyCharm
 """
 import re
+import time
+
 from markdown import extensions
 from markdown.treeprocessors import Treeprocessor
 from bbs.setting import basedir
@@ -15,7 +17,7 @@ import yaml
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 from flask import current_app
 
 try:
@@ -302,7 +304,7 @@ def log_util(log_name, log_path, max_size=2 * 1024 * 1024, backup_count=10):
 
 def generate_token(user, expire_in=None, **kwargs):
     s = Serializer(current_app.config['SECRET_KEY'], expire_in)
-    data = {'id': user.id}
+    data = {'id': user.id, 'expire': int(time.time()) + expire_in}
     data.update(**kwargs)
     return s.dumps(data)
 
@@ -313,10 +315,22 @@ def validate_token(user, token):
         data = s.loads(token)
     except (SignatureExpired, BadSignature):
         return False
+
+    if time.time() > data.get('expire'):
+        return False
     if user.id != data.get('id'):
         return False
 
     return True
+
+
+def deserialize_token(token):
+    s = Serializer(current_app.config['SECRET_KEY'])
+    try:
+        data = s.loads(token)
+        return data
+    except (SignatureExpired, BadSignature):
+        return None
 
 
 def generate_ver_code():
