@@ -11,6 +11,14 @@
 pip install -r requirments.txt -i https://pypi.douban.com/simple
 ```
 
+## 安装redis-server
+* Windows
+https://github.com/tporadowski/redis/releases
+
+* Linux
+从各自发行版的源仓库通过命令行安装
+
+
 ## 创建数据库
 通过可视化工具或者命令行的方式都可以创建数据库，Windows用户可以现在Navicat通过可视化界面来创建数据库，
 相关设置如下图所示
