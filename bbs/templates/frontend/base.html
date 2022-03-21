@@ -29,11 +29,9 @@
         <!-- 自定义的css样式 -->
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
         {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero', 'solar'] %}
-            <link rel="stylesheet" href="{{ url_for('static', filename='css/code.css') }}">
             <link href="{{ url_for('static', filename='css/dark.css') }}" rel="stylesheet">
         {% else %}
             <link href="{{ url_for('static', filename='css/light.css') }}" rel="stylesheet">
-            <link rel="stylesheet" href="{{ url_for('static', filename='css/code-light.css') }}">
         {% endif %}
         <script>
             var _hmt = _hmt || [];
