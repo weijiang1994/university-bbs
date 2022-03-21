@@ -75,6 +75,7 @@ class BaseConfig(object):
     CKEDITOR_SERVE_LOCAL = True
     CKEDITOR_ENABLE_CODESNIPPET = True
     CKEDITOR_HEIGHT = 400
+    CKEDITOR_CODE_THEME = 'docco'
     CKEDITOR_FILE_UPLOADER = 'normal.image_upload'
     CKEDITOR_PKG_TYPE = 'full'
     # whooshee config

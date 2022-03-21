@@ -2,9 +2,15 @@
 {% from "macro.html" import reportModal, markdownHelp, confirmDelete, render_pagination, commentDiv, editComment with context %}
 {% block head %}
     {{ super() }}
+    {{ ckeditor.load_code_theme() }}
+    {% if request.cookies.get('bbs_themes', 'darkly') in ['darkly', 'cyborg', 'slate', 'superhero', 'solar'] %}
+            <link href="{{ url_for('static', filename='css/code.css') }}" rel="stylesheet">
+        {% else %}
+            <link href="{{ url_for('static', filename='css/code-light.css') }}" rel="stylesheet">
+        {% endif %}
     <!--suppress ALL -->
     <style>
-        #previewHtml{
+        #previewHtml {
             height: 210px;
             overflow-y: scroll;
             padding-right: 10px;
@@ -19,13 +25,6 @@
         .post-title-h1 {
             font-size: 22px;
             font-weight: bold;
-        }
-
-        .hljs {
-            display: block;
-            padding: 0.5em;
-            background: #23241f;
-            overflow-y: hidden;
         }
 
         article > h1 {
