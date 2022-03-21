@@ -7,9 +7,8 @@
 """
 import datetime
 
-import markdown
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
-from bbs.blueprint.frontend.normal import to_html
+from bbs.blueprint.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
     PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser
 from bbs.forms import CreatePostForm, EditPostForm

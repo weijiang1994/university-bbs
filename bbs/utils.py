@@ -232,7 +232,7 @@ def get_text_plain(html_text):
 
 def generate_ver_code():
     import random
-    return random.randint(134299, 873242)
+    return random.randint(10518, 952511)
 
 
 class MyMDStyleTreeProcessor(Treeprocessor):
@@ -329,8 +329,3 @@ def deserialize_token(token):
         return data
     except (SignatureExpired, BadSignature):
         return None
-
-
-def generate_ver_code():
-    import random
-    return random.randint(10518, 952511)

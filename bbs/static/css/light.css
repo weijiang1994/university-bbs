@@ -159,3 +159,20 @@
 .elite-star{
     color: #ffb100
 }
+
+#previewHtml::-webkit-scrollbar{
+    width: 6px;
+    height: 4px;
+}
+
+#previewHtml::-webkit-scrollbar-thumb{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgb(233 221 221 / 20%);
+    background: #848587;
+}
+
+#previewHtml::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 5px rgb(225 218 218 / 20%);
+    border-radius: 5px;
+    background: #f3f4f1;
+}
