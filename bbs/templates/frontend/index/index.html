@@ -2,6 +2,9 @@
 {% from "macro.html" import post_item, render_pagination with context %}
 {% block title %}
     主页
+    {% if unread_count %}
+        ({{ unread_count }})
+    {% endif %}
 {% endblock %}
 {% block content %}
     {{ moment.locale(auto_detect=True) }}
@@ -20,8 +23,9 @@
                 </li>
                 {% for cate in categories %}
                     <li class="nav-item ">
-{#                        <a class="nav-link" id="category{{ cate.id }}" href="{{ url_for('.category', category=cate.id) }}">{{ cate.name }}</a>#}
-                        <a class="nav-link" id="category{{ cate.id }}" href="{{ url_for('post.post_cate', cate_id=cate.id) }}">{{ cate.name }}</a>
+                        {#                        <a class="nav-link" id="category{{ cate.id }}" href="{{ url_for('.category', category=cate.id) }}">{{ cate.name }}</a>#}
+                        <a class="nav-link" id="category{{ cate.id }}"
+                           href="{{ url_for('post.post_cate', cate_id=cate.id) }}">{{ cate.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
