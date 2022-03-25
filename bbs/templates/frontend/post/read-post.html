@@ -435,7 +435,7 @@
                                     <button hidden="hidden" id="replyBtn" onclick="replyComment()"
                                             class="btn btn-success mt-2">回复
                                     </button>
-                                    <button hidden="hidden" id="cancleReplyBtn" onclick="cancleReply()"
+                                    <button hidden="hidden" id="cancelReplyBtn" onclick="cancelReply()"
                                             class="btn btn-danger mt-2 mr-2">取消
                                     </button>
                                     <a id="replyUserP" hidden="hidden"
@@ -558,10 +558,10 @@
                 sessionStorage.setItem('md', '');
             })
 
-            function cancleReply() {
+            function cancelReply() {
                 $("#commentBtn").removeAttr('hidden');
                 $("#replyBtn").attr('hidden', 'hidden');
-                $("#cancleReplyBtn").attr('hidden', 'hidden');
+                $("#cancelReplyBtn").attr('hidden', 'hidden');
                 $("#replyUserP").html('');
                 $("#replyUserP").attr('hidden', 'hidden');
             }
@@ -592,7 +592,7 @@
             function reply(commentId, commentUser, commentUserId) {
                 $("#commentBtn").attr('hidden', 'hidden');
                 $("#replyBtn").removeAttr('hidden');
-                $("#cancleReplyBtn").removeAttr('hidden');
+                $("#cancelReplyBtn").removeAttr('hidden');
                 $("#replyUserP").removeAttr('hidden');
                 $("#replyUserP").html('@' + commentUser);
                 if (commentUser !== 'Anonymous') {
