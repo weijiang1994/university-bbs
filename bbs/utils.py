@@ -232,7 +232,7 @@ def get_text_plain(html_text):
 
 def generate_ver_code():
     import random
-    return random.randint(10518, 952511)
+    return random.randint(105181, 952511)
 
 
 class MyMDStyleTreeProcessor(Treeprocessor):
