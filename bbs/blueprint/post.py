@@ -70,6 +70,11 @@ def insert_post_tag(post, tags):
 @post_can_read
 @record_read
 def read(post_id):
+    if request.cookies.get('bbs_themes') in ['darkly', 'cyborg', 'slate', 'superhero', 'solar']:
+        current_app.config['CKEDITOR_CODE_THEME'] = 'monokai'
+    else:
+        current_app.config['CKEDITOR_CODE_THEME'] = 'docco'
+
     page = request.args.get('page', default=1, type=int)
     post = Post.query.get_or_404(post_id)
     per_page = current_app.config['BBS_PER_PAGE']
