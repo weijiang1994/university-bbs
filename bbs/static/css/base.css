@@ -179,3 +179,7 @@ header{
     height: 300px;
     overflow-y: auto;
 }
+
+.hljs{
+    overflow-x: auto;
+}
