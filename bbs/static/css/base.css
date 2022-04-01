@@ -183,3 +183,15 @@ header{
 .hljs{
     overflow-x: auto;
 }
+
+.comment-content{
+    max-height: 450px;
+    overflow-y: hidden;
+}
+
+@media screen and (max-width: 756px) {
+    .comment-content{
+        max-height: 300px;
+        overflow-y: hidden;
+    }
+}
