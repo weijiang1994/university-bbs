@@ -18,7 +18,7 @@ from bbs.models import User, Notification, Post, Comments, PrivateMessage, Block
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
-from bbs.utils import get_md5, get_upload_img_limit
+from bbs.utils import get_md5, get_upload_img_limit, is_jpg, is_png
 from bbs.decorators import user_permission_required
 
 user_bp = Blueprint('user', __name__, url_prefix='/user/')
@@ -322,14 +322,21 @@ def privacy_setting(user_id):
 @login_required
 def upload_avatar():
     file = request.files.get('image')
-    filename = file.filename
-    filename = get_md5(str(datetime.datetime.now())) + '.' + filename.split(r'.')[-1]
-    upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
-    file.save(upload_path)
-    if os.path.getsize(upload_path) > 1024 * get_upload_img_limit():
-        os.remove(upload_path)
+    filebytes = file.read()
+    if len(filebytes) > 1024 * get_upload_img_limit():
         flash('上传的文件不能大于1M!', 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
+
+    if not(is_jpg(filebytes) or is_png(filebytes)):
+        flash('文件格式不是JPG或者PNG!', 'warning')
+        return redirect(url_for('.edit_avatar', user_id=current_user.id))
+
+    filename = get_md5(filebytes.hex())
+    upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
+    if not os.path.exists(upload_path):
+        with open(upload_path, "wb+") as f:
+            f.write(filebytes)
+
     current_user.avatar_raw = filename
     db.session.commit()
     return redirect(url_for('.edit_avatar', user_id=current_user.id))
