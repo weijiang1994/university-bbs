@@ -222,7 +222,7 @@ def is_png(filestream: bytes) -> bool:
     return True
 
 
-def is_git(filestream: bytes) -> bool:
+def is_gif(filestream: bytes) -> bool:
     if len(filestream) < 6:
         return False
     if filestream[0:6] != b'\x47\x49\x46\x38\x39\x61':

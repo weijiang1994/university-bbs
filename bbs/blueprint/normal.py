@@ -14,7 +14,7 @@ from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort, render_template
 from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code, conf, is_jpg, is_png, \
-    is_git
+    is_gif
 from flask_login import login_required
 import re
 from bbs.email import send_email
@@ -70,7 +70,7 @@ def change_theme(theme_name):
 def image_upload():
     f = request.files.get('upload')
     filebytes = f.read()
-    if not(is_jpg(filebytes) or is_png(filebytes) or is_git(filebytes)):
+    if not(is_jpg(filebytes) or is_png(filebytes) or is_gif(filebytes)):
         return upload_fail(message='Image only!')
 
     filename = get_md5(filebytes.hex())
@@ -94,7 +94,7 @@ def ajax_upload():
     origin_filename = f.filename
 
     filebytes = f.read()
-    if not (is_jpg(filebytes) or is_png(filebytes) or is_git(filebytes)):
+    if not (is_jpg(filebytes) or is_png(filebytes) or is_gif(filebytes)):
         return upload_fail(message='Image only!')
 
     filename = get_md5(filebytes.hex())
