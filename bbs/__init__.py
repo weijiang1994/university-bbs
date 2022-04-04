@@ -21,7 +21,7 @@ from bbs.blueprint.profile import profile_bp
 from bbs.blueprint.user import user_bp
 from bbs.blueprint.oauth import oauth_bp
 from bbs.fake import generate_user, generate_post, generate_real_post, generate_post_tag
-from bbs.utils import get_text_plain, get_backend_url
+from bbs.utils import get_text_plain, get_backend_url, mkdir_ignore_exists_error
 import os
 from bbs.setting import basedir
 from bbs import task
@@ -175,10 +175,10 @@ def register_cmd(app: Flask):
 
 def create_folders():
     if not os.path.exists(os.path.join(basedir, 'resources')):
-        os.mkdir(os.path.join(basedir, 'resources'))
+        mkdir_ignore_exists_error(os.path.join(basedir, 'resources'))
     for path in ['avatars', 'comments', 'posts']:
         if not os.path.exists(os.path.join(basedir, 'resources', path)):
-            os.mkdir(os.path.join(basedir, 'resources', path))
+            mkdir_ignore_exists_error(os.path.join(basedir, 'resources', path))
 
 
 def init_status():
@@ -328,7 +328,7 @@ def scheduler_init(app):
         msvcrt = __import__('msvcrt')
 
         if not os.path.exists(os.path.join(basedir, 'resources')):
-            os.mkdir(os.path.join(basedir, 'resources'))
+            mkdir_ignore_exists_error(os.path.join(basedir, 'resources'))
 
         f = open(basedir + '/resources/scheduler.lock', 'wb')
         try:
