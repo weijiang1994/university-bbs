@@ -209,7 +209,7 @@ def is_jpg(filestream: bytes) -> bool:
         return False
     if filestream[:4] != b'\xff\xd8\xff\xe0':
         return False
-    if filestream[6:11] != b'JFIF\0':
+    if filestream[6:11] != b'\x4a\x46\x49\x46\x00':
         return False
     return True
 
@@ -218,6 +218,14 @@ def is_png(filestream: bytes) -> bool:
     if len(filestream) < 6:
         return False
     if filestream[0:6] != b'\x89\x50\x4e\x47\x0d\x0a':
+        return False
+    return True
+
+
+def is_git(filestream: bytes) -> bool:
+    if len(filestream) < 6:
+        return False
+    if filestream[0:6] != b'\x47\x49\x46\x38\x39\x61':
         return False
     return True
 

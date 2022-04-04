@@ -13,7 +13,8 @@ from flask import Blueprint, send_from_directory, request, jsonify, flash, url_f
 from markdown import markdown
 from bbs.setting import basedir
 from flask import current_app, make_response, abort, render_template
-from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code, conf
+from bbs.utils import redirect_back, MyMDStyleExtension, EMOJI_INFOS, get_md5, generate_ver_code, conf, is_jpg, is_png, \
+    is_git
 from flask_login import login_required
 import re
 from bbs.email import send_email
@@ -68,19 +69,21 @@ def change_theme(theme_name):
 @login_required
 def image_upload():
     f = request.files.get('upload')
-    extension = f.filename.split('.')[1].lower()
-    if extension not in ['jpg', 'gif', 'png', 'jpeg']:
+    filebytes = f.read()
+    if not(is_jpg(filebytes) or is_png(filebytes) or is_git(filebytes)):
         return upload_fail(message='Image only!')
-    import random
-    pre = random.randint(1, 10000)
-    filename = str(pre) + f.filename
+
+    filename = get_md5(filebytes.hex())
     root_path = current_app.config['BBS_UPLOAD_PATH']
-    today = datetime.date.today()
-    path = os.path.join(root_path, 'posts/{}'.format(today))
+    path = os.path.join(root_path, 'posts')
     if not os.path.exists(path):
         os.mkdir(path)
-    f.save(os.path.join(path, filename))
-    url = url_for('normal.get_image', path='posts/{}'.format(datetime.date.today()), filename=filename, _external=True)
+    upload_path = os.path.join(path, filename)
+
+    if not os.path.exists(upload_path):
+        with open(upload_path, "wb+") as f:
+            f.write(filebytes)
+    url = url_for('normal.get_image', path='posts', filename=filename, _external=True)
     return upload_success(url=url)
 
 
@@ -89,9 +92,21 @@ def image_upload():
 def ajax_upload():
     f = request.files['file']
     origin_filename = f.filename
-    filename = get_md5(str(datetime.datetime.now())) + '.' + origin_filename.split(r'.')[-1]
-    upload_path = os.path.join(basedir, 'resources/comments', filename)
-    f.save(upload_path)
+
+    filebytes = f.read()
+    if not (is_jpg(filebytes) or is_png(filebytes) or is_git(filebytes)):
+        return upload_fail(message='Image only!')
+
+    filename = get_md5(filebytes.hex())
+    path = os.path.join(basedir, 'resources/comments')
+    if not os.path.exists(path):
+        os.mkdir(path)
+    upload_path = os.path.join(path, filename)
+
+    if not os.path.exists(upload_path):
+        with open(upload_path, "wb+") as f:
+            f.write(filebytes)
+
     domain = conf.get('website').get('domain')
     md_str = '![{}]({}/normal/image/comments/{}/)'.format(origin_filename, domain, filename)
     return jsonify({'tag': 1, 'imgPath': md_str})
