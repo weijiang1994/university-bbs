@@ -12,7 +12,7 @@ from faker import Faker
 from bbs.models import User, Post, Tag, PostTagShip
 from bbs.extensions import db
 from bbs.setting import basedir
-from bbs.utils import get_text_plain
+from bbs.utils import get_text_plain, mkdir_ignore_exists_error
 
 fa = Faker(locale='zh-CN')
 
@@ -25,9 +25,9 @@ def generate_post_tag():
 
 def generate_user():
     if not os.path.exists(basedir + '/resources/avatars'):
-        os.mkdir(basedir + '/resources/avatars')
+        mkdir_ignore_exists_error(basedir + '/resources/avatars')
     if not os.path.exists(basedir + '/resources/avatars/raw'):
-        os.mkdir(basedir + '/resources/avatars/raw')
+        mkdir_ignore_exists_error(basedir + '/resources/avatars/raw')
 
     for i in range(30):
         user = User(username=fa.user_name().strip().lower() + str(random.randint(1, 9)),

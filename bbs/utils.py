@@ -230,6 +230,14 @@ def is_gif(filestream: bytes) -> bool:
     return True
 
 
+def mkdir_ignore_exists_error(dirpath: str):
+    try:
+        # 避免因为多线程或者多进程之间并发竞争的Race Condition导致的os.mkdir异常的情况
+        os.mkdir(dirpath)
+    except FileExistsError:
+        pass
+
+
 def validate_username(username):
     r = re.match('^[a-zA-Z0-9_]*$', username)
     return True if r else False
@@ -315,7 +323,7 @@ def hardware_monitor():
 
 def log_util(log_name, log_path, max_size=2 * 1024 * 1024, backup_count=10):
     if not os.path.exists(log_path):
-        os.mkdir(log_path)
+        mkdir_ignore_exists_error(log_path)
     logger = logging.getLogger(log_name)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
     file_handler = RotatingFileHandler(log_path + '/' + log_name,
