@@ -204,6 +204,24 @@ def get_md5(text):
     return hashlib.md5(text.encode()).hexdigest()
 
 
+def is_jpg(filestream: bytes) -> bool:
+    if len(filestream) < 11:
+        return False
+    if filestream[:4] != b'\xff\xd8\xff\xe0':
+        return False
+    if filestream[6:11] != b'JFIF\0':
+        return False
+    return True
+
+
+def is_png(filestream: bytes) -> bool:
+    if len(filestream) < 6:
+        return False
+    if filestream[0:6] != b'\x89\x50\x4e\x47\x0d\x0a':
+        return False
+    return True
+
+
 def validate_username(username):
     r = re.match('^[a-zA-Z0-9_]*$', username)
     return True if r else False
