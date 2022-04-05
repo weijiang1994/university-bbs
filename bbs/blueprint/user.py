@@ -334,7 +334,10 @@ def upload_avatar():
     filename = get_md5(filebytes.hex())
     upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
     if not os.path.exists(upload_path):
-        with open(upload_path, "wb+") as f:
+        # "x"参数项在文件已存在的情况会出错
+        # 防止出现极端情况产生Race Condition的情况下
+        # 并行写入同一个文件的可能性 用来当做一个"写互斥锁"
+        with open(upload_path, "xb") as f:
             f.write(filebytes)
 
     current_user.avatar_raw = filename

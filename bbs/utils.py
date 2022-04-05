@@ -209,7 +209,7 @@ def is_jpg(filestream: bytes) -> bool:
         return False
     if filestream[:4] != b'\xff\xd8\xff\xe0':
         return False
-    if filestream[6:11] != b'JFIF\0':
+    if filestream[6:11] != b'\x4a\x46\x49\x46\x00':
         return False
     return True
 
@@ -220,6 +220,22 @@ def is_png(filestream: bytes) -> bool:
     if filestream[0:6] != b'\x89\x50\x4e\x47\x0d\x0a':
         return False
     return True
+
+
+def is_gif(filestream: bytes) -> bool:
+    if len(filestream) < 6:
+        return False
+    if filestream[0:6] != b'\x47\x49\x46\x38\x39\x61':
+        return False
+    return True
+
+
+def mkdir_ignore_exists_error(dirpath: str):
+    try:
+        # 避免因为多线程或者多进程之间并发竞争的Race Condition导致的os.mkdir异常的情况
+        os.mkdir(dirpath)
+    except FileExistsError:
+        pass
 
 
 def validate_username(username):
@@ -307,7 +323,7 @@ def hardware_monitor():
 
 def log_util(log_name, log_path, max_size=2 * 1024 * 1024, backup_count=10):
     if not os.path.exists(log_path):
-        os.mkdir(log_path)
+        mkdir_ignore_exists_error(log_path)
     logger = logging.getLogger(log_name)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
     file_handler = RotatingFileHandler(log_path + '/' + log_name,
