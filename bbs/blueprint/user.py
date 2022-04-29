@@ -277,7 +277,7 @@ def edit_avatar(user_id):
     notices = get_notices_counts()
     contacts = get_contact_counts()
     return render_template('frontend/user/user-avatar.html', user=user, crop_form=crop_form, pwd_form=pwd_form,
-                           notices=notices, contacts=contacts)
+                           notices=notices, contacts=contacts, max_size=get_upload_img_limit())
 
 
 @user_bp.route('/change-password/<user_id>/', methods=['GET', 'POST'])
@@ -323,8 +323,8 @@ def privacy_setting(user_id):
 def upload_avatar():
     file = request.files.get('image')
     filebytes = file.read()
-    if len(filebytes) > 1024 * get_upload_img_limit():
-        flash('上传的文件不能大于1M!', 'warning')
+    if len(filebytes) > 1024 * 1024 * get_upload_img_limit():
+        flash('上传的文件不能大于{}M!'.format(str(get_upload_img_limit())), 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
 
     if not(is_jpg(filebytes) or is_png(filebytes)):

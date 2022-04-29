@@ -66,7 +66,7 @@
                                     </div>
                                 </form>
                                 <small class="text-muted">
-                                    <b>头像文件格式必须为.jpg或者.png且最大不超过2M！</b>
+                                    <b>头像文件格式必须为.jpg或者.png且最大不超过{{ max_size }}M！</b>
                                 </small>
                                 <div class="mt-2">
                                     {{ avatars.crop_box('normal.get_avatar_raw', current_user.avatar_raw) }}
