@@ -19,6 +19,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 from flask import current_app
+import requests
 
 try:
     from urlparse import urlparse, urljoin
@@ -163,6 +164,23 @@ class Config(object):
     def write(self, data):
         with open(self.path, 'w', encoding='utf8') as f:
             self.yaml.dump(data, f)
+
+
+class IPRecognize:
+    def __init__(self, path):
+        self.token, self.url = self.init_ipinfo(path)
+
+    def init_ipinfo(self, path):
+        config = Config(path)
+        values = config.read(['admin', 'ip-recognize'])
+        return values.get('token'), values.get('url')
+
+    def recognize_region(self, ip):
+        res = requests.get(urljoin(self.url, ip), params={'token': self.token, 'lang': 'zh-CN'})
+        return res.json()
+
+
+ip_recognized = IPRecognize(path=os.path.join(basedir, 'conf/config.yml'))
 
 
 def get_audit():
