@@ -137,6 +137,8 @@ class User(db.Model, UserMixin):
     # 被block的用户
     blocked_user = db.relationship('BlockUser', back_populates='block_user', foreign_keys=[BlockUser.block_user_id])
 
+    login_log = db.relationship('LoginLog', back_populates='user')
+
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
 
@@ -620,3 +622,20 @@ class RolePermissionShip(db.Model):
 
     role = db.relationship('UserRole', back_populates='rp_ship')
     user_permission = db.relationship('UserPermission', back_populates='rp_ship')
+
+
+class LoginLog(db.Model):
+    __tablename__ = 't_login_log'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    device = db.Column(db.String(512), default='', comment='login device: web?phone?')
+    browser = db.Column(db.String(128), default='', comment='login browser')
+    agent = db.Column(db.String(1024), default='', comment='user agent info')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now(), comment='login timestamps')
+    ip_address = db.Column(db.String(64), default='', nullable=False, comment='login ip address')
+    ip_region = db.Column(db.String(512), default='', comment='login ip belong to where')
+    device_type = db.Column(db.String(32), default=0, comment='phone? computer?')
+    login_account = db.Column(db.String(128), default='', comment='login account: username or email')
+
+    user = db.relationship('User', back_populates='login_log')
