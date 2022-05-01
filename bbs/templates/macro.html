@@ -473,7 +473,7 @@
                href="{{ url_for('user.edit_avatar', user_id=user.id) }}">修改头像</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.change_password', user_id=user.id) }}">修改密码</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
-            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.login_log', user_id=user.id) }}">登录历史</a>
+            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.login_log') }}">登录历史</a>
             <a class="dropdown-item text-decoration-none"
                href="{{ url_for('user.block_user_list') }}">黑名单</a>
             <a class="dropdown-item text-decoration-none"
