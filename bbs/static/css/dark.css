@@ -191,3 +191,27 @@
     border-radius: 5px;
     background: #303030;
 }
+
+.login-log::after {
+    content: '';
+    position: absolute;
+    top: 70px;
+    left: 24px;
+    width: 1px;
+    height: calc(100% - 174px);
+    background: #66CCCC;
+}
+
+.login-log > .login-group > .login > .login-log-content > .login-icon {
+    position: absolute;
+    color: #FF99CC;
+    background: #CCFF66;
+    font-size: 15px;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    left: 0;
+    line-height: 3.2;
+    border-radius: 50%;
+    text-align: center;
+}
