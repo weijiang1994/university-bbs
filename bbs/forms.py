@@ -96,6 +96,10 @@ class RegisterForm(FlaskForm):
                                           Length(min=8, max=40, message='用户密码长度限定在8-40位之间')],
                               render_kw={'placeholder': '输入确认密码', 'type': 'password'})
     colleges = SelectField(u'学院', choices=[(1, '计算机')])
+    user_privacy = BooleanField('<a class="span-hand text-decoration-none" data-toggle="modal" data-target="#privatePrivacy">'
+                                '<i style="font-style:normal" data-toggle="tooltip" data-placement="right" '
+                                'title="查看用户隐私协议">同意用户隐私协议</i></a>',
+                                validators=[DataRequired(message='请先同意用户隐私协议')])
     submit = SubmitField(u'注册', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2'})
 
     def __init__(self, *args, **kwargs):
