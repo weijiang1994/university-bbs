@@ -39,6 +39,7 @@
                                     {{ wtf.form_field(form.password) }}
                                     {{ wtf.form_field(form.confirm_pwd) }}
                                     {{ wtf.form_field(form.colleges) }}
+                                    {{ wtf.form_field(form.user_privacy) }}
                                     <label for="captcha">验证码</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="captcha" id="captcha" placeholder="请输入验证码" aria-required="true" aria-describedby="captcha" required>
@@ -54,6 +55,55 @@
                                 </form>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="privatePrivacy" tabindex="-1" aria-labelledby="privatePrivacyModalLabel" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-scrollable">
+                <div class="modal-content modal-dialog-scrollable">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="privatePrivacyModalLabel">用户隐私协议</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>在您本网站注册账号之前，<b class="text-danger">请务必认真阅读下面的隐私协议内容。您在本网站注册账号，就默许为您已同意本网站的用户隐私协议内容。</b></p>
+                        <p style="font-size: 20px"><b>一、隐私协议修改与变更</b></p>
+                        <p>本网站有权在必要时修改隐私协议，隐私协议一旦发生变更，如果用户不同意所改动的内容，用户可以放弃获得的本网站的服务。如果用户继续享用本网站的服务，则视为接受隐私条款的变更。本网站保留随时修改或中断服务而不需要通知用户的权利。本网站行使修改或中断服务的权利，不需对用户或第三方负责。</p>
+                        <p style="font-size: 20px"><b>二、用户账号、密码和安全</b></p>
+                        <p>用户一旦注册成功，便成为本网站的合法用户，将得到一个密码和帐号。同时，此账号密码可登录本网站，并访问所有有权访问的网页。因此用户应采取合理措施维护其密码和帐号的安全。用户对利用该密码和帐号所进行的一切活动负全部责任；由该等活动所导致的任何损失或损害由用户承担，本网站不承担任何责任。 用户的密码和帐号遭到未授权的使用或发生其他任何安全问题，用户可以立即通知网站管理员。</p>
+                        <p style="font-size: 20px"><b>三、账号注册禁止行为</b></p>
+                        <ol style="list-style-type: none;margin-left: -50px">
+                            <li>（1）请勿以党和国家领导人或其他社会名人的真实姓名、字号、艺名、笔名注册；</li>
+                            <li>（2）冒充任何人或机构，或以虚伪不实的方式谎称或使人误认为与任何人或任何机构有关的名称；</li>
+                            <li>（3）请勿注册和其他网友之名相近、相仿的名字；</li>
+                            <li>（4）请勿注册不文明、不健康名字，或包含歧视、侮辱、猥亵类词语的名字；</li>
+                            <li>（5）请勿注册易产生歧义、引起他人误解的名字；</li>
+                        </ol>
+                        <p>若有违反以上条款，本网站有权封禁并注销用户账号。</p>
+                        <p style="font-size: 20px"><b>四、信息发布禁止行为</b></p>
+                        <p>本网站提供发布帖子、发布用户评论，但用户发布信息内容中必须遵循以下条款</p>
+                        <ol style="list-style-type: none;margin-left: -50px">
+                            <li>（1）不得发布危害国家安全、泄露国家机密、颠覆国家政权、破坏国家统一的内容等内容；</li>
+                            <li>（2）不得发布损害国家荣誉和利益、煽动民族仇恨、民族歧视、破坏民族团结等内容；</li>
+                            <li>（3）不得发布破坏国家宗教政策，宣扬邪教和封建迷信等内容；</li>
+                            <li>（4）不得发布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪等内容；</li>
+                            <li>（5）不得发布谣言、扰乱社会秩序、破坏社会稳定等内容；</li>
+                            <li>（6）不得发布违反我国法律的一切相关内容；</li>
+                        </ol>
+                        <p style="font-size: 20px"><b>五、信息收集</b></p>
+                        <p>为了更好的用户体验，我们会收集用户的如下数据</p>
+                        <ol style="list-style-type: none;margin-left: -50px">
+                            <li>（1）用户注册的用户名、昵称、邮箱等明文信息；</li>
+                            <li>（2）用户登录客户端IP地址、IP地址所属地信息；</li>
+                            <li>（3）用户客户端有关于本网站的相关Cookie信息；</li>
+                        </ol>
+                        <p>本网站最基本的原则是尊重用户隐私安全，在未经用户授权的情况下不会将其信息作为商品出售并获取相关利益，但在特殊情况下除外（如用户违法法律相关机构需要执行调查程序时候）。</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
             </div>
