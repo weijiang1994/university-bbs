@@ -14,7 +14,7 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.expression import func
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser
+from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser, LoginLog
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
@@ -491,3 +491,14 @@ def delete_block_user(user_id):
     db.session.commit()
     flash('移出黑名单成功!', 'success')
     return redirect(request.referrer)
+
+
+@user_bp.route('/login-log')
+@login_required
+def login_log():
+    logs = LoginLog.query.filter_by(user_id=current_user.id).order_by(LoginLog.timestamps.desc())
+    return render_template(
+        'frontend/user/user-login-log.html',
+        logs=logs,
+        user=current_user
+    )

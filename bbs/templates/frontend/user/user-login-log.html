@@ -1,0 +1,76 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul, user_card_lg, user_card_md with context %}
+{% block title %}
+    {{ user.nickname }}的个人主页
+{% endblock %}
+{% block content %}
+    <style>
+        .login-log {
+            position: relative;
+            padding-left: 24px;
+            padding-top: 1px;
+        }
+
+        .login-log-content{
+            line-height: 20px;
+            border-bottom: #999b98 1px solid;
+        }
+        .login-log > .login-group > .login {
+            margin: 24px 0 0 40px;
+        }
+
+        .iconfont {
+            font-size: 1em;
+            -webkit-text-stroke-width: 0;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .icon-pc:before {
+            content: "\1F4BB";
+            font-style: normal;
+        }
+        i.iconfont {
+            font-weight: normal;
+        }
+
+        .icon-mp:before{
+            content: "\1F4F1";
+            font-style: normal;
+        }
+
+    </style>
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-lg-3">
+                    {{ user_page_header_ul('登录历史') }}
+                    {{ user_page_header('登录历史') }}
+                </div>
+                <div class="col-lg-9 col-md-9">
+                    {% include "_flash.html" %}
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">登录历史</span></p>
+                <p class="text-muted mb-0">本页面展示当前帐号最近登录历史记录，一个自然日内相同IP视为一条记录</p>
+                    <div class="login-log">
+                        <div class="login-group">
+                            {% for log in logs %}
+                                <div class="login">
+                                    <div class="login-log-content">
+                                        <i class="{% if log.device_type == 'Computer' %}icon-pc{% else %}icon-mp{% endif %} iconfont login-icon"></i>
+                                        <p class="mb-1"><b>{{ log.ip_region }} {{ log.ip_address }}</b></p>
+                                        <p class="mb-1 text-muted">{{ log.timestamps }}</p>
+                                        <p class="mb-1 text-success">登录账号：{{ log.login_account }}（登录成功）</p>
+                                        <p class="mb-1 text-primary">设备信息：{{ log.device }} - {{ log.browser }}</p>
+                                        <p class="mb-1 text-muted"><small>{{ log.agent }}</small></p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}
