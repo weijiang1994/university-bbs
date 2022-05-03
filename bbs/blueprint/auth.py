@@ -14,7 +14,8 @@ from bbs.extensions import db, rd
 from bbs.forms import RegisterForm, LoginForm, ResetPasswordForm
 from flask_login import current_user, login_user, logout_user
 from sqlalchemy import or_
-from bbs.utils import Config, generate_token, validate_token, generate_ver_code, deserialize_token, ip_recognized
+from bbs.utils import Config, generate_token, validate_token, generate_ver_code, deserialize_token, ip_recognized, \
+    get_ip_and_agent, get_ip_region
 from bbs.email import send_reset_password_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -41,25 +42,14 @@ def login():
                 if login_user(user, form.remember_me.data):
                     today = datetime.date.today()
                     # 通过Nginx反向代理会导致IP为127.0.0.1
-                    remote_ip = request.headers.get('X-Real-Ip')
-                    if remote_ip is None:
-                        remote_ip = request.remote_addr
-                    # 保存登录日志
-                    user_agent = request.user_agent
+                    remote_ip, user_agent = get_ip_and_agent(request)
                     existed_login_today = LoginLog.query.filter(
+                        LoginLog.user_id == user.id,
                         LoginLog.ip_address == remote_ip,
                         LoginLog.timestamps.ilike('%{}%'.format(today))
                     ).first()
                     # 查询IP属地
-                    if remote_ip == '127.0.0.1':
-                        ip_region = 'Localhost'
-                    else:
-                        try:
-                            result = ip_recognized.recognize_region(remote_ip)
-                            ip_region = '-'.join([result.get('region'), result.get('city')])
-                        except Exception:
-                            # 防止网络超时或未知IP导致异常
-                            ip_region = 'Unknown'
+                    ip_region = get_ip_region(remote_ip=remote_ip)
 
                     if not existed_login_today:
                         ll = LoginLog(
