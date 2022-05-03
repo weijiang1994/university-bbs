@@ -308,8 +308,19 @@ def reply_comment():
     comment = to_html(comment)
     post_id = request.form.get('post_id')
     soup = BeautifulSoup(comment, 'html.parser')
-    reply = Comments(body=comment, replied_id=comment_id, author_id=current_user.id, post_id=post_id, text=soup.text,
-                     md=md_text)
+    remote_ip, user_agent = get_ip_and_agent(request)
+    ip_region = get_ip_region(remote_ip)
+    reply = Comments(
+        body=comment,
+        replied_id=comment_id,
+        author_id=current_user.id,
+        post_id=post_id,
+        text=soup.text,
+        md=md_text,
+        platform=user_agent.platform + '-' + user_agent.browser,
+        ip_address=remote_ip,
+        ip_region=ip_region
+    )
     post = Post.query.get_or_404(post_id)
     if not BlockUser.query.filter(BlockUser.user_id == comment_user_id,
                                   BlockUser.block_user_id == current_user.id).all():
