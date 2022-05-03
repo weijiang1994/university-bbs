@@ -280,7 +280,7 @@ def post_comment():
         author_id=current_user.id,
         text=soup.text,
         md=md_text,
-        platform=user_agent.platform + ',' + user_agent.browser,
+        platform=user_agent.platform + '-' + user_agent.browser,
         ip_address=remote_ip,
         ip_region=ip_region
     )
