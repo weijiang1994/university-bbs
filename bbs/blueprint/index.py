@@ -42,16 +42,17 @@ def get_index_category():
         user_interests = UserInterest.query.with_entities(UserInterest.cate_id).filter(
             UserInterest.user_id == current_user.id). \
             order_by(UserInterest.visit_times.desc()).limit(5).all()
+        user_interests = [user_interest[0] for user_interest in user_interests]
 
         if len(user_interests) < 5:
-            user_interests = [user_interest[0] for user_interest in user_interests]
             categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
-
             pcs = PostCategory.query. \
                 filter(not_(PostCategory.id.in_(user_interests))). \
                 order_by(func.random()). \
                 limit(5 - len(user_interests)).all()
             categories += pcs
+        else:
+            categories = PostCategory.query.filter(PostCategory.id.in_(user_interests)).all()
     else:
         categories = PostCategory.query.order_by(func.random()).limit(5)
     return categories
