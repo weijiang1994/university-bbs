@@ -14,7 +14,7 @@ from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notifica
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email
+from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email, get_ip_and_agent, get_ip_region
 from bbs.decorators import statistic_traffic, post_can_read, record_read
 from bbs.email import send_email
 from bs4 import BeautifulSoup
@@ -267,11 +267,23 @@ def post_collect(post_id):
 def post_comment():
     comment_content = request.form.get('commentContent')
     post_id = request.form.get('postId')
+
     post = Post.query.get_or_404(post_id)
     md_text = comment_content
     comment_content = to_html(comment_content)
     soup = BeautifulSoup(comment_content, 'html.parser')
-    com = Comments(body=comment_content, post_id=post_id, author_id=current_user.id, text=soup.text, md=md_text)
+    remote_ip, user_agent = get_ip_and_agent(request)
+    ip_region = get_ip_region(remote_ip)
+    com = Comments(
+        body=comment_content,
+        post_id=post_id,
+        author_id=current_user.id,
+        text=soup.text,
+        md=md_text,
+        platform=user_agent.platform + '-' + user_agent.browser,
+        ip_address=remote_ip,
+        ip_region=ip_region
+    )
     # 如果评论帖子用户与发帖用户不为同一人则发送消息通知
     if current_user.id != post.author_id and not BlockUser.query.filter(BlockUser.user_id == post.author_id,
                                                                         BlockUser.block_user_id == current_user.id).all():

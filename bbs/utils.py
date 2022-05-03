@@ -381,3 +381,25 @@ def deserialize_token(token):
         return data
     except (SignatureExpired, BadSignature):
         return None
+
+
+def get_ip_and_agent(req):
+    remote_ip = req.headers.get('X-Real-Ip')
+    if remote_ip is None:
+        remote_ip = req.remote_addr
+    # 保存登录日志
+    user_agent = req.user_agent
+    return remote_ip, user_agent
+
+
+def get_ip_region(remote_ip):
+    if remote_ip == '127.0.0.1':
+        ip_region = 'Localhost'
+    else:
+        try:
+            result = ip_recognized.recognize_region(remote_ip)
+            ip_region = '-'.join([result.get('region'), result.get('city')])
+        except Exception:
+            # 防止网络超时或未知IP导致异常
+            ip_region = 'Unknown'
+    return ip_region
