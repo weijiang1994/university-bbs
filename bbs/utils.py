@@ -398,7 +398,7 @@ def get_ip_region(remote_ip):
     else:
         try:
             result = ip_recognized.recognize_region(remote_ip)
-            ip_region = '-'.join([result.get('region'), result.get('city')])
+            ip_region = ', '.join([result.get('region'), result.get('city')])
         except Exception:
             # 防止网络超时或未知IP导致异常
             ip_region = 'Unknown'
