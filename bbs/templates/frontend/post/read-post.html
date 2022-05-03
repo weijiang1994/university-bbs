@@ -479,6 +479,9 @@
         <script>
             let editCommentId = null
             $(document).ready(function () {
+
+            })
+            window.onload = function (){
                 let ccs = document.getElementsByClassName('comment-content')
                 let height = $(".comment-content").css('max-height')
                 height = parseInt(height.split('px')[0])
@@ -489,7 +492,7 @@
                         collapse.append(`<a class="span-hand text-decoration-none" onclick="collapseComment('${contentId}')">展开</a>`)
                     }
                 }
-            })
+            }
 
             function collapseComment(contentId) {
                 let status = $(`.${contentId}`).children('a').text()
