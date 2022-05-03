@@ -110,7 +110,8 @@
         .hr-margin-5 {
             margin: 5px 0 5px 0 !important;
         }
-        .op-badge{
+
+        .op-badge {
             background-color: #336699;
             border-radius: 5px;
             padding: 3px;
@@ -594,13 +595,18 @@
             }
 
             function replyComment() {
-                comment = isEmpty();
+                let comment = isEmpty();
                 if (!comment) {
                     return false;
                 }
-                commentId = sessionStorage.getItem('commentId');
-                commentUserId = sessionStorage.getItem('commentUserId');
-                postId = $("#postTitle").data('id');
+                let replyBtn = $("#replyBtn")
+                let cancelBtn = $("#cancelReplyBtn")
+                replyBtn.attr('disabled', 'disabled')
+                replyBtn.html('回复<i class="fa fa-pulse fa-spinner"></i>')
+                cancelBtn.attr('disabled', 'disabled')
+                let commentId = sessionStorage.getItem('commentId');
+                let commentUserId = sessionStorage.getItem('commentUserId');
+                let postId = $("#postTitle").data('id');
                 $.ajax({
                     type: "post",
                     url: "/post/reply-comment/",
@@ -611,7 +617,19 @@
                         "comment": comment
                     },
                     success: function (res) {
-                        window.location.reload();
+                        if (res.tag === 1) {
+                            window.location.reload();
+                        } else {
+                            replyBtn.removeAttr('disabled')
+                            replyBtn.html('评论')
+                            cancelBtn.removeAttr('disabled', 'disabled')
+                        }
+                    },
+                    error: function (){
+                        replyBtn.removeAttr('disabled')
+                        replyBtn.html('回复')
+                        cancelBtn.re('disabled')
+                        alert('服务器发生错误，回复失败！')
                     }
                 })
             }
@@ -709,17 +727,30 @@
 
             // 提交评论
             function postComment() {
-                comment = isEmpty();
+                let comment = isEmpty();
                 if (!comment) {
                     return false;
                 }
                 let postId = $("#postTitle").data("id");
+                let comBtn = $("#commentBtn")
+                comBtn.attr('disabled', 'disabled')
+                comBtn.html('评论<i class="fa fa-pulse fa-spinner"></i>')
                 $.ajax({
                     type: "post",
                     data: {"commentContent": comment, 'postId': postId},
                     url: "/post/post-comment/",
                     success: function (res) {
-                        window.location.reload();
+                        if (res.tag === 1) {
+                            window.location.reload();
+                        } else {
+                            comBtn.attr('disabled', 'false')
+                            comBtn.html('评论')
+                        }
+                    },
+                    error: function (){
+                        comBtn.removeAttr('disabled')
+                        comBtn.html('评论')
+                        alert('服务器发生错误，评论失败！')
                     }
                 })
             }
@@ -792,7 +823,6 @@
                 }
                 obj.focus()
             }
-
         </script>
     </main>
     </body>
