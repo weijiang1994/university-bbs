@@ -401,10 +401,17 @@
                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
             {% endif %}
             <div class="d-flex">
-                <a class="text-decoration-none ml-2 d-lg-block d-none"><span
-                        class="badge badge-pill badge-secondary">{{ comment.author.college.name }}</span></a>
+            {% if comment.ip_address %}
+                <a class="text-decoration-none d-lg-block d-none ml-2"><span
+                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="客户端信息">{{ comment.platform }}</span></a>
                 <a class="text-decoration-none ml-2"><span
-                        class="badge badge-pill badge-secondary">{{ comment.author.role.name }}</span></a>
+                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="IP属地">{{ comment.ip_region }}</span></a>
+            {% else %}
+                <a class="text-decoration-none ml-2 d-lg-block d-none"><span
+                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="学院">{{ comment.author.college.name }}</span></a>
+                <a class="text-decoration-none ml-2"><span
+                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="角色">{{ comment.author.role.name }}</span></a>
+            {% endif %}
                 {% if post.author_id == comment.author_id %}
                     <a class="text-decoration-none ml-2"><span class="badge badge-pill badge-info">楼主</span></a>
                 {% endif %}

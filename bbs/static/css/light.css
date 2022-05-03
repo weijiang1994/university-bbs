@@ -200,3 +200,11 @@
     border-radius: 50%;
     text-align: center;
 }
+
+.client-badge{
+    background-color: #99CCFF;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+    font-size: 75%;
+}

@@ -221,7 +221,6 @@ class PostCategory(db.Model):
     p_topic = db.relationship('PostTopic', back_populates='post_cate')
 
     def get_sample_img(self):
-
         if self.cate_img:
             return self.cate_img
         return '/static/img/no-sample.png'
@@ -321,7 +320,9 @@ class Comments(db.Model):
     author_id = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
     post_id = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
     delete_flag = db.Column(db.INTEGER, default=0, comment='is it delete? 0: no 1: yes')
-
+    ip_region = db.Column(db.String(128), default='', comment='IP belong to where')
+    platform = db.Column(db.String(128), default='', comment='client device information')
+    ip_address = db.Column(db.String(64), default='')
     post = db.relationship('Post', back_populates='comments')
     author = db.relationship('User', back_populates='comments')
     replies = db.relationship('Comments', back_populates='replied', cascade='all')
