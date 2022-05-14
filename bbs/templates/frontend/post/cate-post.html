@@ -22,7 +22,7 @@
             {% if current_user.is_authenticated %}
                 <div class="d-flex post-tag-root">
                     <div class="d-flex align-items-center flex-grow-1">
-                        <p class="mb-0 "><a href="{{ url_for('post.new_post') }}"
+                        <p class="mb-0 "><a href="{{ url_for('post.new_post', cid=cate.id) }}"
                                             class="btn btn-light btn-sm">发布新的帖子</a></p>
                     </div>
 
