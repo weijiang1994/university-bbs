@@ -51,7 +51,10 @@ def new_post():
             post=post,
         )
         return redirect(url_for('post.read', post_id=post.id))
-    return render_template('frontend/post/new-post.html', form=form)
+    cid = request.args.get('cid', type=int)
+    if cid:
+        form.category.data = cid
+    return render_template('frontend/post/new-post.html', form=form, cid=cid)
 
 
 def insert_post_tag(post, tags):
