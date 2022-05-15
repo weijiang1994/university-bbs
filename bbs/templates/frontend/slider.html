@@ -129,6 +129,28 @@
     </div>
 
     <div class="card border-secondary mb-2">
+        <div class="card-header p-2"><i class="fa fa-futbol-o fa-fw mr-1"></i>最热类别</div>
+        <div id="hot-category" class="card-body p-2 f-15">
+            {% if hot_cates %}
+                {% for hc in hot_cates %}
+                    <a class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=hc[0]) }}">{{ hc[1] }}</a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card border-secondary mb-2">
+        <div class="card-header p-2"><i class="fa fa-clock-o fa-fw mr-1"></i>最近添加类别</div>
+        <div id="hot-posts" class="card-body p-2 f-15">
+            {% if latest_cates %}
+                {% for lc in latest_cates %}
+                    <a class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=lc.id) }}">{{ lc.name }}</a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card border-secondary mb-2">
         <div class="card-header p-2"><i class="fa fa-dashboard fa-fw mr-1"></i>社区运行状况</div>
         <div id="hot-posts" class="card-body p-2 f-15 pl-4">
             <div class="d-flex">
