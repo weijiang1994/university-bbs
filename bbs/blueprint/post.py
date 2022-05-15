@@ -124,7 +124,8 @@ def post_cate(cate_id):
         'frontend/post/cate-post.html',
         posts=posts,
         cate=cate,
-        total=paginations.total
+        total=paginations.total,
+        paginations=paginations
     )
 
 
