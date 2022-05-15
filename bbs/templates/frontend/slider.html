@@ -140,7 +140,10 @@
     </div>
 
     <div class="card border-secondary mb-2">
-        <div class="card-header p-2"><i class="fa fa-clock-o fa-fw mr-1"></i>最近添加类别</div>
+        <div class="card-header p-2 d-flex">
+            <span class=" flex-grow-1"><i class="fa fa-clock-o fa-fw mr-1"></i>最近添加类别</span>
+            <a href="{{ url_for('post.all_category') }}" title="查看帖子全部分类"><i class="fa fa-bars"></i></a>
+        </div>
         <div id="hot-posts" class="card-body p-2 f-15">
             {% if latest_cates %}
                 {% for lc in latest_cates %}

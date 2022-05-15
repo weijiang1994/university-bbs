@@ -222,3 +222,11 @@
 .item-cate:hover{
     box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.2);;
 }
+
+.topic-bg {
+    padding: 6px 5px;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+}

@@ -423,3 +423,19 @@ def collect_cate(cate_id):
         flash('收藏该主题成功!', 'success')
     db.session.commit()
     return redirect(request.referrer)
+
+
+@post_bp.route('/all-category')
+def all_category():
+    cates = PostCategory.query.all()
+    datas = {}
+    for cate in cates:
+        current_topic = cate.p_topic.name
+        if current_topic not in datas.keys():
+            datas[current_topic] = []
+        datas[current_topic].append([cate.id, cate.name, len(cate.post)])
+    return render_template(
+        'frontend/post/all-category.html',
+        cates=cates,
+        datas=datas
+    )

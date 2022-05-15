@@ -1,0 +1,42 @@
+{% extends "frontend/base.html" %}
+{% from 'macro.html' import post_item with context %}
+{% block title %}
+    所有帖子主题
+{% endblock %}
+{% block content %}
+    <main>
+        {{ moment.locale(auto_detect=True) }}
+        <div class="container mt-2">
+            {% include "_flash.html" %}
+            <div class="d-flex post-tag-header">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('static', filename='img/all-category.png') }}" alt=""
+                         class="avatar-50 rounded">
+                </div>
+                <div class="ml-2 flex-grow-1">
+                    <p style="font-size: 20px;font-weight: bold" class="mb-1">论坛帖子主题类别列表一览</p>
+                    <p class="mb-0" style="color: #2a9fd6!important"><b>本站包含有{{ cates|length }}个帖子主题类别</b></p>
+                </div>
+            </div>
+            <div class="mt-2">
+                {% for key in datas.keys() %}
+                    <div class="mt-3 border border-secondary rounded">
+                        <div class="topic-bg d-flex">
+                            <p class="mb-0 flex-grow-1">{{ key }}</p>
+                            <p class="mb-0 text-muted"><span
+                                    class="badge badge-light">{{ datas.get(key)|length }}</span></p>
+                        </div>
+                        <div class="px-2 py-3">
+                            {% for info in datas.get(key) %}
+                                <a data-toggle="tooltip" data-placement="top" title="包含有{{ info[2] }}个帖子"
+                                   href="{{ url_for('post.post_cate', cate_id=info[0]) }}"
+                                   class="item-cate text-decoration-none">{{ info[1] }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </main>
+{% endblock %}
