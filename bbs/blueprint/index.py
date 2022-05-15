@@ -37,6 +37,29 @@ def get_slider_variables():
 index_bp.before_request(get_slider_variables)
 
 
+@index_bp.context_processor
+def get_hot_category():
+    try:
+        post_cates = Post.query.join(PostCategory).with_entities(
+            Post.cate_id,
+            PostCategory.name,
+            func.count(Post.id)
+        ).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
+    except Exception as e:
+        post_cates = Post.query.join(PostCategory).with_entities(
+            Post.cate_id,
+            func.ANY_VALUE(PostCategory.name),
+            func.count(Post.id)
+        ).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
+    return dict(hot_cates=post_cates)
+
+
+@index_bp.context_processor
+def get_latest_add_category():
+    post_cates = PostCategory.query.order_by(PostCategory.create_time.desc()).limit(15)
+    return dict(latest_cates=post_cates)
+
+
 def get_index_category():
     if current_user.is_authenticated:
         user_interests = UserInterest.query.with_entities(UserInterest.cate_id).filter(
@@ -65,7 +88,7 @@ def index():
     # 只获取过去30天以内的帖子
     day = datetime.datetime.today() - datetime.timedelta(days=30)
     posts = []
-
+    get_hot_category()
     if current_user.is_authenticated:
         # 查找用户收藏的帖子类型
         user_interests = UserInterest.query.with_entities(UserInterest.cate_id).filter(
