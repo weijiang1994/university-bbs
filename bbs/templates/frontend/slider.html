@@ -133,7 +133,7 @@
         <div id="hot-category" class="card-body p-2 f-15">
             {% if hot_cates %}
                 {% for hc in hot_cates %}
-                    <a class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=hc[0]) }}">{{ hc[1] }}</a>
+                    <a data-toggle="tooltip" data-placement="top" title="包含有{{ hc[2] }}个帖子" class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=hc[0]) }}">{{ hc[1] }}</a>
                 {% endfor %}
             {% endif %}
         </div>
