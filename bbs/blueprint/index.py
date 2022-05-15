@@ -44,13 +44,13 @@ def get_hot_category():
             Post.cate_id,
             PostCategory.name,
             func.count(Post.id)
-        ).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
+        ).filter(Post.status_id == 1).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
     except Exception as e:
         post_cates = Post.query.join(PostCategory).with_entities(
             Post.cate_id,
             func.ANY_VALUE(PostCategory.name),
             func.count(Post.id)
-        ).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
+        ).filter(Post.status_id == 1).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
     return dict(hot_cates=post_cates)
 
 
