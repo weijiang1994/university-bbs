@@ -1,5 +1,5 @@
 /*dark theme style*/
-.social-label{
+.social-label {
     background-color: #22303F;
     padding: 5px 15px 5px 6px;
     border-radius: 20px;
@@ -8,12 +8,12 @@
     line-height: 100%;
     cursor: pointer;
     text-decoration: none;
-    color: rgb(169, 188, 214)!important;
+    color: rgb(169, 188, 214) !important;
 }
 
-.social-label:hover{
+.social-label:hover {
     background-color: #393F4E;
-    color: #A9BCD6!important;
+    color: #A9BCD6 !important;
     outline: 0;
 }
 
@@ -160,34 +160,34 @@
     border-radius: 5px 5px 0 0;
 }
 
-.post-tag-root{
+.post-tag-root {
     color: white;
     background: #303030;
     padding: 8px;
     border-radius: 0 0 5px 5px;
 }
 
-.elite-star{
+.elite-star {
     color: #ffc801
 }
 
-.hr-line{
+.hr-line {
     background-color: #1b71ca;
 }
 
-#previewHtml::-webkit-scrollbar{
+#previewHtml::-webkit-scrollbar {
     width: 6px;
     height: 4px;
 }
 
-#previewHtml::-webkit-scrollbar-thumb{
+#previewHtml::-webkit-scrollbar-thumb {
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 5px rgb(233 221 221 / 20%);
     background: rgb(227 217 217);
 }
 
-#previewHtml::-webkit-scrollbar-track{
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+#previewHtml::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     background: #303030;
 }
@@ -216,7 +216,7 @@
     text-align: center;
 }
 
-.client-badge{
+.client-badge {
     background-color: #339999;
     border-radius: 5px;
     padding: 3px;
@@ -234,6 +234,14 @@
     border: 1px solid #403f3f;
 }
 
-.item-cate:hover{
-    box-shadow: 1px 1px 4px 1px rgba(165,151, 151,0.2);
+.item-cate:hover {
+    box-shadow: 1px 1px 4px 1px rgba(165, 151, 151, 0.2);
+}
+
+.topic-bg {
+    padding: 6px 5px;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    background-image: linear-gradient(to right, #868f96 0%, #596164 100%);
 }
