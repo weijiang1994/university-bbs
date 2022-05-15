@@ -439,7 +439,13 @@ def all_category():
         current_topic = cate.p_topic.name
         if current_topic not in datas.keys():
             datas[current_topic] = []
-        datas[current_topic].append([cate.id, cate.name, len(cate.post)])
+        datas[current_topic].append([
+            cate.id,
+            cate.name,
+            Post.query.filter(
+                Post.cate_id == cate.id,
+                Post.status_id == 1
+            ).count()])
     return render_template(
         'frontend/post/all-category.html',
         cates=cates,
