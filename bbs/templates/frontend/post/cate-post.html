@@ -1,5 +1,5 @@
 {% extends "frontend/base.html" %}
-{% from 'macro.html' import post_item with context %}
+{% from 'macro.html' import post_item, render_pagination with context %}
 {% block title %}
     {{ cate.name }}
 {% endblock %}
@@ -48,6 +48,11 @@
                 </ul>
                 {{ post_item(posts) }}
             </div>
+            {% if total > 20 %}
+                <div class="mt-2 float-right">
+                    {{ render_pagination(paginations) }}
+                </div>
+            {% endif %}
         </div>
     </main>
 {% endblock %}
