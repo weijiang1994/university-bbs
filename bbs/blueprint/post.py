@@ -120,7 +120,12 @@ def post_cate(cate_id):
                                     Post.status_id == 1).order_by(Post.update_time.desc()). \
         paginate(per_page=current_app.config['BBS_PER_PAGE'], page=page)
     posts = paginations.items
-    return render_template('frontend/post/cate-post.html', posts=posts, cate=cate)
+    return render_template(
+        'frontend/post/cate-post.html',
+        posts=posts,
+        cate=cate,
+        total=paginations.total
+    )
 
 
 @post_bp.route('/elite/<cate_id>', methods=['GET'])
