@@ -20,7 +20,7 @@
                         <p class="mb-1 ml-1 text-muted"><small>@{{ current_user.username }}</small></p>
                     </div>
                     <div>
-                        <a href="/post/new/" class="btn btn-secondary ml-2"><i class="fa fa-plus"></i></a>
+                        <a href="/post/new/" title="新的帖子" class="btn btn-secondary ml-2"><i class="fa fa-plus"></i></a>
                     </div>
                     {% if unread_count %}
                         <div>
@@ -67,7 +67,6 @@
             {% endif %}
         </div>
     </div>
-
     <div class="card border-secondary mb-2">
         <div class="card-header p-2"><i class="fa fa-file-word-o fa-fw mr-1"></i>今日鸡汤</div>
         <div id="oneWord" class="card-body p-2 f-15">
