@@ -56,13 +56,14 @@ def get_hot_category():
 
 @index_bp.context_processor
 def is_signed():
-    signed = False
+    signed = True
     if current_user.is_authenticated:
-        if SignRecord.query.filter(
+        if not SignRecord.query.filter(
                 SignRecord.timestamps.contains(datetime.date.today()),
                 SignRecord.uid == current_user.id
         ).first():
-            signed = True
+            signed = False
+
     return dict(signed=signed)
 
 
