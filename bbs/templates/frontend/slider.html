@@ -63,10 +63,21 @@
                                     class="fa fa-fw fa-sign-out mr-2"></i>登出</a>
                         </div>
                     </div>
+                    {% if signed %}
+                        <div class="flex-grow-1 text-right">
+                            <img src="{{ url_for('static', filename='img/signed.svg') }}" title="今日已签到">
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>
     </div>
+    {% if not signed %}
+        <div class="mb-2 border-secondary rounded p-2 bg card">
+            <p class="mb-0"><img src="{{ url_for('static', filename='img/sign.svg') }}" style="width: 10%" class="mr-1"><a
+                    class="a-link" href="{{ url_for('index_bp.sign') }}">领取今日签到奖励</a></p>
+        </div>
+    {% endif %}
     <div class="card border-secondary mb-2">
         <div class="card-header p-2"><i class="fa fa-file-word-o fa-fw mr-1"></i>今日鸡汤</div>
         <div id="oneWord" class="card-body p-2 f-15">
@@ -132,7 +143,9 @@
         <div id="hot-category" class="card-body p-2 f-15">
             {% if hot_cates %}
                 {% for hc in hot_cates %}
-                    <a data-toggle="tooltip" data-placement="top" title="包含有{{ hc[2] }}个帖子" class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=hc[0]) }}">{{ hc[1] }}</a>
+                    <a data-toggle="tooltip" data-placement="top" title="包含有{{ hc[2] }}个帖子"
+                       class="item-cate text-decoration-none"
+                       href="{{ url_for('post.post_cate', cate_id=hc[0]) }}">{{ hc[1] }}</a>
                 {% endfor %}
             {% endif %}
         </div>
@@ -146,7 +159,8 @@
         <div id="hot-posts" class="card-body p-2 f-15">
             {% if latest_cates %}
                 {% for lc in latest_cates %}
-                    <a class="item-cate text-decoration-none" href="{{ url_for('post.post_cate', cate_id=lc.id) }}">{{ lc.name }}</a>
+                    <a class="item-cate text-decoration-none"
+                       href="{{ url_for('post.post_cate', cate_id=lc.id) }}">{{ lc.name }}</a>
                 {% endfor %}
             {% endif %}
         </div>
