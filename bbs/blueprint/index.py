@@ -67,8 +67,8 @@ def is_signed():
     return dict(signed=signed)
 
 
+@index_bp.route('/sign/')
 @login_required
-@index_bp.route('/sign')
 def sign():
     if SignRecord.query.filter(
             SignRecord.timestamps.contains(datetime.date.today()),
