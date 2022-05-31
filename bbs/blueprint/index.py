@@ -5,14 +5,14 @@ file: index.py
 @time: 2020/11/26 23:04
 @desc:
 """
-from flask import Blueprint, render_template, request, current_app, jsonify
-from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User
+from flask import Blueprint, render_template, request, current_app, jsonify, flash, redirect
+from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User, SignRecord
 from bbs.extensions import db
 import random
 from sqlalchemy.sql.expression import func, not_, or_
 from bbs.decorators import statistic_traffic
 import requests
-from flask_login import current_user
+from flask_login import current_user, login_required
 import datetime
 
 index_bp = Blueprint('index_bp', __name__)
@@ -52,6 +52,36 @@ def get_hot_category():
             func.count(Post.id)
         ).filter(Post.status_id == 1).group_by(Post.cate_id).order_by(func.count(Post.id).desc()).limit(15)
     return dict(hot_cates=post_cates)
+
+
+@index_bp.context_processor
+def is_signed():
+    signed = False
+    if current_user.is_authenticated:
+        if SignRecord.query.filter(
+                SignRecord.timestamps.contains(datetime.date.today()),
+                SignRecord.uid == current_user.id
+        ).first():
+            signed = True
+    return dict(signed=signed)
+
+
+@login_required
+@index_bp.route('/sign')
+def sign():
+    if SignRecord.query.filter(
+            SignRecord.timestamps.contains(datetime.date.today()),
+            SignRecord.uid == current_user.id
+    ).first():
+        flash('今日已签到,请勿重复签到！', 'info')
+        return redirect(request.referrer)
+    s = SignRecord(
+        uid=current_user.id
+    )
+    db.session.add(s)
+    db.session.commit()
+    flash('已领取今日签到奖励！', 'info')
+    return redirect(request.referrer)
 
 
 @index_bp.context_processor

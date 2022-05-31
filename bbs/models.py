@@ -138,6 +138,7 @@ class User(db.Model, UserMixin):
     blocked_user = db.relationship('BlockUser', back_populates='block_user', foreign_keys=[BlockUser.block_user_id])
 
     login_log = db.relationship('LoginLog', back_populates='user')
+    sign_record = db.relationship('SignRecord', back_populates='user')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -640,3 +641,13 @@ class LoginLog(db.Model):
     login_account = db.Column(db.String(128), default='', comment='login account: username or email')
 
     user = db.relationship('User', back_populates='login_log')
+
+
+class SignRecord(db.Model):
+    __tablename__ = 't_sign_record'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now())
+
+    user = db.relationship('User', back_populates='sign_record')
