@@ -648,6 +648,6 @@ class SignRecord(db.Model):
 
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
-    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now())
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
 
     user = db.relationship('User', back_populates='sign_record')
