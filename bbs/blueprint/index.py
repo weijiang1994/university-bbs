@@ -59,7 +59,8 @@ def is_signed():
     signed = True
     if current_user.is_authenticated:
         if not SignRecord.query.filter(
-                SignRecord.timestamps.contains(datetime.date.today()),
+                func.DATE_FORMAT(SignRecord.timestamps, '%Y-%m-%d') == datetime.date.today(),
+                # SignRecord.timestamps.contains(datetime.date.today()),
                 SignRecord.uid == current_user.id
         ).first():
             signed = False
@@ -71,13 +72,13 @@ def is_signed():
 @login_required
 def sign():
     if SignRecord.query.filter(
-            SignRecord.timestamps.contains(datetime.date.today()),
+            func.DATE_FORMAT(SignRecord.timestamps, '%Y-%m-%d') == datetime.date.today(),
             SignRecord.uid == current_user.id
     ).first():
         flash('今日已签到,请勿重复签到！', 'info')
         return redirect(request.referrer)
     s = SignRecord(
-        uid=current_user.id
+        uid=current_user.id,
     )
     db.session.add(s)
     db.session.commit()
