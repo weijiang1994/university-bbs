@@ -10,8 +10,9 @@ from functools import wraps
 from flask import abort, flash, request, redirect, url_for
 from flask_login import current_user
 import datetime
-from bbs.models import PostStatistic, Post, UserInterest
+from bbs.models import PostStatistic, Post, UserInterest, UserCoin, UserCoinDetail
 from bbs.extensions import db
+from bbs.constants import COIN_OPERATE_TYPE
 
 
 def admin_permission_required(func):
@@ -33,6 +34,44 @@ def user_permission_required(func):
         return func(user_id)
 
     return authorized
+
+
+def compute_user_coin(operation, count, o_type):
+    """
+    计算用户网站货币
+    :param operation: 增加或减少
+    :param count: 数量
+    :param o_type: 操作类型
+    :return: response
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def operate_coin(*args, **kwargs):
+            ret = func(*args, **kwargs)
+            if request.method == 'GET' and request.endpoint == 'post.new_post':
+                return ret
+            uc = UserCoin.query.filter_by(uid=current_user.id).first()
+            if not uc:
+                uc = UserCoin(uid=current_user.id, balance=2000)
+                db.session.add(uc)
+            if operation == 'add':
+                uc.balance += int(count)
+            else:
+                uc.balance -= int(count)
+            udc = UserCoinDetail(
+                action=COIN_OPERATE_TYPE.get(operation),
+                detail=o_type,
+                uid=current_user.id,
+                count=count
+            )
+            db.session.add(udc)
+            db.session.commit()
+            return ret
+
+        return operate_coin
+
+    return decorator
 
 
 def statistic_traffic(database, obj):
@@ -108,5 +147,7 @@ def log_traceback(logger):
             except Exception as e:
                 import traceback
                 logger.error(str(traceback.format_exc()))
+
         return wrapper
+
     return decorator
