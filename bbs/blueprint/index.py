@@ -10,7 +10,7 @@ from bbs.models import Post, VisitStatistic, Notification, Comments, UserInteres
 from bbs.extensions import db
 import random
 from sqlalchemy.sql.expression import func, not_, or_
-from bbs.decorators import statistic_traffic
+from bbs.decorators import statistic_traffic, compute_user_coin
 import requests
 from flask_login import current_user, login_required
 import datetime
@@ -69,6 +69,7 @@ def is_signed():
 
 
 @index_bp.route('/sign/')
+@compute_user_coin('add', 50, 3)
 @login_required
 def sign():
     if SignRecord.query.filter(
@@ -80,6 +81,7 @@ def sign():
     s = SignRecord(
         uid=current_user.id,
     )
+
     db.session.add(s)
     db.session.commit()
     flash('已领取今日签到奖励！', 'info')

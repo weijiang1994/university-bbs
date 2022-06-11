@@ -138,7 +138,10 @@ class User(db.Model, UserMixin):
     blocked_user = db.relationship('BlockUser', back_populates='block_user', foreign_keys=[BlockUser.block_user_id])
 
     login_log = db.relationship('LoginLog', back_populates='user')
+
     sign_record = db.relationship('SignRecord', back_populates='user')
+    user_coin = db.relationship('UserCoin', back_populates='user')
+    coin_detail = db.relationship('UserCoinDetail', back_populates='user')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -651,3 +654,26 @@ class SignRecord(db.Model):
     timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
 
     user = db.relationship('User', back_populates='sign_record')
+
+
+class UserCoin(db.Model):
+    __tablename__ = 't_user_coin'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    balance = db.Column(db.INTEGER, default=0)
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    user = db.relationship('User', back_populates='user_coin')
+
+
+class UserCoinDetail(db.Model):
+    __tablename__ = 't_user_coin_detail'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    action = db.Column(db.INTEGER, default=1)
+    detail = db.Column(db.String(64), default='')
+    count = db.Column(db.INTEGER, default=0)
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now())
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+
+    user = db.relationship('User', back_populates='coin_detail')

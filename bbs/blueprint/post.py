@@ -15,7 +15,7 @@ from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
 from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email, get_ip_and_agent, get_ip_region
-from bbs.decorators import statistic_traffic, post_can_read, record_read
+from bbs.decorators import statistic_traffic, post_can_read, record_read, compute_user_coin
 from bbs.email import send_email
 from bs4 import BeautifulSoup
 
@@ -23,6 +23,7 @@ post_bp = Blueprint('post', __name__, url_prefix='/post')
 
 
 @post_bp.route('/new/', methods=['GET', 'POST'])
+@compute_user_coin('subtract', 30, 1)
 @login_required
 @statistic_traffic(db, PostStatistic)
 def new_post():
@@ -271,6 +272,7 @@ def post_collect(post_id):
 
 
 @post_bp.route('/post-comment/', methods=['POST'])
+@compute_user_coin('subtract', 5, o_type=2)
 @login_required
 @statistic_traffic(db, CommentStatistic)
 def post_comment():
@@ -306,6 +308,7 @@ def post_comment():
 
 
 @post_bp.route('/reply-comment/', methods=['POST'])
+@compute_user_coin('subtract', 5, 2)
 @login_required
 @statistic_traffic(db, CommentStatistic)
 def reply_comment():
