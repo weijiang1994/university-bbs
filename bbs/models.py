@@ -637,7 +637,7 @@ class LoginLog(db.Model):
     device = db.Column(db.String(512), default='', comment='login device: web?phone?')
     browser = db.Column(db.String(128), default='', comment='login browser')
     agent = db.Column(db.String(1024), default='', comment='user agent info')
-    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now(), comment='login timestamps')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now, comment='login timestamps')
     ip_address = db.Column(db.String(64), default='', nullable=False, comment='login ip address')
     ip_region = db.Column(db.String(512), default='', comment='login ip belong to where')
     device_type = db.Column(db.String(32), default=0, comment='phone? computer?')
