@@ -63,7 +63,8 @@ def compute_user_coin(operation, count, o_type):
                 action=COIN_OPERATE_TYPE.get(operation),
                 detail=o_type,
                 uid=current_user.id,
-                count=count
+                count=count,
+                current_balance=uc.balance
             )
             db.session.add(udc)
             db.session.commit()
