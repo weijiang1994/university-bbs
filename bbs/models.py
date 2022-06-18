@@ -673,7 +673,8 @@ class UserCoinDetail(db.Model):
     action = db.Column(db.INTEGER, default=1)
     detail = db.Column(db.String(64), default='')
     count = db.Column(db.INTEGER, default=0)
-    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now())
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
     uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    current_balance = db.Column(db.INTEGER, default=0)
 
     user = db.relationship('User', back_populates='coin_detail')
