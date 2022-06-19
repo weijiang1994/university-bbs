@@ -195,3 +195,8 @@ header{
         overflow-y: hidden;
     }
 }
+
+.coin-img{
+    width: 18px;
+    height: 18px;
+}

@@ -22,14 +22,14 @@
                              alt="anonymous">
                     {% endif %}
                     <div class="flex-grow-1">
-                    <div class="d-flex flex-row-reverse">
+                        <div class="d-flex flex-row-reverse">
 
-                        {% if post.is_elite %}
-                            <span class="elite-star" title="精华帖子"><i class="fa fa-star"></i></span>
-                        {% endif %}
-                        <a class="text-decoration-none flex-grow-1"
-                           href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
-                    </div>
+                            {% if post.is_elite %}
+                                <span class="elite-star" title="精华帖子"><i class="fa fa-star"></i></span>
+                            {% endif %}
+                            <a class="text-decoration-none flex-grow-1"
+                               href="{{ url_for('post.read', post_id=post.id) }}">{{ post.title }}</a>
+                        </div>
 
                         <div class="row mt-2">
                             <div class="col">
@@ -96,6 +96,7 @@
                     {% if prev != None -%}
                         <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
                             <a class="page-link" href="
+
                                     {{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
                         </li>
                     {%- endif -%}
@@ -104,6 +105,7 @@
                             {% if page != pagination.page %}
                                 <li class="page-item">
                                     <a class="page-link" href="
+
                                             {{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
                                 </li>
                             {% else %}
@@ -118,7 +120,8 @@
 
                     {% if next != None -%}
                         <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
+                            <a class="page-link" href="
+                                    {{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
                         </li>
                     {%- endif -%}
                 </ul>
@@ -257,7 +260,9 @@
                                     class="fa fa-commenting mr-2"></i>评论</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" onclick="getMarkDownData('editCommentContent', 'editCommentPreviewContent')" data-toggle="pill"
+                            <a class="nav-link"
+                               onclick="getMarkDownData('editCommentContent', 'editCommentPreviewContent')"
+                               data-toggle="pill"
                                href="#editCommentPreview"><i class="fa fa-print mr-2"></i>预览</a>
                         </li>
                     </ul>
@@ -307,7 +312,7 @@
 <!-- 用户主页的header -->
 {% macro profile_header() %}
     <div class="row">
-        <div class="col-md-3 col-lg-3 text-center">
+        <div class="col-md-3 col-lg-3 d-flex align-items-center justify-content-center">
             <img class="img-profile-bg" alt="{{ user.nickname }}" src="{{ user.avatar }}">
         </div>
         <div class="col-md-9 col-lg-9 div-center-md">
@@ -339,6 +344,25 @@
                 <a href="{{ url_for('profile.following', user_id=user.id) }}"
                    class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
             </p>
+            {% if coin %}
+                <p class="mb-2">
+                <span class="social-label" title="网站硬币余额" data-toggle="tooltip" data-placement="top">
+                    {% if gold %}
+                        {{ gold }}
+                        <img src="{{ url_for('static', filename='img/gold.png') }}" alt="gold" class="coin-img">
+                    {% endif %}
+                    {% if silver %}
+                        {{ silver }}
+                        <img src="{{ url_for('static', filename='img/silver.png') }}" alt="silver" class="coin-img">
+                    {% endif %}
+                    {% if copper %}
+                        {{ copper }}
+                        <img src="{{ url_for('static', filename='img/copper.png') }}" alt="copper" class="coin-img">
+                    {% endif %}
+                </span>
+
+                    </p>
+            {% endif %}
             {% if current_user.id == user.id %}
                 <a class="btn btn-outline-success" href="{{ url_for('user.index', user_id=current_user.id) }}">个人主页</a>
             {% else %}
@@ -401,17 +425,21 @@
                 <a class="ml-2 text-muted text-decoration-none">匿名</a>
             {% endif %}
             <div class="d-flex">
-            {% if comment.ip_address %}
-                <a class="text-decoration-none d-lg-block d-none ml-2"><span
-                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="客户端信息">{{ comment.platform }}</span></a>
-                <a class="text-decoration-none ml-2"><span
-                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="IP属地">{{ comment.ip_region }}</span></a>
-            {% else %}
-                <a class="text-decoration-none ml-2 d-lg-block d-none"><span
-                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="学院">{{ comment.author.college.name }}</span></a>
-                <a class="text-decoration-none ml-2"><span
-                        class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom" title="角色">{{ comment.author.role.name }}</span></a>
-            {% endif %}
+                {% if comment.ip_address %}
+                    <a class="text-decoration-none d-lg-block d-none ml-2"><span
+                            class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom"
+                            title="客户端信息">{{ comment.platform }}</span></a>
+                    <a class="text-decoration-none ml-2"><span
+                            class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom"
+                            title="IP属地">{{ comment.ip_region }}</span></a>
+                {% else %}
+                    <a class="text-decoration-none ml-2 d-lg-block d-none"><span
+                            class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom"
+                            title="学院">{{ comment.author.college.name }}</span></a>
+                    <a class="text-decoration-none ml-2"><span
+                            class="client-badge span-hand" data-toggle="tooltip" data-placement="bottom"
+                            title="角色">{{ comment.author.role.name }}</span></a>
+                {% endif %}
                 {% if post.author_id == comment.author_id %}
                     <a class="text-decoration-none ml-2"><span class="op-badge">楼主</span></a>
                 {% endif %}
