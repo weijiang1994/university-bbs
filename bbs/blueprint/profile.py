@@ -10,11 +10,30 @@ import datetime
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, jsonify
 from flask_login import current_user, login_required
 
-from bbs.models import User, Comments, Post, Collect, BlockUser
+from bbs.models import User, Comments, Post, Collect, BlockUser, UserCoin
 from bbs.blueprint.post import post_collect
 from bbs.utils import TIME_RANGE, PANGU_DATE
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
+
+
+@profile_bp.context_processor
+def user_coin():
+    user_id = request.view_args.get('user_id')
+    uc = UserCoin.query.filter_by(uid=user_id).first()
+    if uc:
+        gold = int(uc.balance) // 10000
+        silver = int(uc.balance) % 10000 // 100
+        copper = int(uc.balance) % 100
+        return dict(
+            gold=gold,
+            silver=silver,
+            copper=copper,
+            coin=True
+        )
+    return dict(
+        coin=False
+    )
 
 
 @profile_bp.route('/user/<user_id>/')
