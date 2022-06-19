@@ -8,13 +8,13 @@ file: constants.py
 PHONE_TYPE = ['iphone', 'android']
 COMPUTER_TYPE = ['windows', 'macos', 'linux']
 COIN_DETAIL_TYPE = {
-    1: '发帖',
-    2: '评论',
-    3: '签到',
+    '1': ['发帖', 30],
+    '2': ['评论', 5],
+    '3': ['签到', 50],
 }
 
 COIN_OPERATE_TYPE = {
-    'add': 1,
-    'subtract': 2
+    1: ['增加', '+', 'text-success'],
+    2: ['减少', '-', 'text-danger']
 }
 

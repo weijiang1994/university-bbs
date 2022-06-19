@@ -346,7 +346,7 @@
             </p>
             {% if coin %}
                 <p class="mb-2">
-                <span class="social-label" title="网站硬币余额" data-toggle="tooltip" data-placement="top">
+                <a class="social-label text-decoration-none" title="网站硬币余额" data-toggle="tooltip" data-placement="top">
                     {% if gold %}
                         {{ gold }}
                         <img src="{{ url_for('static', filename='img/gold.png') }}" alt="gold" class="coin-img">
@@ -359,7 +359,7 @@
                         {{ copper }}
                         <img src="{{ url_for('static', filename='img/copper.png') }}" alt="copper" class="coin-img">
                     {% endif %}
-                </span>
+                </a>
 
                     </p>
             {% endif %}

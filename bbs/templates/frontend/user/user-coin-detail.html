@@ -1,0 +1,90 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul, user_card_lg, user_card_md, render_pagination with context %}
+{% block title %}
+    {{ user.nickname }}的网站硬币详情
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-lg-3">
+                    {{ user_page_header_ul('网站硬币详情') }}
+                    {{ user_page_header('网站硬币详情') }}
+                </div>
+                <div class="col-lg-9 col-md-9">
+                    {% include "_flash.html" %}
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">网站硬币详情</span></p>
+                    <p class="mb-2"><b>当前账户余额</b></p>
+                    {% if coin %}
+                        <p class="mb-2">
+                            <span class="social-label" title="网站硬币余额" data-toggle="tooltip"
+                                  data-placement="top">
+                                {% if gold %}
+                                    {{ gold }}
+                                    <img src="{{ url_for('static', filename='img/gold.png') }}" alt="gold"
+                                         class="coin-img">
+                                {% endif %}
+                                {% if silver %}
+                                    {{ silver }}
+                                    <img src="{{ url_for('static', filename='img/silver.png') }}" alt="silver"
+                                         class="coin-img">
+                                {% endif %}
+                                {% if copper %}
+                                    {{ copper }}
+                                    <img src="{{ url_for('static', filename='img/copper.png') }}" alt="copper"
+                                         class="coin-img">
+                                {% endif %}
+                            </span>
+                        </p>
+                    {% endif %}
+                    <p class="border-bottom pb-2"><i class="fa fa-question-circle mr-2"></i><a href=""
+                                                                                               class="text-decoration-none">关于虚拟货币系统的说明文档</a>
+                    </p>
+                    {% if tag %}
+                        {{ render_pagination(pagination) }}
+                    {% endif %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <td>时间</td>
+                                <td>类型</td>
+                                <td>数额</td>
+                                <td>余额</td>
+                                <td>描述</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for uc in uc_detail %}
+                                <tr>
+                                    <td>{{ uc.timestamps }}</td>
+                                    <td>{{ COIN_DETAIL_TYPE.get(uc.detail)[0] }}</td>
+                                    <td class="{{ COIN_OPERATE_TYPE.get(uc.action)[2] }}">
+                                        {{ COIN_OPERATE_TYPE.get(uc.action)[1] }}{{ COIN_DETAIL_TYPE.get(uc.detail)[1] }}</td>
+                                    <td>{{ uc.current_balance or '无记录' }}</td>
+                                    <td>
+                                        {% if uc.detail == '1' %}
+                                            发表新的主题帖子扣除30个硬币
+                                        {% elif uc.detail == '2' %}
+                                            回复主题帖子扣除5个硬币
+                                        {% elif uc.detail == '3' %}
+                                            {{ uc.timestamps.year }}-{{ uc.timestamps.month }}-{{ uc.timestamps.day }}
+                                            每日签到奖励，增加30个硬币
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if tag %}
+                        {{ render_pagination(pagination) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}
