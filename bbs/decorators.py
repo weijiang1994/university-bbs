@@ -12,7 +12,7 @@ from flask_login import current_user
 import datetime
 from bbs.models import PostStatistic, Post, UserInterest, UserCoin, UserCoinDetail
 from bbs.extensions import db
-from bbs.constants import COIN_OPERATE_TYPE
+from bbs.constants import COIN_OPERATE_TYPE, COIN_OPERATE_TYPE_DICT
 
 
 def admin_permission_required(func):
@@ -60,7 +60,7 @@ def compute_user_coin(operation, count, o_type):
             else:
                 uc.balance -= int(count)
             udc = UserCoinDetail(
-                action=COIN_OPERATE_TYPE.get(operation),
+                action=COIN_OPERATE_TYPE_DICT.get(operation),
                 detail=o_type,
                 uid=current_user.id,
                 count=count,

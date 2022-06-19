@@ -18,3 +18,7 @@ COIN_OPERATE_TYPE = {
     2: ['减少', '-', 'text-danger']
 }
 
+COIN_OPERATE_TYPE_DICT = {
+    'add': 1,
+    'subtract': 2
+}
