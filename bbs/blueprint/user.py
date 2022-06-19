@@ -14,12 +14,13 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.expression import func
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser, LoginLog
+from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser, LoginLog, UserCoinDetail, UserCoin
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
 from bbs.utils import get_md5, get_upload_img_limit, is_jpg, is_png
 from bbs.decorators import user_permission_required
+from bbs.constants import COIN_OPERATE_TYPE, COIN_DETAIL_TYPE
 
 user_bp = Blueprint('user', __name__, url_prefix='/user/')
 
@@ -327,7 +328,7 @@ def upload_avatar():
         flash('上传的文件不能大于{}M!'.format(str(get_upload_img_limit())), 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
 
-    if not(is_jpg(filebytes) or is_png(filebytes)):
+    if not (is_jpg(filebytes) or is_png(filebytes)):
         flash('文件格式不是JPG或者PNG!', 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
 
@@ -501,4 +502,39 @@ def login_log():
         'frontend/user/user-login-log.html',
         logs=logs,
         user=current_user
+    )
+
+
+@user_bp.route('/coin-detail/')
+@login_required
+def coin_detail():
+    uc = UserCoin.query.filter_by(uid=current_user.id).first()
+    coin = False
+    gold = silver = copper = 0
+    if uc:
+        coin = True
+        gold = int(uc.balance) // 10000
+        silver = int(uc.balance) % 10000 // 100
+        copper = int(uc.balance) % 100
+    page = request.args.get('page', 1)
+    per_page = request.args.get('size', 20)
+    pagination = UserCoinDetail.query.filter_by(uid=current_user.id).order_by(
+        UserCoinDetail.timestamps.desc()).paginate(
+        page=page,
+        per_page=per_page
+    )
+    total = pagination.total
+    uc_detail = pagination.items
+    return render_template(
+        'frontend/user/user-coin-detail.html',
+        tag=total > per_page,
+        uc_detail=uc_detail,
+        user=current_user,
+        gold=gold,
+        silver=silver,
+        copper=copper,
+        coin=coin,
+        pagination=pagination,
+        COIN_OPERATE_TYPE=COIN_OPERATE_TYPE,
+        COIN_DETAIL_TYPE=COIN_DETAIL_TYPE
     )
