@@ -344,9 +344,9 @@
                 <a href="{{ url_for('profile.following', user_id=user.id) }}"
                    class="mr-2 span-hand a-link text-decoration-none">{{ user.following.count() }}个关注</a>
             </p>
-            {% if coin %}
+            {% if coin and current_user.id == user.id %}
                 <p class="mb-2">
-                <a class="social-label text-decoration-none" title="网站硬币余额" data-toggle="tooltip" data-placement="top">
+                <a href="{{ url_for('user.coin_detail') }}" class="social-label text-decoration-none" title="网站硬币余额" data-toggle="tooltip" data-placement="top">
                     {% if gold %}
                         {{ gold }}
                         <img src="{{ url_for('static', filename='img/gold.png') }}" alt="gold" class="coin-img">
