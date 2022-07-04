@@ -391,19 +391,31 @@
     <div class="mt-4">
         <ul class="nav nav-tabs nav-justified">
             <li class="nav-item">
-                <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">帖子</a>
+                <a class="nav-link {% if tabName == '帖子' %}active{% endif %}" href="/profile/user/{{ user.id }}/">
+                    <span class="d-lg-inline d-none">帖子</span>
+                    <span class="d-lg-none d-md-block" title="帖子"><i class="fa fa-file-text"></i></span>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '评论' %}active{% endif %}"
-                   href="/profile/comment/{{ user.id }}/">评论</a>
+                   href="/profile/comment/{{ user.id }}/">
+                    <span class="d-lg-inline d-none">评论</span>
+                    <span class="d-lg-none d-md-block"><i class="fa fa-comment"></i></span>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '收藏' %}active{% endif %}"
-                   href="/profile/collect/{{ user.id }}/">收藏</a>
+                   href="/profile/collect/{{ user.id }}/">
+                    <span class="d-lg-inline d-none">收藏</span>
+                    <span class="d-lg-none d-md-block"><i class="fa fa-star"></i></span>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if tabName == '社交' %}active{% endif %}"
-                   href="/profile/social/{{ user.id }}/">社交</a>
+                   href="/profile/social/{{ user.id }}/">
+                    <span class="d-lg-inline d-none">社交</span>
+                    <span class="d-lg-none d-md-block"><i class="fa fa-globe"></i></span>
+                </a>
             </li>
         </ul>
     </div>
