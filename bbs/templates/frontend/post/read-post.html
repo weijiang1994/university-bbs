@@ -118,6 +118,14 @@
             color: white;
             font-size: 75%;
         }
+
+        .post-audit {
+            border: solid 1px #ffb243;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            margin-left: 4px;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -141,7 +149,12 @@
             </ol>
 
             <div class="post-div rounded-0">
-                <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
+                <div class="d-flex">
+                    <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
+                    {% if post.status.name == '未审核' and current_user.is_authenticated and current_user.id == post.user.id %}
+                        <p class="mb-0"><span class="post-audit border-warning text-warning ">审核中</span></p>
+                    {% endif %}
+                </div>
                 <div class="d-flex mb-0">
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i><span
                             class="d-none d-lg-inline-block">点亮</span>({{ post.likes }}) </p>
@@ -481,7 +494,7 @@
             $(document).ready(function () {
 
             })
-            window.onload = function (){
+            window.onload = function () {
                 let ccs = document.getElementsByClassName('comment-content')
                 let height = $(".comment-content").css('max-height')
                 height = parseInt(height.split('px')[0])
@@ -628,7 +641,7 @@
                             cancelBtn.removeAttr('disabled', 'disabled')
                         }
                     },
-                    error: function (){
+                    error: function () {
                         replyBtn.removeAttr('disabled')
                         replyBtn.html('回复')
                         cancelBtn.re('disabled')
@@ -750,7 +763,7 @@
                             comBtn.html('评论')
                         }
                     },
-                    error: function (){
+                    error: function () {
                         comBtn.removeAttr('disabled')
                         comBtn.html('评论')
                         alert('服务器发生错误，评论失败！')

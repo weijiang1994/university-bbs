@@ -110,14 +110,14 @@ def post_can_read(func):
         po = Post.query.get_or_404(post_id)
         if po.status.name == '未审核':
             if current_user.is_authenticated and current_user.id == po.user.id:
-                flash('该帖子正在审核中,目前只有你能查看!', 'warning')
+                pass
             else:
                 flash('该帖子正在审核中,暂时不能查看!', 'warning')
                 return redirect(url_for('index_bp.index'))
-        if po.status.name == '禁用':
+        elif po.status.name == '禁用':
             flash('该帖子处于封禁状态,暂时不能查看!', 'warning')
             return redirect(url_for('index_bp.index'))
-        if po.status.name == '审核失败':
+        elif po.status.name == '审核失败':
             flash('该帖子审核未通过,不能查看!', 'warning')
             return redirect(url_for('index_bp.index'))
         return func(post_id, *args, **kwargs)
