@@ -516,8 +516,8 @@ def coin_detail():
         gold = int(uc.balance) // 10000
         silver = int(uc.balance) % 10000 // 100
         copper = int(uc.balance) % 100
-    page = request.args.get('page', 1)
-    per_page = request.args.get('size', 20)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('size', 20, type=int)
     pagination = UserCoinDetail.query.filter_by(uid=current_user.id).order_by(
         UserCoinDetail.timestamps.desc()).paginate(
         page=page,
