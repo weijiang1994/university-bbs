@@ -5,6 +5,7 @@ bleach==3.2.1
 blinker==1.4
 Bootstrap-Flask==1.7.0
 bs4==0.0.1
+cachelib==0.6.0
 certifi==2021.5.30
 cffi==1.14.4
 chardet==4.0.0
@@ -22,9 +23,11 @@ Flask-Login==0.5.0
 Flask-Mail==0.9.1
 Flask-Migrate==2.5.3
 Flask-Moment==0.10.0
+Flask-OAuthlib==0.9.6
 Flask-SQLAlchemy==2.4.4
 flask-whooshee==0.7.0
 Flask-WTF==0.14.3
+gunicorn==20.1.0
 idna==2.10
 importlib-metadata==3.1.1
 invoke==1.4.1
@@ -34,6 +37,7 @@ Mako==1.1.3
 Markdown==3.3.3
 MarkupSafe==1.1.1
 numpy==1.21.0
+oauthlib==2.1.0
 packaging==20.7
 Pillow==8.0.1
 ply==3.11
@@ -50,6 +54,7 @@ pytz==2021.1
 PyYAML==5.4.1
 redis==3.5.3
 requests==2.25.1
+requests-oauthlib==1.1.0
 six==1.15.0
 soupsieve==2.2.1
 SQLAlchemy==1.3.20
@@ -62,5 +67,3 @@ Werkzeug==1.0.1
 Whoosh==2.7.4
 WTForms==2.3.3
 zipp==3.4.0
-flask_oauthlib==0.9.6
-
