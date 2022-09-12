@@ -13,6 +13,7 @@ from flask_login import current_user, login_required
 from bbs.models import User, Comments, Post, Collect, BlockUser, UserCoin
 from bbs.blueprint.post import post_collect
 from bbs.utils import TIME_RANGE, PANGU_DATE
+from bbs.decorators import save_current_visitor
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
 
@@ -38,6 +39,7 @@ def user_coin():
 
 @profile_bp.route('/user/<user_id>/')
 @login_required
+@save_current_visitor
 def index(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
@@ -60,6 +62,7 @@ def index(user_id):
 
 @profile_bp.route('/comment/<user_id>/')
 @login_required
+@save_current_visitor
 def profile_comment(user_id):
     page = request.args.get('page', default=1, type=int)
     user = User.query.get_or_404(user_id)
@@ -106,6 +109,7 @@ def unfollow_user(user_id):
 
 @profile_bp.route('/collect/<user_id>/')
 @login_required
+@save_current_visitor
 def collect(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)
@@ -132,6 +136,7 @@ def uncollect(post_id):
 
 @profile_bp.route('/social/<user_id>/')
 @login_required
+@save_current_visitor
 def follower(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)
@@ -146,6 +151,7 @@ def follower(user_id):
 
 @profile_bp.route('/following/<user_id>/')
 @login_required
+@save_current_visitor
 def following(user_id):
     user = User.query.get_or_404(user_id)
     page = request.args.get('page', default=1, type=int)

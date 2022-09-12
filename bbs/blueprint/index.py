@@ -6,7 +6,7 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request, current_app, jsonify, flash, redirect
-from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User, SignRecord
+from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User, SignRecord, RecentVisitor
 from bbs.extensions import db
 import random
 from sqlalchemy.sql.expression import func, not_, or_
@@ -66,6 +66,16 @@ def is_signed():
             signed = False
 
     return dict(signed=signed)
+
+
+@index_bp.context_processor
+def recent_visitors():
+    latest_visitors = None
+    if current_user.is_authenticated:
+        latest_visitors = RecentVisitor.query.filter(
+            RecentVisitor.uid == current_user.id).order_by(
+            RecentVisitor.visit_time.desc()).limit(10)
+    return dict(latest_visitors=latest_visitors)
 
 
 @index_bp.route('/sign/')

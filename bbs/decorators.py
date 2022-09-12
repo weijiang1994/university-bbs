@@ -6,11 +6,12 @@
 @Desc    : decorators
 @Software: PyCharm
 """
+import functools
 from functools import wraps
 from flask import abort, flash, request, redirect, url_for
 from flask_login import current_user
 import datetime
-from bbs.models import PostStatistic, Post, UserInterest, UserCoin, UserCoinDetail
+from bbs.models import PostStatistic, Post, UserInterest, UserCoin, UserCoinDetail, RecentVisitor
 from bbs.extensions import db
 from bbs.constants import COIN_OPERATE_TYPE, COIN_OPERATE_TYPE_DICT
 
@@ -152,3 +153,20 @@ def log_traceback(logger):
         return wrapper
 
     return decorator
+
+
+def save_current_visitor(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        uid = request.view_args.get('user_id')
+        if current_user.is_authenticated and int(uid) != current_user.id:
+            condition = RecentVisitor.uid != uid, RecentVisitor.vid != current_user.id, RecentVisitor.visit_time.contains(str(datetime.date.today()))
+            condition = {'uid': uid,
+                         'vid': current_user.id,
+                         'visit_time': (str(datetime.date.today()))}
+            RecentVisitor.update_or_insert(condition=condition,
+                                           uid=uid,
+                                           vid=current_user.id,
+                                           visit_time=datetime.datetime.now())
+        return func(*args, **kwargs)
+    return wrapper

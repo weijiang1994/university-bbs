@@ -159,6 +159,10 @@ header{
     height: 50px;
 }
 
+.radius-50{
+    border-radius: 50%;
+}
+
 .f-12{
     font-size: 12px;
 }

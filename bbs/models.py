@@ -14,6 +14,33 @@ from flask_login import UserMixin, current_user
 import os
 
 
+class RecentVisitor(db.Model):
+    __tablename__ = 't_recent_visitor'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'), comment='visited user id')
+    vid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'), comment='visitor id')
+    visit_time = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    user = db.relationship('User', foreign_keys=[uid], back_populates='visited', )
+    visit_user = db.relationship('User', foreign_keys=[vid], back_populates='visitor')
+
+    @staticmethod
+    def update_or_insert(condition, **kwargs):
+        rv = RecentVisitor.query.filter(
+            RecentVisitor.uid == condition['uid'],
+            RecentVisitor.vid == condition['vid'],
+            RecentVisitor.visit_time.contains(condition['visit_time'])
+        )
+        if rv.first():
+            rv.update(dict(**kwargs), synchronize_session=False)
+        else:
+            rv = RecentVisitor(**kwargs)
+            db.session.add(rv)
+        db.session.commit()
+        return rv
+
+
 class BlockUser(db.Model):
     # 用户黑名单
     __tablename__ = 't_block_user'
@@ -142,6 +169,9 @@ class User(db.Model, UserMixin):
     sign_record = db.relationship('SignRecord', back_populates='user')
     user_coin = db.relationship('UserCoin', back_populates='user')
     coin_detail = db.relationship('UserCoinDetail', back_populates='user')
+
+    visited = db.relationship('RecentVisitor', back_populates='user', foreign_keys=[RecentVisitor.uid])
+    visitor = db.relationship('RecentVisitor', back_populates='visit_user', foreign_keys=[RecentVisitor.vid])
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
