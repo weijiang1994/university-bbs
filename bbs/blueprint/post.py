@@ -45,12 +45,13 @@ def new_post():
         insert_post_tag(post, tags)
         db.session.commit()
         flash('帖子发布成功!', 'success')
-        send_email(
-            to_mail=get_admin_email(),
-            subject='Post Audit',
-            template='email/postAudit',
-            post=post,
-        )
+        if get_audit():
+            send_email(
+                to_mail=get_admin_email(),
+                subject='Post Audit',
+                template='email/postAudit',
+                post=post,
+            )
         return redirect(url_for('post.read', post_id=post.id))
     cid = request.args.get('cid', type=int)
     if cid:
