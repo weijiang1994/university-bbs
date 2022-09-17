@@ -72,7 +72,7 @@ class BaseConfig(object):
     AVATARS_SAVE_PATH = BBS_UPLOAD_PATH + '/avatars/'
 
     # CKEditor configure
-    CKEDITOR_SERVE_LOCAL = True
+    CKEDITOR_SERVE_LOCAL = False
     CKEDITOR_ENABLE_CODESNIPPET = True
     CKEDITOR_HEIGHT = 400
     CKEDITOR_CODE_THEME = 'docco'
