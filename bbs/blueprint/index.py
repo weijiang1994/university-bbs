@@ -6,7 +6,8 @@ file: index.py
 @desc:
 """
 from flask import Blueprint, render_template, request, current_app, jsonify, flash, redirect
-from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User, SignRecord, RecentVisitor
+from bbs.models import Post, VisitStatistic, Notification, Comments, UserInterest, PostCategory, User, SignRecord, \
+    RecentVisitor, ReadHistory
 from bbs.extensions import db
 import random
 from sqlalchemy.sql.expression import func, not_, or_
@@ -76,6 +77,15 @@ def recent_visitors():
             RecentVisitor.uid == current_user.id).order_by(
             RecentVisitor.visit_time.desc()).limit(10)
     return dict(latest_visitors=latest_visitors)
+
+
+@index_bp.context_processor
+def recent_history():
+    history = None
+    if current_user.is_authenticated:
+        history = ReadHistory.query.filter(ReadHistory.uid == current_user.id).order_by(
+            ReadHistory.timestamps.desc()).limit(5)
+    return dict(history=history)
 
 
 @index_bp.route('/sign/')

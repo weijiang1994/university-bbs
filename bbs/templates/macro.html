@@ -522,6 +522,7 @@
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.privacy_setting', user_id=user.id) }}">隐私设置</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.coin_detail') }}">硬币详情</a>
             <a class="dropdown-item text-decoration-none" href="{{ url_for('user.login_log') }}">登录历史</a>
+            <a class="dropdown-item text-decoration-none" href="{{ url_for('user.history') }}">浏览记录</a>
             <a class="dropdown-item text-decoration-none"
                href="{{ url_for('user.block_user_list') }}">黑名单</a>
             <a class="dropdown-item text-decoration-none"
@@ -589,6 +590,12 @@
                 a-link{% else %} li-fade
             {% endif %}  text-decoration-none" href="{{ url_for('user.login_log') }}"><i
                     class="fa fa-laptop fa-fw mr-1"></i>登录历史</a>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="{% if title == '浏览记录' %}
+                a-link{% else %} li-fade
+            {% endif %}  text-decoration-none" href="{{ url_for('user.history') }}"><i
+                    class="fa fa-history fa-fw mr-1"></i>浏览记录</a>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a class="{% if title == '黑名单' %}

@@ -10,7 +10,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser
+    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser, ReadHistory
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -85,6 +85,13 @@ def read(post_id):
     per_page = current_app.config['BBS_PER_PAGE']
     if current_user.is_authenticated:
         is_collect = Collect.query.filter(Collect.user_id == current_user.id, Collect.post_id == post_id).first()
+        # 插入浏览记录
+        if post.author_id != current_user.id:
+            condition = ReadHistory.uid == current_user.id, ReadHistory.pid == post_id
+            ReadHistory.update_or_insert(condition,
+                                         pid=post_id,
+                                         uid=current_user.id,
+                                         timestamps=datetime.datetime.now())
     else:
         is_collect = None
     pagination = Comments.query.filter(Comments.post_id == post_id, Comments.delete_flag == 0).order_by(
@@ -92,6 +99,7 @@ def read(post_id):
     p_tags = PostTagShip.find_post_tag(post_id)
     comments = pagination.items
     post.read_times += 1
+
     db.session.commit()
     return render_template('frontend/post/read-post.html',
                            post=post,

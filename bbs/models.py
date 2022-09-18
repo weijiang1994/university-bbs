@@ -172,6 +172,7 @@ class User(db.Model, UserMixin):
 
     visited = db.relationship('RecentVisitor', back_populates='user', foreign_keys=[RecentVisitor.uid])
     visitor = db.relationship('RecentVisitor', back_populates='visit_user', foreign_keys=[RecentVisitor.vid])
+    read_history = db.relationship('ReadHistory', back_populates='user')
 
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
@@ -295,6 +296,7 @@ class Post(db.Model):
 
     post_like = db.relationship('PostLike', back_populates='post')
     post_dislike = db.relationship('PostDislike', back_populates='post')
+    read_history = db.relationship('ReadHistory', back_populates='post')
 
     def can_delete(self):
         return current_user.id == self.author_id
@@ -708,3 +710,26 @@ class UserCoinDetail(db.Model):
     current_balance = db.Column(db.INTEGER, default=0)
 
     user = db.relationship('User', back_populates='coin_detail')
+
+
+class ReadHistory(db.Model):
+    __tablename__ = 't_read_history'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    pid = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    user = db.relationship('User', back_populates='read_history')
+    post = db.relationship('Post', back_populates='read_history')
+
+    @staticmethod
+    def update_or_insert(condition, **kwargs):
+        rh = ReadHistory.query.filter(*condition)
+        if rh.first():
+            rh.update(kwargs)
+        else:
+            rh = ReadHistory(**kwargs)
+            db.session.add(rh)
+        db.session.commit()
+        return rh

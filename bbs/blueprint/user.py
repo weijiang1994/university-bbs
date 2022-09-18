@@ -14,7 +14,8 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.expression import func
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
-from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser, LoginLog, UserCoinDetail, UserCoin
+from bbs.models import User, Notification, Post, Comments, PrivateMessage, BlockUser, LoginLog, UserCoinDetail, \
+    UserCoin, ReadHistory
 from bbs.forms import EditUserForm, CropAvatarForm, ChangePasswordForm
 from bbs.extensions import db, avatars
 from bbs.setting import basedir
@@ -537,4 +538,25 @@ def coin_detail():
         pagination=pagination,
         COIN_OPERATE_TYPE=COIN_OPERATE_TYPE,
         COIN_DETAIL_TYPE=COIN_DETAIL_TYPE
+    )
+
+
+@user_bp.route('/history')
+@login_required
+def history():
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['BBS_PER_PAGE']
+    pagination = ReadHistory.query.filter_by(uid=current_user.id).order_by(
+        ReadHistory.timestamps.desc()).paginate(
+        page=page,
+        per_page=per_page
+    )
+    total = pagination.total
+    history = pagination.items
+    return render_template(
+        'frontend/user/history.html',
+        tag=total > per_page,
+        history=history,
+        pagination=pagination,
+        user=current_user
     )

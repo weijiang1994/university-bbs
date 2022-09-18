@@ -188,6 +188,27 @@
         </div>
     {% endif %}
 
+    {% if current_user.is_authenticated %}
+        <div class="card border-secondary mb-2">
+            <div class="card-header p-2 d-flex">
+                <span class=" flex-grow-1"><i class="fa fa-history fa-fw mr-1"></i>最近浏览</span>
+                <a href="{{ url_for('user.history') }}" title="查看浏览历史"><i class="fa fa-bars"></i></a>
+            </div>
+            <div id="hot-posts" class="card-body p-2 f-15">
+                {% if history %}
+                    <ol class="mb-0 pl-4">
+                        {% for h in history %}
+                            <li><a href="{{ url_for('post.read', post_id=h.pid) }}"
+                                   class="text-decoration-none">{{ h.post.title }}</a></li>
+                        {% endfor %}
+                        {% else %}
+                        <p class="mb-0 f-12"><b>暂无浏览记录!</b></p>
+                    </ol>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card border-secondary mb-2">
         <div class="card-header p-2"><i class="fa fa-dashboard fa-fw mr-1"></i>社区运行状况</div>
         <div id="hot-posts" class="card-body p-2 f-15 pl-4">

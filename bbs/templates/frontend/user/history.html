@@ -1,0 +1,52 @@
+{% extends "frontend/base.html" %}
+{% from "macro.html" import user_page_header, user_page_header_ul, user_card_lg, user_card_md, render_pagination with context %}
+{% block title %}
+    {{ user.nickname }}的浏览记录
+{% endblock %}
+{% block content %}
+    <body>
+    <main>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-lg-3">
+                    {{ user_page_header_ul('浏览记录') }}
+                    {{ user_page_header('浏览记录') }}
+                </div>
+                <div class="col-lg-9 col-md-9">
+                    <p class="user-home-title d-none d-lg-block"><span class="span-border-bottom">浏览记录</span></p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <td>帖子标题</td>
+                                <td>帖子类别</td>
+                                <td>帖子作者</td>
+                                <td>浏览时间</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for h in history %}
+                                <tr>
+                                    <td><a href="{{ url_for('post.read', post_id=h.pid) }}">{{ h.post.title }}</a></td>
+                                    <td>
+                                        <a href="{{ url_for('post.post_cate', cate_id=h.post.cats.id) }}">{{ h.post.cats.name }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('profile.index', user_id=h.post.user.id) }}">{{ h.post.user.nickname }}</a>
+                                    </td>
+                                    <td>{{ h.timestamps }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if tag %}
+                        {{ render_pagination(pagination) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+{% endblock %}
