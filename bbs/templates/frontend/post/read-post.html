@@ -497,6 +497,9 @@
             window.onload = function () {
                 let ccs = document.getElementsByClassName('comment-content')
                 let height = $(".comment-content").css('max-height')
+                if (!height){
+                    return false
+                }
                 height = parseInt(height.split('px')[0])
                 for (let i = 0; i < ccs.length; i++) {
                     if (ccs[i].children[0].scrollHeight > height) {
