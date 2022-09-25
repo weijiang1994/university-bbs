@@ -174,7 +174,7 @@
             <div id="hot-posts" class="card-body p-2 f-15">
                 {% if latest_visitors %}
                     {% for lv in latest_visitors %}
-                        <a href="{{ url_for('profile.index', user_id=lv.id) }}"
+                        <a href="{{ url_for('profile.index', user_id=lv.vid) }}"
                            title="用户：{{ lv.visit_user.nickname }}
 访问时间：{{ lv.visit_time }}"><img
                                 src="{{ lv.visit_user.avatar }}"
