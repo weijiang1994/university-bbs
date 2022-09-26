@@ -10,7 +10,7 @@ import datetime
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.normal import to_html
 from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser, ReadHistory
+    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser, ReadHistory, User
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -463,3 +463,14 @@ def all_category():
         cates=cates,
         datas=datas
     )
+
+
+@post_bp.route('/query-user/<username>')
+@login_required
+def query_user(username=''):
+    users = User.query.filter(User.username.contains(username)).all()
+    return jsonify([dict(id=user.id,
+                         username=user.username,
+                         avatar=user.avatar,
+                         nickname=user.nickname
+                         ) for user in users])

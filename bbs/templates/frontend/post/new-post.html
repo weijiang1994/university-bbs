@@ -36,8 +36,8 @@
         </div>
     </main>
     </body>
-    {{ ckeditor.load() }}
-    {{ ckeditor.config(name='body', custom_url=url_for('static', filename='ckeditor/ckeditor.js')) }}
+    {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor4/ckeditor.js')) }}
+    {#    {{ ckeditor.config(name='body') }}#}
     <script>
         CKEDITOR.on('instanceReady', function (evt) {
             evt.editor.dataProcessor.htmlFilter.addRules({
@@ -57,6 +57,38 @@
                 }
             });
         });
+        CKEDITOR.replace('body', {
+            language: 'zh-cn',
+            uiColor: '#81b1ff',
+            extraPlugins: 'editorplaceholder',
+            editorplaceholder: '请输入帖子内容',
+            mentions: [{
+                feed: '/post/query-user/{encodedQuery}',
+                itemTemplate: '<li data-id="{id}">' +
+                    '<img alt="{username}" class="rounded avatar-50 mr-2" src="{avatar}" title="{username}"/>' +
+                    '<strong class="username">{username}/{nickname}</strong>' +
+                    '</li>',
+                outputTemplate: '<a class="mention-user" target="_blank" href="/profile/user/{id}">@{username}</a><span>&nbsp;</span>',
+                minChars: 0
+            }
+            ],
+        });
+
+        function dataFeed(opts, callback) {
+            var matchProperty = 'username',
+                data = users.filter(function (item) {
+                    return item[matchProperty].indexOf(opts.query.toLowerCase()) == 0;
+                });
+
+            data = data.sort(function (a, b) {
+                return a[matchProperty].localeCompare(b[matchProperty], undefined, {
+                    sensitivity: 'accent'
+                });
+            });
+
+            callback(data);
+        }
+
         $('#post-tags').selectize({
             plugins: ['remove_button'],
             persist: false,
