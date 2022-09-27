@@ -74,21 +74,6 @@
             ],
         });
 
-        function dataFeed(opts, callback) {
-            var matchProperty = 'username',
-                data = users.filter(function (item) {
-                    return item[matchProperty].indexOf(opts.query.toLowerCase()) == 0;
-                });
-
-            data = data.sort(function (a, b) {
-                return a[matchProperty].localeCompare(b[matchProperty], undefined, {
-                    sensitivity: 'accent'
-                });
-            });
-
-            callback(data);
-        }
-
         $('#post-tags').selectize({
             plugins: ['remove_button'],
             persist: false,
