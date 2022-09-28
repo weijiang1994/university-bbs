@@ -20,6 +20,7 @@ from logging.handlers import RotatingFileHandler
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 from flask import current_app
 import requests
+from bs4 import BeautifulSoup
 
 try:
     from urlparse import urlparse, urljoin
@@ -277,9 +278,15 @@ def redirect_back(default='index_bp.index', **kwargs):
 
 
 def get_text_plain(html_text):
-    from bs4 import BeautifulSoup
     bs = BeautifulSoup(html_text, 'html.parser')
     return bs.get_text()
+
+
+def get_mention_user(html_text):
+    bs = BeautifulSoup(html_text, 'html.parser')
+    mentions = bs.find_all('a', class_='mention-user')
+    for mention in mentions:
+        yield mention.get('href')
 
 
 def generate_ver_code():

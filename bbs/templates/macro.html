@@ -744,6 +744,10 @@
                         <p class="flex-grow-1 p-mt-1"><span
                                 class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 通知你:</span>
                         </p>
+                    {% elif notice.type == 3 %}
+                        <p class="flex-grow-1 p-mt-1"><span
+                                class="span-blockquote">{{ notice.send_user }}</span><span>在{{ notice.timestamp }} 提及你:</span>
+                        </p>
                     {% endif %}
                     <a class="mb-1 text-decoration-none mr-2 " href="#" id="noticeOperator" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
@@ -763,7 +767,11 @@
                         </div>
                     {% endif %}
                 </div>
-                {{ notice.msg|safe }}
+                {% if notice.type != 3 %}
+                    {{ notice.msg|safe }}
+                {% else %}
+                    <a class="text-decoration-none" title="查看提及帖子详情" href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.msg|safe }}</a>
+                {% endif %}
                 {% if notice.type == 1 %}
                     <p class="p-mt-1">来自: <b>用户私信</b></p>
                 {% elif notice.type == 0 %}
@@ -771,7 +779,8 @@
                             href="{{ url_for('post.read', post_id=notice.target_id) }}">{{ notice.target_name }}</a></p>
                 {% elif notice.type == 2 %}
                     <p class="p-mt-1">来自: <b>帖子审核</b></p>
-
+                {% elif notice.type == 3 %}
+                    <p class="p-mt-1">来自: <b>帖子提及</b></p>
                 {% endif %}
             </li>
         {% endfor %}

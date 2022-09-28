@@ -14,7 +14,8 @@ from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notifica
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
-from bbs.utils import get_text_plain, EMOJI_INFOS, get_audit, get_admin_email, get_ip_and_agent, get_ip_region
+from bbs.utils import (get_text_plain, EMOJI_INFOS, get_audit, get_admin_email, get_ip_and_agent, get_ip_region,
+                       get_mention_user)
 from bbs.decorators import statistic_traffic, post_can_read, record_read, compute_user_coin
 from bbs.email import send_email
 from bs4 import BeautifulSoup
@@ -43,6 +44,18 @@ def new_post():
                         textplain=textplain, status_id=1)
         db.session.add(post)
         insert_post_tag(post, tags)
+        for mention in get_mention_user(content):
+            uid = mention.split('/')[-1]
+            if User.query.filter_by(id=uid).first():
+                n = Notification(
+                    type=3,
+                    target_id=post.id,
+                    target_name='帖子提及',
+                    send_user=current_user.username,
+                    receive_id=uid,
+                    msg=post.title,
+                )
+                db.session.add(n)
         db.session.commit()
         flash('帖子发布成功!', 'success')
         if get_audit():
