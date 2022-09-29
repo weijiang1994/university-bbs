@@ -481,7 +481,7 @@ def all_category():
 @post_bp.route('/query-user/<username>')
 @login_required
 def query_user(username=''):
-    users = User.query.filter(User.username.contains(username)).all()
+    users = User.query.filter(User.username.contains(username), User.id != current_user.id).all()
     return jsonify([dict(id=user.id,
                          username=user.username,
                          avatar=user.avatar,
