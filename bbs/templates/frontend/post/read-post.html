@@ -149,13 +149,13 @@
             </ol>
 
             <div class="post-div rounded-0">
-                <div class="d-flex">
-                    <h1 class="post-title-h1" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
+                <div class="d-flex align-items-center">
+                    <h1 class="post-title-h1 mb-0" id="postTitle" data-id="{{ post.id }}">{{ post.title }}</h1>
                     {% if post.status.name == '未审核' and current_user.is_authenticated and current_user.id == post.user.id %}
                         <p class="mb-0"><span class="post-audit border-warning text-warning ">审核中</span></p>
                     {% endif %}
                 </div>
-                <div class="d-flex mb-0">
+                <div class="d-flex mb-0 mt-1">
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-up mr-1"></i><span
                             class="d-none d-lg-inline-block">点亮</span>({{ post.likes }}) </p>
                     <p class="text-muted mr-2 mb-0"><i class="fa fa-thumbs-o-down mr-1"></i><span
