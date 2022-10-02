@@ -47,16 +47,16 @@ def new_post():
         for mention in get_mention_user(content):
             uid = mention.split('/')[-1]
             if User.query.filter_by(id=uid).first():
-                n = Notification(
+                condition = Notification.type == 3, Notification.target_id == post.id, Notification.receive_id == uid
+                Notification.update_or_insert(
+                    condition=condition,
                     type=3,
                     target_id=post.id,
                     target_name='帖子提及',
                     send_user=current_user.username,
                     receive_id=uid,
-                    msg=post.title,
+                    msg=post.title
                 )
-                db.session.add(n)
-        db.session.commit()
         flash('帖子发布成功!', 'success')
         if get_audit():
             send_email(
