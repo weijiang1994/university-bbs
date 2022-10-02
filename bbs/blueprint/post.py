@@ -191,6 +191,22 @@ def edit(post_id):
             tags = form.tags.data.split(',') if form.tags.data else []
             insert_post_tag(post, tags)
 
+        Notification.query.filter(Notification.target_id == post.id,
+                                  Notification.type == 3,
+                                  Notification.read == 0).delete()
+        for mention in get_mention_user(content):
+            uid = mention.split('/')[-1]
+            if User.query.filter_by(id=uid).first():
+                condition = Notification.target_id == post.id, \
+                            Notification.receive_id == uid, Notification.type == 3
+                Notification.update_or_insert(condition,
+                                              type=3,
+                                              target_id=post.id,
+                                              target_name='帖子提及',
+                                              send_user=current_user.username,
+                                              receive_id=uid,
+                                              msg=post.title,)
+
         db.session.commit()
         flash('帖子编辑成功!', 'success')
         return redirect(url_for('.read', post_id=post_id))

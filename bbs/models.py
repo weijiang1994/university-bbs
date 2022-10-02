@@ -443,6 +443,16 @@ class Notification(db.Model):
 
     receive_user = db.relationship('User', back_populates='receive_notify')
 
+    @staticmethod
+    def update_or_insert(condition, **kwargs):
+        notify = Notification.query.filter(*condition)
+        if notify.first():
+            notify.update(kwargs)
+        else:
+            notify = Notification(**kwargs)
+            db.session.add(notify)
+        db.session.commit()
+
 
 class VerifyCode(db.Model):
     __tablename__ = 't_ver_code'

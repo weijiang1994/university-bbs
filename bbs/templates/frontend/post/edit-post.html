@@ -12,7 +12,23 @@
     编辑帖子-{{ post.title }}
 {% endblock %}
 {% block content %}
+    <style>
+        .cke_autocomplete_panel {
+            color: black;
+        }
 
+        .cke_autocomplete_panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cke_autocomplete_panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .cke_autocomplete_panel::-webkit-scrollbar-thumb {
+            background-color: #c1c1c1;
+        }
+    </style>
     <body>
     <main>
         <div class="container mt-3">
@@ -39,9 +55,26 @@
         </div>
     </main>
     </body>
-    {{ ckeditor.load() }}
-    {{ ckeditor.config(name='body') }}
+    {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor4/ckeditor.js')) }}
     <script>
+        CKEDITOR.replace('body', {
+            uploadUrl: '/normal/image/upload',
+            editorplaceholder: '请输入帖子内容',
+            filebrowserUploadUrl: '/normal/image/upload',
+            embed_provider: '/normal/image/upload',
+            height: 400,
+            mentions: [{
+                feed: '/post/query-user/{encodedQuery}',
+                itemTemplate: '<li data-id="{id}">' +
+                    '<img alt="{username}" class="rounded avatar-50 mr-2" src="{avatar}" title="{username}"/>' +
+                    '<strong class="username">{username}/{nickname}</strong>' +
+                    '</li>',
+                outputTemplate: '<a class="mention-user text-decoration-none" target="_blank" href="/profile/user/{id}">@{username}</a><span>&nbsp;</span>',
+                minChars: 1
+            }
+            ],
+
+        });
         CKEDITOR.on('instanceReady', function (evt) {
             evt.editor.dataProcessor.htmlFilter.addRules({
                 elements: {
