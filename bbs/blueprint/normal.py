@@ -65,7 +65,7 @@ def change_theme(theme_name):
     return response
 
 
-@normal_bp.route('/image/upload/', methods=['POST'])
+@normal_bp.route('/image/upload', methods=['POST'])
 @login_required
 def image_upload():
     f = request.files.get('upload')

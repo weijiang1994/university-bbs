@@ -12,19 +12,21 @@
 {% endblock %}
 {% block content %}
     <style>
-    .cke_autocomplete_panel{
-        color: black;
-    }
-    .cke_autocomplete_panel::-webkit-scrollbar{
-        width: 8px;
-    }
-    .cke_autocomplete_panel::-webkit-scrollbar-track{
-        background: #f1f1f1;
-    }
+        .cke_autocomplete_panel {
+            color: black;
+        }
 
-    .cke_autocomplete_panel::-webkit-scrollbar-thumb{
-        background-color: #c1c1c1;
-    }
+        .cke_autocomplete_panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cke_autocomplete_panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .cke_autocomplete_panel::-webkit-scrollbar-thumb {
+            background-color: #c1c1c1;
+        }
     </style>
     <body>
     <main>
@@ -52,16 +54,31 @@
     </main>
     </body>
     {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor4/ckeditor.js')) }}
-    {#    {{ ckeditor.config(name='body') }}#}
     <script>
+
+        CKEDITOR.replace('body', {
+            uploadUrl: '/normal/image/upload',
+            editorplaceholder: '请输入帖子内容',
+            filebrowserUploadUrl: '/normal/image/upload',
+            embed_provider: '/normal/image/upload',
+            height: 400,
+            mentions: [{
+                feed: '/post/query-user/{encodedQuery}',
+                itemTemplate: '<li data-id="{id}">' +
+                    '<img alt="{username}" class="rounded avatar-50 mr-2" src="{avatar}" title="{username}"/>' +
+                    '<strong class="username">{username}/{nickname}</strong>' +
+                    '</li>',
+                outputTemplate: '<a class="mention-user text-decoration-none" target="_blank" href="/profile/user/{id}">@{username}</a><span>&nbsp;</span>',
+                minChars: 1
+            }
+            ],
+
+        });
         CKEDITOR.on('instanceReady', function (evt) {
             evt.editor.dataProcessor.htmlFilter.addRules({
                 elements: {
                     img: function (el) {
                         el.addClass('img-fluid d-block mx-auto pic');
-                    },
-                    table: function (el) {
-                        el.addClass('table table-responsive');
                     },
                     thead: function (el) {
                         el.addClass('thead-light');
@@ -72,23 +89,6 @@
                 }
             });
         });
-        CKEDITOR.replace('body', {
-            language: 'zh-cn',
-            uiColor: '#81b1ff',
-            extraPlugins: 'editorplaceholder',
-            editorplaceholder: '请输入帖子内容',
-            mentions: [{
-                feed: '/post/query-user/{encodedQuery}',
-                itemTemplate: '<li data-id="{id}">' +
-                    '<img alt="{username}" class="rounded avatar-50 mr-2" src="{avatar}" title="{username}"/>' +
-                    '<strong class="username">{username}/{nickname}</strong>' +
-                    '</li>',
-                outputTemplate: '<a class="mention-user text-decoration-none" target="_blank" href="/profile/user/{id}">@{username}</a><span>&nbsp;</span>',
-                minChars: 0
-            }
-            ],
-        });
-
         $('#post-tags').selectize({
             plugins: ['remove_button'],
             persist: false,
