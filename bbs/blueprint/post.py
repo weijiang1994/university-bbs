@@ -43,6 +43,7 @@ def new_post():
             post = Post(title=title, cate_id=cate, content=content, is_anonymous=anonymous, author_id=current_user.id,
                         textplain=textplain, status_id=1)
         db.session.add(post)
+        db.session.commit()
         insert_post_tag(post, tags)
         for mention in get_mention_user(content):
             uid = mention.split('/')[-1]
