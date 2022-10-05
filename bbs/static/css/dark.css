@@ -245,3 +245,19 @@
     color: white;
     background-image: linear-gradient(to right, #868f96 0%, #596164 100%);
 }
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 4px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgb(233 221 221 / 20%);
+    background: rgb(227 217 217);
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background: #303030;
+}
