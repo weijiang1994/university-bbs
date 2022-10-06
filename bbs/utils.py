@@ -170,6 +170,10 @@ class Config(object):
 class IPRecognize:
     def __init__(self, path):
         self.token, self.url = self.init_ipinfo(path)
+        self.headers = {
+            'X-APISpace-Token': self.token,
+            "Authorization-Type": "apikey"
+        }
 
     def init_ipinfo(self, path):
         config = Config(path)
@@ -177,7 +181,7 @@ class IPRecognize:
         return values.get('token'), values.get('url')
 
     def recognize_region(self, ip):
-        res = requests.get(urljoin(self.url, ip), params={'token': self.token, 'lang': 'zh-CN'})
+        res = requests.get(self.url, params={'ip': ip}, headers=self.headers)
         return res.json()
 
 
@@ -405,7 +409,9 @@ def get_ip_region(remote_ip):
     else:
         try:
             result = ip_recognized.recognize_region(remote_ip)
-            ip_region = ', '.join([result.get('region'), result.get('city')])
+            ip_data = result.get('data')
+            ip_region = ', '.join(
+                filter(lambda x: x, [ip_data.get('prov'), ip_data.get('city'), ip_data.get('district')]))
         except Exception:
             # 防止网络超时或未知IP导致异常
             ip_region = 'Unknown'
