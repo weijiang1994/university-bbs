@@ -332,7 +332,7 @@ def upload_avatar():
         flash('文件格式不是JPG或者PNG!', 'warning')
         return redirect(url_for('.edit_avatar', user_id=current_user.id))
 
-    filename = get_md5(filebytes.hex())
+    filename = get_md5(filebytes)
     upload_path = os.path.join(basedir, 'resources/avatars/raw/', filename)
     if not os.path.exists(upload_path):
         # "x"参数项在文件已存在的情况会出错
