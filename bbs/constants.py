@@ -4,6 +4,8 @@ file: constants.py
 @time: 2022/4/30 21:34
 @desc:
 """
+import enum
+
 # Login device type define
 PHONE_TYPE = ['iphone', 'android']
 COMPUTER_TYPE = ['windows', 'macos', 'linux']
@@ -22,3 +24,13 @@ COIN_OPERATE_TYPE_DICT = {
     'add': 1,
     'subtract': 2
 }
+
+
+class VoteType(enum.Enum):
+    """
+    投票类型
+    single: 单选
+    multiple: 多选
+    """
+    single = 1
+    multiple = 2
