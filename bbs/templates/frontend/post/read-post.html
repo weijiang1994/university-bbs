@@ -8,6 +8,7 @@
     {% else %}
         <link href="{{ url_for('static', filename='css/code-light.css') }}" rel="stylesheet">
     {% endif %}
+    {% include "frontend/jq-toast.html" %}
     <!--suppress ALL -->
     <style>
         #previewHtml {
@@ -126,6 +127,42 @@
             font-size: 14px;
             margin-left: 4px;
         }
+
+        .vote-div {
+            background: #e3e3e3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .vote-div .vote-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .vote-div .vote-item {
+            background-color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .unvoted-item:hover {
+            background-color: #d9d9d9;
+        }
+
+        .voted-item {
+            background-color: #d9d9d9 !important;
+            position: absolute;
+            height: 100%;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            border-radius: 5px;
+        }
     </style>
 {% endblock %}
 {% block title %}
@@ -202,6 +239,28 @@
                     <article>
                         {{ post.content|safe }}
                     </article>
+                    {% for vote in votes %}
+                        <div class="vote-div" id="voteDiv-{{ vote.id }}">
+                            <p class="vote-title">{{ vote.title }}({{ vote.vote_type.value }})</p>
+                            {% for vi in vote.vote_item %}
+                                <div class="vote-item {% if vote.vote_type.value == '单选' %}single-vote-item{% else %}multiple-vote-item{% endif %}
+                                        {% if not user_voted.get(vote.id) %}unvoted-item{% endif %}"
+                                     data-vid="{{ vi.id }}" data-vote="{{ vote.id }}"
+                                >
+                                    <p class="mb-0" style="z-index: 2;position: relative">
+                                        {{ vi.item }}
+                                        <span class="mb-0 text-muted {% if not current_user.is_authenticated or not user_voted.get(vote.id) %}d-none{% endif %}"
+                                              id="voteCount-{{ vi.id }}">票数: {{ vi.vote_count }}({% if vote.vote_count != 0 %}
+                                            {{ round(vi.vote_count / vote.vote_count, 2)  * 100 }}{% endif %}%)
+                                            </span>
+                                    </p>
+                                    <div class="voted {% if user_voted.get(vote.id) %}voted-item{% endif %}" id="votedItem-{{ vi.id }}"
+                                         style="width: {% if vote.vote_count !=0 %}{{ round(vi.vote_count / vote.vote_count, 2)  * 100 }}{% endif %}%">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                     {% for tag in p_tags %}
                         <label class="post-tag"><a style="color: inherit" class="text-decoration-none"
                                                    href="{{ url_for('post.post_tag', tag_id=tag.tag.id) }}">#{{ tag.tag.name }}</a></label>
@@ -497,7 +556,7 @@
             window.onload = function () {
                 let ccs = document.getElementsByClassName('comment-content')
                 let height = $(".comment-content").css('max-height')
-                if (!height){
+                if (!height) {
                     return false
                 }
                 height = parseInt(height.split('px')[0])
@@ -559,25 +618,25 @@
                         break
                 }
             }
-
-            document.getElementById('commentContent').addEventListener('paste', function (e) {
-                if (!(e.clipboardData && e.clipboardData.items)) {
-                    return;
-                }
-                for (let i = 0, len = e.clipboardData.items.length; i < len; i++) {
-                    let item = e.clipboardData.items[i];
-                    if (item.kind === "file") {
-                        let blob = item.getAsFile();
-                        if (blob.size === 0) {
-                            return;
-                        }
-                        let formdata = new FormData();
-                        formdata.append("file", blob);
-                        uploadimg2server(formdata)
+            {% if current_user.is_authenticated %}
+                document.getElementById('commentContent').addEventListener('paste', function (e) {
+                    if (!(e.clipboardData && e.clipboardData.items)) {
+                        return;
                     }
-                }
-            });
-
+                    for (let i = 0, len = e.clipboardData.items.length; i < len; i++) {
+                        let item = e.clipboardData.items[i];
+                        if (item.kind === "file") {
+                            let blob = item.getAsFile();
+                            if (blob.size === 0) {
+                                return;
+                            }
+                            let formdata = new FormData();
+                            formdata.append("file", blob);
+                            uploadimg2server(formdata)
+                        }
+                    }
+                });
+            {% endif %}
             function uploadimg2server(formdata) {
                 let infoHint = $("#upload-img-hint")
                 infoHint.html('正在上传图片<i class="fa fa-spinner fa-spin"><i>')
@@ -842,6 +901,32 @@
                 }
                 obj.focus()
             }
+
+            $(".single-vote-item").on('click', function () {
+                let voteItemId = $(this).data('vid')
+                let voteId = $(this).data('vote')
+                console.log({voteId, voteItemId})
+                $.ajax({
+                    type: "post",
+                    data: {voteId, voteItemId},
+                    url: "/post/vote",
+                    success: function (res) {
+                        if (res.code === 403) {
+                            // 未登录
+                            window.location.href = `/auth/login?next=${window.location.pathname}`
+                        }
+                        if (res.code === 200) {
+                            showToast('投票成功！', 'success')
+                            window.location.reload()
+                        } else showToast(res.message, 'info')
+
+                    },
+                    error: function () {
+                        showToast('服务器发生错误，投票失败！', 'error')
+                    }
+                })
+            })
+
         </script>
     </main>
     </body>

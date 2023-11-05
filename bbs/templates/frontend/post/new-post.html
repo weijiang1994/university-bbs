@@ -1,5 +1,7 @@
 {% extends "frontend/base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% from "macro.html" import voteModal with context %}
+
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/selectize.bootstrap4.css') }}">
@@ -27,6 +29,52 @@
         .cke_autocomplete_panel::-webkit-scrollbar-thumb {
             background-color: #c1c1c1;
         }
+
+        .additional {
+            background-color: #f5f5f5;
+            padding: 10px;
+        }
+
+        .vote {
+            background-color: #c1c1c1;
+            padding: 10px;
+        }
+
+        .vote-count {
+            outline-style: none;
+            border: 1px solid #c0c4cc;
+            border-radius: 5px;
+            height: 30px;
+            padding: 10px 15px;
+            box-sizing: border-box;
+        }
+
+        .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+            color: black;
+            background: transparent;
+            border-radius: 0;
+            border-bottom: 3px solid #053825;
+        }
+
+        .nav-link {
+            padding: 5px 10px;
+        }
+
+        .vote-select {
+            border: #4daaff 3px solid;
+            margin: 3px;
+        }
+
+        .vote-item {
+            align-items: center;
+            margin: 10px 0;
+            display: flex;
+            height: 35px;
+            background-color: white;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
     <body>
     <main>
@@ -45,16 +93,52 @@
                     </div>
                 </div>
                 {{ wtf.form_field(form.tags) }}
+                {{ form.temp_id }}
                 {{ form.body }}
+                <div class="additional">
+                    <div>
+                        <ul class="nav nav-pills" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#vote" role="tab"
+                                   aria-controls="home" aria-selected="true"><i class="fa fa-bar-chart mr-2"></i>投票</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent" style="max-height: 300px;overflow-y: auto">
+                            <div class="tab-pane fade show active" id="vote" role="tabpanel" aria-labelledby="home-tab">
+                                <a class="mb-0 a-link span-hand mr-2" data-toggle="modal" data-target="#insertVote"><i
+                                        class="fa fa-plus" title="添加投票" data-toggle="tooltip"></i></a>
+
+                                <div class="mt-2 text-center" id="voteHint">
+                                    <p class="text-muted"><b>暂无投票</b></p>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="additional" role="tabpanel" aria-labelledby="profile-tab">
+                                <a class="mb-0 a-link span-hand mr-2" data-toggle="modal" data-target="#insertVote"><i
+                                        class="fa fa-plus" title="添加附件" data-toggle="tooltip"></i></a>
+                                <div class="mt-2 text-center" id="additionalHint">
+                                    <p class="text-muted"><b>暂无附件</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="text-right">
                     {{ form.submit }}
                 </div>
             </form>
+
         </div>
+        {{ voteModal() }}
     </main>
     </body>
     {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor4/ckeditor.js')) }}
     <script>
+        let currentVoteId = null;
+        let currentVoteContents = []
+        let currentVoteType = 0;
+        let currentVoteTitle = '';
+        let currentVoteCount = 1
 
         CKEDITOR.replace('body', {
             uploadUrl: '/normal/image/upload',
@@ -98,5 +182,213 @@
             maxItems: 5
         });
         $('#category').selectpicker();
+
+        $("#insertVote").on("show.bs.modal", function (e) {
+            console.log('modal show', {currentVoteId})
+            if (currentVoteId) {
+                $("#vote-title").val($("#vote-title-" + currentVoteId).text());
+                $("[name=voteType]").val($("#voteType-" + currentVoteId).text());
+                $("#voteCount").val($("#voteCount-" + currentVoteId).text());
+            }
+        })
+
+        $("#insertVote").on("hidden.bs.modal", function (e) {
+            $("#vote-type").val(0);
+            $("#vote-limit").val(1);
+            if (currentVoteId) {
+                clearVoteItem()
+                currentVoteId = 0
+            }
+        })
+
+        function addVoteItem(value = '') {
+            // 增加投票选项
+            let voteItem = $(".voteItems")
+            let itemLength = voteItem.children().length
+            if (itemLength > 11) {
+                alert("最多只能添加10个选项")
+                return false
+            }
+            let item = `<div class="d-flex align-items-center mt-2 ">
+                <input type="text" value="${value}" class="form-control form-inline vote-item-content" placeholder="请输入选项内容，不超过20个字">
+                <div class="ml-1 d-none delete-vote-item">
+                <span onclick="deleteVoteItem($(this))" class="span-hand"><i class="fa fa-fw fa-close"></i></span>
+            </div>
+        </div>`
+            voteItem.append(item)
+            if (voteItem.children().length >= 3) {
+                $(".delete-vote-item").removeClass("d-none")
+            }
+            let voteCount = $("#voteCount")
+            voteCount.attr({
+                max: voteItem.children().length - 1
+            })
+        }
+
+        function clearVoteItem(n = ['', '']) {
+            // 清空投票选项
+            $("#vote-title").val('')
+            $(".voteItems").empty()
+            for (let i = 0; i < n.length; i++) {
+                addVoteItem(n[i])
+            }
+        }
+
+        function deleteVoteItem(span) {
+            let voteItem = $(".voteItems")
+            let itemLength = voteItem.children().length
+            if (itemLength < 3) {
+                alert("至少需要保留2个选项")
+                return false
+            }
+            span.parent().parent().remove()
+            if (voteItem.children().length < 3) {
+                $(".delete-vote-item").addClass("d-none")
+            }
+        }
+
+        function submitVote() {
+            let voteTitle = $("#vote-title").val()
+            let voteCount = $("#voteCount").val()
+            if (voteTitle.length === 0) {
+                alert("请输入投票标题")
+                return false
+            }
+            let voteItems = $(".vote-item-content")
+            let voteItemContent = []
+            for (let i = 0; i < voteItems.length; i++) {
+                if (voteItems[i].value.length === 0) {
+                    alert("请输入选项内容")
+                    return false
+                }
+                voteItemContent.push(voteItems[i].value)
+            }
+            let tempId = $("#temp-id").val()
+            let voteType = $("input[name='voteType']:checked").val()
+            $.ajax({
+                url: "/post/vote/insert",
+                type: "POST",
+                ContentType: 'application/json',
+                data: {
+                    title: voteTitle,
+                    items: voteItemContent,
+                    tid: tempId,
+                    type: voteType,
+                    count: voteCount
+                },
+                success: function (data) {
+                    if (data.code === 200) {
+                        let vote = data.data
+                        let voteHtml = `<div class="vote" id="vote-${vote.id}" style="background-color: #f5f5f5;padding: 10px;border-radius: 5px">
+                            <a class="btn btn-sm btn-outline-info mr-2 d-none" id="editVote-${vote.id}" onclick="editVote(${vote.id})">编辑</a>
+                            <a class="btn btn-sm btn-outline-danger mr-2 d-none" id="deleteVote-${vote.id}" onclick="deleteVote(${vote.id})">删除</a>
+                            <div class="vote-title" style="font-size: 16px">
+                                <span class="vote-title-content" id="vote-title-${vote.id}">${vote.title}</span>
+                            </div>
+                            <p class="d-none" id="voteCount-${vote.id}">${vote.count}</p>
+                            <p class="d-none" id="voteType-${vote.id}">${vote.type}</p>
+                            <div class="vote-items">`
+                        for (let i = 0; i < vote.items.length; i++) {
+                            voteHtml += `<div class="vote-item">
+                                            <div style="text-align: center;width: 100%" class="voteContent-${vote.id}">
+                                                ${vote.items[i]}
+                                            </div>
+                                        </div>`
+                        }
+                        voteHtml += `</div>
+                        </div>`
+                        $("#voteHint").hide()
+                        $("#vote").append(voteHtml)
+                        $("#insertVote").modal('hide')
+                        clearVoteItem()
+                        $(`#vote-${vote.id}`).on('mouseover', function (event) {
+                            selectExistVote(event)
+                        })
+                        $(`#vote-${vote.id}`).on('mouseout', function (event) {
+                            unselectExistVote(event)
+                        })
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        }
+
+        function editVote(voteId) {
+            currentVoteContents = []
+            currentVoteId = voteId
+            currentVoteTitle = $(`#vote-title-${voteId}`).text()
+            let contents = document.getElementsByClassName(`voteContent-${voteId}`)
+            for (let i = 0; i < contents.length; i++) {
+                let content = contents[i].innerText
+                currentVoteContents.push(content)
+            }
+            currentVoteCount = $(`#voteCount-${voteId}`).text()
+            currentVoteType = $(`#voteType-${voteId}`).text()
+            console.log(currentVoteTitle, currentVoteContents, currentVoteCount, currentVoteType)
+            clearVoteItem(currentVoteContents)
+            $("#insertVote").modal('show')
+        }
+
+        function deleteVote(voteId) {
+            $.ajax({
+                url: "/post/vote/delete",
+                type: "POST",
+                data: {
+                    id: voteId
+                },
+                success: function (data) {
+                    if (data.code === 200) {
+                        $(`#vote-${voteId}`).remove()
+                        $(".vote").length === 0 ? $("#voteHint").show() : $("#voteHint").hide()
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        }
+
+        function selectExistVote(event) {
+            let voteId = event.currentTarget.id.split("-")[1]
+            $(`#${event.currentTarget.id}`).addClass('vote-select')
+            $(`#editVote-${voteId}`).removeClass('d-none')
+            $(`#deleteVote-${voteId}`).removeClass('d-none')
+        }
+
+        function unselectExistVote(event) {
+            let voteId = event.currentTarget.id.split("-")[1]
+            $(`#${event.currentTarget.id}`).removeClass('vote-select')
+            $(`#editVote-${voteId}`).addClass('d-none')
+            $(`#deleteVote-${voteId}`).addClass('d-none')
+            {#currentVoteId = 0#}
+        }
+
+        function changeVoteType(type) {
+            let voteCount = $("#voteCount")
+            let parent = $('.voteCount')
+            switch (type) {
+                case "single":
+                    voteCount.val(1)
+                    parent.addClass('d-none')
+                    break
+                case "multiple":
+                    parent.removeClass('d-none')
+                    break
+            }
+        }
+
+        function listenVoteCount() {
+            let voteCount = $("#voteCount")
+            let voteItems = $(".vote-item-content")
+            if (voteCount.val() > voteItems.length) {
+                alert("最多只能选择" + (voteItems.length) + "个选项")
+                voteCount.val(1)
+            }
+            if (voteCount.val() < 1) {
+                alert("最少需要选择1个选项")
+                voteCount.val(1)
+            }
+        }
+
     </script>
 {% endblock %}

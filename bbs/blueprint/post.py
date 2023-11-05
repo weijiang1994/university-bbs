@@ -6,11 +6,13 @@
 @Software: PyCharm
 """
 import datetime
+import uuid
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from bbs.blueprint.normal import to_html
-from bbs.models import Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic, \
-    PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser, ReadHistory, User
+from bbs.models import (Post, Collect, PostReport, ReportCate, Comments, Notification, CommentStatistic, PostStatistic,
+                        PostCategory, PostLike, PostDislike, Tag, PostTagShip, UserInterest, BlockUser, ReadHistory,
+                        User, Vote, VoteItem, VoteRecord)
 from bbs.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
 from bbs.extensions import db
@@ -19,6 +21,7 @@ from bbs.utils import (get_text_plain, EMOJI_INFOS, get_audit, get_admin_email, 
 from bbs.decorators import statistic_traffic, post_can_read, record_read, compute_user_coin
 from bbs.email import send_email
 from bs4 import BeautifulSoup
+from bbs.constants import VoteType
 
 post_bp = Blueprint('post', __name__, url_prefix='/post')
 
@@ -66,10 +69,15 @@ def new_post():
                 template='email/postAudit',
                 post=post,
             )
+        print(form.temp_id.data)
+        Vote.query.filter(Vote.tid == form.temp_id.data).update({'pid': post.id})
+        db.session.commit()
         return redirect(url_for('post.read', post_id=post.id))
     cid = request.args.get('cid', type=int)
+
     if cid:
         form.category.data = cid
+    form.temp_id.data = uuid.uuid1().hex
     return render_template('frontend/post/new-post.html', form=form, cid=cid)
 
 
@@ -113,6 +121,16 @@ def read(post_id):
     p_tags = PostTagShip.find_post_tag(post_id)
     comments = pagination.items
     post.read_times += 1
+    # 查找帖子的投票信息
+    votes = Vote.query.filter(Vote.pid == post_id).all()
+    user_voted = {}
+
+    if votes and current_user.is_authenticated:
+        for vote in votes:
+            if VoteRecord.query.filter(VoteRecord.uid == current_user.id, VoteRecord.vid == vote.id).first():
+                user_voted[vote.id] = True
+            else:
+                user_voted[vote.id] = False
 
     db.session.commit()
     return render_template('frontend/post/read-post.html',
@@ -123,7 +141,10 @@ def read(post_id):
                            emoji_urls=EMOJI_INFOS,
                            per_page=per_page,
                            page=page,
-                           p_tags=p_tags)
+                           p_tags=p_tags,
+                           votes=votes,
+                           round=round,
+                           user_voted=user_voted)
 
 
 @post_bp.route('/elite-operator/<post_id>')
@@ -206,7 +227,7 @@ def edit(post_id):
                                               target_name='帖子提及',
                                               send_user=current_user.username,
                                               receive_id=uid,
-                                              msg=post.title,)
+                                              msg=post.title, )
 
         db.session.commit()
         flash('帖子编辑成功!', 'success')
@@ -504,3 +525,86 @@ def query_user(username=''):
                          avatar=user.avatar,
                          nickname=user.nickname
                          ) for user in users])
+
+
+@post_bp.route('/vote/insert', methods=['POST'])
+@login_required
+def insert_vote():
+    vote = Vote(
+        pid=None,
+        title=request.form.get('title'),
+        tid=request.form.get('tid'),
+        vote_type=request.form.get('type'),
+        vote_count=request.form.get('count') or 1,
+    )
+    db.session.add(vote)
+    db.session.commit()
+    for item in request.form.getlist('items[]'):
+        vote_item = VoteItem(
+            vid=vote.id,
+            item=item
+        )
+        db.session.add(vote_item)
+    db.session.commit()
+    return jsonify({'code': 200,
+                    'message': '插入投票成功！',
+                    'data': dict(id=vote.id, title=vote.title, items=[item.item for item in vote.vote_item],
+                                 count=request.form.get('count'), type=request.form.get('type'))})
+
+
+@post_bp.route('/vote/delete', methods=['POST'])
+@login_required
+def delete_vote():
+    vote = Vote.query.get_or_404(request.form.get('id'))
+    db.session.delete(vote)
+    db.session.commit()
+    return jsonify({'code': 200,
+                    'message': '删除投票成功！'})
+
+
+@post_bp.route('/vote/edit', methods=['POST'])
+@login_required
+def edit_vote():
+    vote = Vote.query.get_or_404(request.form.get('id'))
+    vote.title = request.form.get('title')
+    vote.vote_type = request.form.get('type')
+    vote.vote_count = request.form.get('count') or 1
+
+    pass
+
+
+@post_bp.route('/vote', methods=['POST'])
+def vote():
+    if not current_user.is_authenticated:
+        return jsonify({'code': 403,
+                        'message': '请先登录后再进行投票！'})
+    vote = Vote.query.filter_by(id=request.form.get('voteId')).first()
+    if not vote:
+        return jsonify({'code': 404,
+                        'message': '该投票不存在！'})
+    vote_item = VoteItem.query.filter_by(id=request.form.get('voteItemId')).first()
+    if not vote_item:
+        return jsonify({'code': 404,
+                        'message': '该投票选项不存在！'})
+    if VoteRecord.query.filter_by(uid=current_user.id, vid=vote.id).first():
+        return jsonify({'code': 400,
+                        'message': '你已经投过票了！'})
+    vote_item.vote_count += 1
+    vote.vote_count += 1
+    db.session.add(
+        VoteRecord(
+            uid=current_user.id,
+            vid=vote.id,
+            vote_detail={'vote_item_id': vote_item.id, 'voted': True}
+        )
+    )
+    db.session.commit()
+    flash('投票成功！', 'success')
+    return jsonify({'code': 200,
+                    'message': '投票成功！',
+                    'data': {
+                        'vote_count': vote.vote_count,
+                        'vote_item_count': vote_item.vote_count,
+                        'vote_item_id': vote_item.id,
+                        'vote_id': vote.id,
+                    }})

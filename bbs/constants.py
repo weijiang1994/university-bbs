@@ -32,5 +32,5 @@ class VoteType(enum.Enum):
     single: 单选
     multiple: 多选
     """
-    single = 1
-    multiple = 2
+    single = '单选'
+    multiple = '多选'

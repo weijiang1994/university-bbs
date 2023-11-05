@@ -5,6 +5,8 @@
 @File    : forms.py
 @Software: PyCharm
 """
+import uuid
+
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, FileAllowed
@@ -96,10 +98,11 @@ class RegisterForm(FlaskForm):
                                           Length(min=8, max=40, message='用户密码长度限定在8-40位之间')],
                               render_kw={'placeholder': '输入确认密码', 'type': 'password'})
     colleges = SelectField(u'学院', choices=[(1, '计算机')])
-    user_privacy = BooleanField('<a class="span-hand text-decoration-none" data-toggle="modal" data-target="#privatePrivacy">'
-                                '<i style="font-style:normal" data-toggle="tooltip" data-placement="right" '
-                                'title="查看用户隐私协议">同意用户隐私协议</i></a>',
-                                validators=[DataRequired(message='请先同意用户隐私协议')])
+    user_privacy = BooleanField(
+        '<a class="span-hand text-decoration-none" data-toggle="modal" data-target="#privatePrivacy">'
+        '<i style="font-style:normal" data-toggle="tooltip" data-placement="right" '
+        'title="查看用户隐私协议">同意用户隐私协议</i></a>',
+        validators=[DataRequired(message='请先同意用户隐私协议')])
     submit = SubmitField(u'注册', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2'})
 
     def __init__(self, *args, **kwargs):
@@ -142,6 +145,7 @@ class BasePostForm(FlaskForm):
     anonymous = SelectField(label=u'是否匿名', default=1, choices=[(1, '实名'), (2, '匿名')], coerce=int)
     tags = StringField(u'帖子标签', render_kw={'placeholder': '请输入帖子标签', 'id': 'post-tags'})
     body = CKEditorField('帖子内容', validators=[DataRequired(message='请输入帖子内容')])
+    temp_id = StringField(u'', render_kw={'id': 'temp-id', 'style': 'display:block'})
     submit = SubmitField(u'发布', render_kw={'class': 'source-button btn btn-primary btn-xs mt-2 text-right'})
 
     def __init__(self, *args, **kwargs):

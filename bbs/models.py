@@ -12,6 +12,7 @@ from bbs.extensions import db, whooshee
 import datetime
 from flask_login import UserMixin, current_user
 import os
+from bbs.constants import VoteType
 
 
 class RecentVisitor(db.Model):
@@ -174,6 +175,8 @@ class User(db.Model, UserMixin):
     visitor = db.relationship('RecentVisitor', back_populates='visit_user', foreign_keys=[RecentVisitor.vid])
     read_history = db.relationship('ReadHistory', back_populates='user')
 
+    vote_record = db.relationship('VoteRecord', back_populates='user')
+
     def set_password(self, pwd):
         self.password = generate_password_hash(pwd)
 
@@ -297,6 +300,7 @@ class Post(db.Model):
     post_like = db.relationship('PostLike', back_populates='post')
     post_dislike = db.relationship('PostDislike', back_populates='post')
     read_history = db.relationship('ReadHistory', back_populates='post')
+    vote = db.relationship('Vote', back_populates='post')
 
     def can_delete(self):
         return current_user.id == self.author_id
@@ -743,3 +747,44 @@ class ReadHistory(db.Model):
             db.session.add(rh)
         db.session.commit()
         return rh
+
+
+class Vote(db.Model):
+    __tablename__ = 't_vote'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    pid = db.Column(db.INTEGER, db.ForeignKey('t_post.id'))
+    tid = db.Column(db.String(128), default='', comment='temp id for vote')
+    title = db.Column(db.String(128), default='', comment='vote title')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+    vote_type = db.Column(db.Enum(VoteType), default=VoteType.single, comment='vote type 1: single, 2: multiple')
+    vote_count = db.Column(db.INTEGER, default=1, comment='vote count')
+
+    post = db.relationship('Post', back_populates='vote')
+    vote_item = db.relationship('VoteItem', back_populates='vote', cascade='all, delete-orphan')
+    vote_record = db.relationship('VoteRecord', back_populates='vote', cascade='all, delete-orphan')
+
+
+class VoteItem(db.Model):
+    __tablename__ = 't_vote_item'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    vid = db.Column(db.INTEGER, db.ForeignKey('t_vote.id'))
+    item = db.Column(db.String(128), default='')
+    vote_count = db.Column(db.INTEGER, default=0, comment='vote count')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    vote = db.relationship('Vote', back_populates='vote_item')
+
+
+class VoteRecord(db.Model):
+    __tablename__ = 't_vote_record'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    vid = db.Column(db.INTEGER, db.ForeignKey('t_vote.id'))
+    uid = db.Column(db.INTEGER, db.ForeignKey('t_user.id'))
+    vote_detail = db.Column(db.JSON, default='',  comment='vote detail')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
+
+    vote = db.relationship('Vote', back_populates='vote_record')
+    user = db.relationship('User', back_populates='vote_record')
