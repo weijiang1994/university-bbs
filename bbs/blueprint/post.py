@@ -69,7 +69,6 @@ def new_post():
                 template='email/postAudit',
                 post=post,
             )
-        print(form.temp_id.data)
         Vote.query.filter(Vote.tid == form.temp_id.data).update({'pid': post.id})
         db.session.commit()
         return redirect(url_for('post.read', post_id=post.id))
@@ -535,7 +534,7 @@ def insert_vote():
         title=request.form.get('title'),
         tid=request.form.get('tid'),
         vote_type=request.form.get('type'),
-        vote_count=request.form.get('count') or 1,
+        vote_count=request.form.get('count') or 0,
     )
     db.session.add(vote)
     db.session.commit()
