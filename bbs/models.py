@@ -758,7 +758,7 @@ class Vote(db.Model):
     title = db.Column(db.String(128), default='', comment='vote title')
     timestamps = db.Column(db.DATETIME, default=datetime.datetime.now)
     vote_type = db.Column(db.Enum(VoteType), default=VoteType.single, comment='vote type 1: single, 2: multiple')
-    vote_count = db.Column(db.INTEGER, default=1, comment='vote count')
+    vote_count = db.Column(db.INTEGER, default=0, comment='vote count')
 
     post = db.relationship('Post', back_populates='vote')
     vote_item = db.relationship('VoteItem', back_populates='vote', cascade='all, delete-orphan')
