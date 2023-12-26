@@ -206,7 +206,7 @@ def get_upload_img_limit():
 
 
 def get_backend_url():
-    yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')))
+    yl = yaml.load(open(os.path.join(basedir, 'conf/config.yml')), Loader=yaml.FullLoader)
     return dict(backend=yl.get('admin').get('backend_url'))
 
 
