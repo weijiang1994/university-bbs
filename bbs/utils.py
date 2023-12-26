@@ -21,6 +21,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, Signatur
 from flask import current_app
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+from bbs.extensions import rd
 
 try:
     from urlparse import urlparse, urljoin
@@ -181,7 +183,7 @@ class IPRecognize:
         return values.get('token'), values.get('url')
 
     def recognize_region(self, ip):
-        res = requests.get(self.url, params={'ip': ip}, headers=self.headers)
+        res = requests.get(urljoin(self.url, f'json/{ip}'), params={'lang': 'zh-CN'})
         return res.json()
 
 
@@ -407,12 +409,25 @@ def get_ip_region(remote_ip):
     if remote_ip == '127.0.0.1':
         ip_region = 'Localhost'
     else:
-        try:
-            result = ip_recognized.recognize_region(remote_ip)
-            ip_data = result.get('data')
-            ip_region = ', '.join(
-                filter(lambda x: x, [ip_data.get('prov'), ip_data.get('city'), ip_data.get('district')]))
-        except Exception:
-            # 防止网络超时或未知IP导致异常
-            ip_region = 'Unknown'
+        ip_region = rd.get(remote_ip)
+        if not ip_region:
+            try:
+                ip_data = ip_recognized.recognize_region(remote_ip)
+                if ip_data.get('status') != 'success':
+                    return '未知'
+                # 格式化IP地址并缓存到Redis中
+                ip_region = ', '.join(
+                    filter(lambda x: x, [ip_data.get('regionName'), ip_data.get('city')]))
+                rd.set(remote_ip, ip_region, ex=60 * 60 * 24 * 7)
+                rd.hmset(f'{remote_ip}-detail', ip_data)
+            except Exception as e:
+                print(e.args)
+                # 防止网络超时或未知IP导致异常
+                ip_region = '未知'
     return ip_region
+
+
+def random_ip():
+    import random
+    ip = '.'.join([str(random.randint(0, 255)) for _ in range(4)])
+    return ip
