@@ -788,3 +788,24 @@ class VoteRecord(db.Model):
 
     vote = db.relationship('Vote', back_populates='vote_record')
     user = db.relationship('User', back_populates='vote_record')
+
+
+class IPRegion(db.Model):
+    __tablename__ = 't_ip_region'
+
+    id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    ip = db.Column(db.String(512), default='', comment='ip')
+    country = db.Column(db.String(512), default='', comment='country')
+    country_code = db.Column(db.String(512), default='', comment='country code')
+    region = db.Column(db.String(512), default='', comment='region')
+    region_name = db.Column(db.String(512), default='', comment='region Name')
+    city = db.Column(db.String(512), default='', comment='city')
+    lat = db.Column(db.String(512), default='', comment='lat')
+    lon = db.Column(db.String(512), default='', comment='lon')
+    zip = db.Column(db.String(512), default='', comment='zip')
+    timezone = db.Column(db.String(512), default='', comment='timezone')
+    org = db.Column(db.String(512), default='', comment='org')
+    isp = db.Column(db.String(512), default='', comment='isp')
+    as_ = db.Column(db.String(512), default='', comment='as')
+    timestamps = db.Column(db.DATETIME, default=datetime.datetime.now, comment='create time')
+    last_update = db.Column(db.DATETIME, default=datetime.datetime.now, comment='last update time')

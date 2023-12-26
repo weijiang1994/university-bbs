@@ -7,8 +7,8 @@
 @email   : qq804022023@gmail.com
 @Software: PyCharm
 """
-from bbs.models import VisitStatistic, CommentStatistic, PostStatistic, SearchStatistic
-from bbs.extensions import db, aps
+from bbs.models import VisitStatistic, CommentStatistic, PostStatistic, SearchStatistic, IPRegion
+from bbs.extensions import db, aps, rd
 from bbs.setting import basedir
 from bbs.decorators import log_traceback
 from bbs.utils import log_util
@@ -50,3 +50,48 @@ def auto_insert_statistics():
             db.session.add(s)
         db.session.commit()
     logger.debug('Finished insert statistic data.')
+
+
+# @aps.task('interval', id='save_ip_detail', seconds=60)
+@aps.task('date')
+@log_traceback(logger)
+def save_ip_detail():
+    keys = rd.keys(pattern='*-detail')
+    for key in keys:
+        ip = key.split('-')[0]
+        db_ip = IPRegion.query.filter_by(ip=ip)
+        try:
+            ip_detail = rd.hmget(key, keys=['country', 'countryCode', 'region', 'regionName', 'city', 'lat',
+                                            'lon', 'timezone', 'org', 'isp', 'zip', 'as', 'status'])
+        except Exception as e:
+            logger.error('Get ip detail from redis error: %s' % e)
+            continue
+        logger.debug('Get ip detail from redis: %s' % ip_detail)
+        if ip_detail[-1] != 'success':
+            continue
+        ip_data = {
+            'ip': ip,
+            'country': ip_detail[0],
+            'country_code': ip_detail[1],
+            'region': ip_detail[2],
+            'region_name': ip_detail[3],
+            'city': ip_detail[4],
+            'lat': ip_detail[5],
+            'lon': ip_detail[6],
+            'timezone': ip_detail[7],
+            'org': ip_detail[8],
+            'isp': ip_detail[9],
+            'zip': ip_detail[10],
+            'as_': ip_detail[11],
+            'last_update': datetime.datetime.now(),
+        }
+        if not db_ip.first():
+            ip_region = IPRegion(**ip_data)
+            db.session.add(ip_region)
+            db.session.commit()
+            rd.delete(key)
+        else:
+            # 更新数据库中的ip信息
+            db_ip.update(**ip_data)
+            rd.delete(key)
+            db.session.commit()
