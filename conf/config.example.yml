@@ -8,7 +8,7 @@ admin:
   oauth: true # enable or disable third party login like github google etc.
   ip-recognize: # recognized user login and comment ip address belong where.
     token: xxx # type your token of apispace
-    url: https://eolink.o.apispace.com/ipguishu/ip/geo/v1/district
+    url: http://ip-api.com/json
   third-party:
     github:
       enable: true
