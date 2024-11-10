@@ -309,6 +309,7 @@ def scheduler_init(app):
     """
     import atexit
     import platform
+    create_folders()
     if platform.system() != 'Windows':
         fcntl = __import__("fcntl")
         f = open(basedir + '/resources/scheduler.lock', 'wb')
