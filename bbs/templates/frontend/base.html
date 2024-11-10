@@ -100,9 +100,10 @@
 {% block footer %}
     <footer class="container-fluid mt-4 py-0 bg-footer">
         <div class="card-body text-center px-0 f-14">
-            <p class="card-text mb-1">Copyright&nbsp;©&nbsp;<span>2020</span>
+            <p class="card-text mb-1">Copyright&nbsp;©&nbsp;<span id='yearInfo'>2020</span>
                 <a href="https://bbs.2dogz.cn/" class="text-decoration-none" target="_blank" title="官网">University BBS</a>&nbsp;Design&nbsp;by&nbsp;Flask1.01.
             </p>
+	    <p><a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备2020018236号-1</a></p>
         </div>
     </footer>
 {% endblock %}
@@ -111,6 +112,11 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+	function getYear(){
+		let year = new Date().getFullYear()
+		document.getElementById('yearInfo').innerHTML = year
+	}
+	getYear()
     </script>
 {% endblock %}
 </html>
