@@ -73,7 +73,7 @@ def image_upload():
     if not(is_jpg(filebytes) or is_png(filebytes) or is_gif(filebytes)):
         return upload_fail(message='Image only!')
 
-    filename = get_md5(filebytes.hex())
+    filename = get_md5(filebytes)
     root_path = current_app.config['BBS_UPLOAD_PATH']
     path = os.path.join(root_path, 'posts')
     if not os.path.exists(path):
@@ -100,7 +100,7 @@ def ajax_upload():
     if not (is_jpg(filebytes) or is_png(filebytes) or is_gif(filebytes)):
         return upload_fail(message='Image only!')
 
-    filename = get_md5(filebytes.hex())
+    filename = get_md5(filebytes)
     path = os.path.join(basedir, 'resources/comments')
     if not os.path.exists(path):
         mkdir_ignore_exists_error(path)

@@ -225,8 +225,12 @@ def get_emoji_url():
     return emoji_urls
 
 
-def get_md5(text):
-    return hashlib.md5(text.encode()).hexdigest()
+# def get_md5(text):
+#     return hashlib.md5(text.encode()).hexdigest()
+
+
+def get_md5(data: bytes) -> str:
+    return hashlib.md5(data).hexdigest()
 
 
 def is_jpg(filestream: bytes) -> bool:
