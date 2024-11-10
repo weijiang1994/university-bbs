@@ -54,6 +54,7 @@ class BaseConfig(object):
     DATABASE_PWD = os.getenv('DATABASE_PWD')
     DATABASE_HOST = os.getenv('DATABASE_HOST')
     DATABASE_PORT = os.getenv('DATABASE_PORT')
+    DATABASE_NAME = os.getenv('DATABASE_NAME')
 
     # mail config
     BBS_MAIL_SUBJECT_PRE = '[狗子学院]'
@@ -101,7 +102,8 @@ class DevelopmentConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/bbs?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}/{}?charset=utf8mb4'.format(BaseConfig.DATABASE_USER,
                                                                                     BaseConfig.DATABASE_PWD,
-                                                                                    BaseConfig.DATABASE_HOST)
+                                                                                    BaseConfig.DATABASE_HOST,
+                                                                                    BaseConfig.DATABASE_NAME)
     REDIS_URL = "redis://localhost:6379"

@@ -5,6 +5,8 @@ file: extensions.py
 @time: 2020/11/26 21:45
 @desc:
 """
+import os
+
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -24,7 +26,11 @@ migrate = Migrate()
 bs = Bootstrap()
 avatars = Avatars()
 ck = CKEditor()
-pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
+pool = redis.ConnectionPool(
+    host=os.getenv('REDIS_HOST', 'localhost'), 
+    port=os.getenv('REDIS_PORT', 6379), 
+    decode_responses=True
+)
 rd = redis.Redis(connection_pool=pool)
 moment = Moment()
 mail = Mail()

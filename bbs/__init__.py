@@ -172,6 +172,25 @@ def register_cmd(app: Flask):
         db.session.commit()
         click.echo('超级管理员添加成功!')
 
+    @app.cli.command()
+    def docker_admin():
+        default_username = os.getenv('ADMIN_USERNAME') or 'admin'
+        default_nickname = os.getenv('ADMIN_NICKNAME') or '管理员'
+        default_pwd = os.getenv('ADMIN_PWD') or '12345678'
+        u = User(
+            username=default_username, 
+            nickname=default_nickname, 
+            role_id=1, 
+            email='admin@2dogzbbs.cn', 
+            status_id=1, 
+            college_id=1
+        )
+        u.set_password(pwd=default_pwd)
+        u.generate_avatar()
+        db.session.add(u)
+        db.session.commit()
+        click.echo('超级管理员添加成功!')
+
 
 def create_folders():
     if not os.path.exists(os.path.join(basedir, 'resources')):

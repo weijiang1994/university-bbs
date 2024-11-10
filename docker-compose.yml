@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0.23
+    container_name: bbs-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PWD}
+      TZ: Asia/Shanghai
+      LANG: C.UTF-8
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/services/bbs/database:/var/lib/mysql
+    networks:
+      - bbs-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      # start_period: 30s
+  
+  redis:
+    image: redis:latest
+    container_name: bbs-redis
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: Asia/Shanghai
+      LANG: C.utf8
+    networks:
+      - bbs-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      # start_period: 30s
+
+  bbs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bbs
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - bbs-network
+    environment:
+      - REDIS_HOST=bbs-redis
+      - REDIS_PORT=6379
+    volumes:
+      - .:/app
+      - /data/services/bbs/logs:/var/logs
+
+networks:
+  bbs-network:
